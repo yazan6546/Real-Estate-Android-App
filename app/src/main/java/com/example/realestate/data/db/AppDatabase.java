@@ -4,7 +4,8 @@ import androidx.room.Database;
 import androidx.room.RoomDatabase;
 
 import com.example.realestate.data.db.dao.*;
-import com.example.realestate.data.entity.*;
+import com.example.realestate.data.db.entity.*;
+
 import androidx.room.TypeConverters;
 
 @Database(entities = {

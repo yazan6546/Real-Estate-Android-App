@@ -5,7 +5,9 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
-import com.example.realestate.data.entity.ReservationEntity;
+import com.example.realestate.data.db.entity.*;
+
+import java.util.List;
 
 @Dao
 public interface ReservationDao {
@@ -21,4 +23,7 @@ public interface ReservationDao {
 
     @Delete
     void deleteReservation(ReservationEntity reservation);
+
+    @Query("SELECT * FROM reservations WHERE user_id = :userId")
+    List<ReservationEntity> getReservationsByUserId(int userId);
 }

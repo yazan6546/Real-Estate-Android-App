@@ -1,4 +1,4 @@
-package com.example.realestate.data.entity;
+package com.example.realestate.data.db.entity;
 
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;

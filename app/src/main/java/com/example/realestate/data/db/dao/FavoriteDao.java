@@ -5,7 +5,7 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
-import com.example.realestate.data.entity.FavoriteEntity;
+import com.example.realestate.data.db.entity.*;
 
 @Dao
 public interface FavoriteDao {

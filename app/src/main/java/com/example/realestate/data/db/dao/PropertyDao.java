@@ -5,12 +5,12 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
 
-import com.example.realestate.data.entity.PropertyEntity;
+import com.example.realestate.data.db.entity.*;
 
 public interface PropertyDao {
      @Insert
      void insertProperty(PropertyEntity property);
-     @Query("SELECT * FROM properties WHERE id = :propertyId")
+     @Query("SELECT * FROM properties WHERE property_id = :propertyId")
      PropertyEntity getPropertyById(int propertyId);
      @Update
      void updateProperty(PropertyEntity property);
