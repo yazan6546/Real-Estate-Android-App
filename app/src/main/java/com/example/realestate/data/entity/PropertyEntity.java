@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey;
 public class PropertyEntity {
 
     @PrimaryKey(autoGenerate = true)
-    public int id;
+    public int property_id;
 
     @ColumnInfo(name = "name")
     public String name;
