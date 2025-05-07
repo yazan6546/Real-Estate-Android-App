@@ -8,32 +8,32 @@ import androidx.room.PrimaryKey;
 @Entity(tableName = "users")
 public class UserEntity {
     @PrimaryKey(autoGenerate = true)
-    private int id;
+    public int id;
 
     @ColumnInfo(name = "first_name")
-    private String firstName;
+    public String firstName;
 
     @ColumnInfo(name = "last_name")
-    private String lastName;
+    public String lastName;
 
     @ColumnInfo(name = "email")
-    private String email;
+    public String email;
 
     @ColumnInfo(name = "password")
-    private String password;
+    public String password;
 
     @ColumnInfo(name = "phone")
-    private String phone;
+    public String phone;
 
     @ColumnInfo(name = "country")
-    private String country;
+    public String country;
 
     @ColumnInfo(name = "city")
-    private String city;
+    public String city;
 
     @ColumnInfo(name = "gender")
-    private String gender;
+    public String gender;
 
     @ColumnInfo(name = "user_type")
-    private String userType;
+    public String userType;
 }
