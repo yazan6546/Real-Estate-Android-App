@@ -9,12 +9,28 @@
             android:icon="@drawable/ic_menu_camera"
             android:title="@string/menu_home" />
         <item
-            android:id="@+id/nav_gallery"
+            android:id="@+id/nav_properties"
             android:icon="@drawable/ic_menu_gallery"
-            android:title="@string/menu_gallery" />
+            android:title="@string/menu_properties" />
         <item
-            android:id="@+id/nav_slideshow"
+            android:id="@+id/nav_your_reservations"
             android:icon="@drawable/ic_menu_slideshow"
-            android:title="@string/menu_slideshow" />
+            android:title="@string/menu_your_favorites" />
+        <item
+            android:id="@+id/nav_featured_properties"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="@string/menu_featured_properties" />
+        <item
+            android:id="@+id/nav_profile_management"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="@string/menu_profile_management" />
+        <item
+            android:id="@+id/nav_contact_us"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="@string/menu_contact_us" />
+        <item
+            android:id="@+id/nav_logout"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="@string/menu_logout" />
     </group>
 </menu>

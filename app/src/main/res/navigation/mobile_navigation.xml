@@ -10,16 +10,39 @@
         android:name="com.example.realestate.ui.home.HomeFragment"
         android:label="@string/menu_home"
         tools:layout="@layout/fragment_home" />
+<!--    <fragment-->
+<!--        android:id="@+id/nav_properties"-->
+<!--        android:name="com.example.realestate.ui.properties.PropertiesFragment"-->
+<!--        android:label="@string/menu_properties"-->
+<!--        tools:layout="@layout/fragment_gallery" />-->
 
-    <fragment
-        android:id="@+id/nav_gallery"
-        android:name="com.example.realestate.ui.gallery.GalleryFragment"
-        android:label="@string/menu_gallery"
-        tools:layout="@layout/fragment_gallery" />
+<!--    <fragment-->
+<!--        android:id="@+id/nav_your_reservations"-->
+<!--        android:name="com.example.realestate.ui.slideshow.SlideshowFragment"-->
+<!--        android:label="@string/menu_your_reservations"-->
+<!--        tools:layout="@layout/fragment_slideshow" />-->
 
-    <fragment
-        android:id="@+id/nav_slideshow"
-        android:name="com.example.realestate.ui.slideshow.SlideshowFragment"
-        android:label="@string/menu_slideshow"
-        tools:layout="@layout/fragment_slideshow" />
+<!--    <fragment-->
+<!--        android:id="@+id/nav_featured_properties"-->
+<!--        android:name="com.example.realestate.ui.featured.FeaturedPropertiesFragment"-->
+<!--        android:label="@string/menu_featured_properties"-->
+<!--        tools:layout="@layout/fragment_featured_properties" />-->
+
+<!--    <fragment-->
+<!--        android:id="@+id/nav_profile_management"-->
+<!--        android:name="com.example.realestate.ui.profile.ProfileManagementFragment"-->
+<!--        android:label="@string/menu_profile_management"-->
+<!--        tools:layout="@layout/fragment_profile_management" />-->
+
+<!--    <fragment-->
+<!--        android:id="@+id/nav_contact_us"-->
+<!--        android:name="com.example.realestate.ui.contact.ContactUsFragment"-->
+<!--        android:label="@string/menu_contact_us"-->
+<!--        tools:layout="@layout/fragment_contact_us" />-->
+
+<!--    <fragment-->
+<!--        android:id="@+id/nav_logout"-->
+<!--        android:name="com.example.realestate.ui.logout.LogoutFragment"-->
+<!--        android:label="@string/menu_logout"-->
+<!--        tools:layout="@layout/fragment_logout" />-->
 </navigation>
