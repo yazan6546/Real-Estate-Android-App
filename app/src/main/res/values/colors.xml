@@ -7,4 +7,21 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+      <!-- Blue color palette -->
+    <color name="blue_200">#FF90CAF9</color>
+    <color name="blue_500">#FF1976D2</color>
+    <color name="blue_700">#FF003B95</color>
+    
+    <!-- Modern Contact Us Colors -->
+    <color name="primary_blue">#FF1E88E5</color>
+    <color name="primary_blue_dark">#FF1565C0</color>
+    <color name="accent_green">#FF00C853</color>
+    <color name="accent_green_dark">#FF00A047</color>
+    <color name="accent_orange">#FFFF6F00</color>
+    <color name="accent_orange_dark">#FFE65100</color>
+    <color name="surface_light">#FFF8F9FA</color>
+    <color name="surface_card">#FFFFFFFF</color>
+    <color name="text_primary">#FF212529</color>
+    <color name="text_secondary">#FF6C757D</color>
+    <color name="shadow_light">#1A000000</color>
 </resources>
