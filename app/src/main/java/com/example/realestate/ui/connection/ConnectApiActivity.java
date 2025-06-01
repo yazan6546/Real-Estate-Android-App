@@ -26,8 +26,7 @@ public class ConnectApiActivity extends AppCompatActivity {
 
         // Create repository and ViewModel directly
         ApiRepositoryImpl repository = new ApiRepositoryImpl(
-                ApiClient.getApiService(),
-                AppDatabase.getInstance(this).propertyDao()
+                ApiClient.getApiService()
         );
         viewModel = new ConnectApiViewModel(repository);
 
