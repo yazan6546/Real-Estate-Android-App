@@ -31,7 +31,7 @@ public class PropertyRepositoryImpl implements PropertyRepository {
 
     @Override
     public void refreshProperties(PropertyOperationCallback callback) {
-        apiService.getProperties().enqueue(new Callback<List<PropertyDTO>>() {
+        apiService.getProperties().enqueue(new Callback<>() {
             @Override
             public void onResponse(Call<List<PropertyDTO>> call, Response<List<PropertyDTO>> response) {
                 if (response.isSuccessful() && response.body() != null) {

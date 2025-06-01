@@ -1,5 +1,7 @@
 package com.example.realestate.ui.connection;
 
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -34,6 +36,7 @@ public class ConnectApiViewModel extends ViewModel {
 
             @Override
             public void onError(Throwable throwable) {
+                Log.e("ConnectApiViewModel", "Connection failed", throwable);
                 _connectionState.postValue(ConnectionState.FAILED);
             }
         });
