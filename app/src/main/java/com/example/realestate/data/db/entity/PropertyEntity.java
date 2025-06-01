@@ -20,7 +20,7 @@ public class PropertyEntity {
     public String title;
 
     @ColumnInfo(name = "price")
-    public String price;
+    public double price;
 
     @ColumnInfo(name = "location")
     public String location;

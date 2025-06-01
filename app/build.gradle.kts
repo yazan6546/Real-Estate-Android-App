@@ -47,6 +47,11 @@ dependencies {
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
 
+
+    implementation (libs.gson)
+    implementation (libs.retrofit)
+    implementation (libs.converter.gson)
+
     implementation(libs.androidx.room.runtime)
 
     // If this project only uses Java source, use the Java annotationProcessor
