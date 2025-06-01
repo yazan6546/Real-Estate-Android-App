@@ -1,8 +1,10 @@
 package com.example.realestate.data.repository;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 
 import com.example.realestate.data.api.ApiService;
+import com.example.realestate.data.api.JsonResponse;
 import com.example.realestate.data.api.dto.PropertyDTO;
 import com.example.realestate.data.db.dao.PropertyDao;
 import com.example.realestate.data.db.entity.PropertyEntity;
@@ -31,12 +33,16 @@ public class PropertyRepositoryImpl implements PropertyRepository {
 
     @Override
     public void refreshProperties(PropertyOperationCallback callback) {
-        apiService.getProperties().enqueue(new Callback<>() {
+        apiService.getJson().enqueue(new Callback<>() {
+
             @Override
-            public void onResponse(Call<List<PropertyDTO>> call, Response<List<PropertyDTO>> response) {
+            public void onResponse(@NonNull Call<JsonResponse> call,
+                                   @NonNull Response<JsonResponse> response) {
+
                 if (response.isSuccessful() && response.body() != null) {
+
                     List<PropertyEntity> entities = new ArrayList<>();
-                    for (PropertyDTO dto : response.body()) {
+                    for (PropertyDTO dto : response.body().properties) {
                         entities.add(PropertyMapper.toEntity(dto));
                     }
                     savePropertiesToDatabase(entities, callback);
@@ -46,7 +52,9 @@ public class PropertyRepositoryImpl implements PropertyRepository {
             }
 
             @Override
-            public void onFailure(Call<List<PropertyDTO>> call, Throwable t) {
+            public void onFailure(@NonNull Call<JsonResponse> call,
+                                  @NonNull Throwable t) {
+
                 callback.onError(t);
             }
         });

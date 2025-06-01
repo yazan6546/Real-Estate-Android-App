@@ -9,5 +9,5 @@ import retrofit2.http.GET;
 
 public interface ApiService {
     @GET("de64caab-e146-480e-ad01-14a792488977")
-    Call<List<PropertyDTO>> getProperties();
+    Call<JsonResponse> getJson();
 }

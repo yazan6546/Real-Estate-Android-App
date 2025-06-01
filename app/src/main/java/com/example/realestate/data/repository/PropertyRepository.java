@@ -6,6 +6,8 @@ import com.example.realestate.data.db.entity.PropertyEntity;
 
 import java.util.List;
 
+import retrofit2.Callback;
+
 /**
  * Repository to handle property data operations, abstracting the origin of the data
  * (network or local database)
@@ -16,6 +18,7 @@ public interface PropertyRepository {
      * @param callback Callback to notify when operation completes
      */
     void refreshProperties(PropertyOperationCallback callback);
+
 
     /**
      * Get all properties from local database
