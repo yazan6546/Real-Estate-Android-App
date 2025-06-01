@@ -116,7 +116,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"
         android:text="@string/powered_by"
-        android:textColor="@color/text_secondary"
+        android:textColor="@color/text_secondary2"
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

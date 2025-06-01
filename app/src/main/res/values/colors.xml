@@ -31,8 +31,8 @@
     <color name="primary_light">#BBDEFB</color>
     <color name="accent">#FF5722</color>
     <color name="secondary">#FF9800</color>
-    <color name="text_primary">#212121</color>
-    <color name="text_secondary">#757575</color>
+    <color name="text_primary2">#212121</color>
+    <color name="text_secondary2">#757575</color>
     <color name="background">#FAFAFA</color>
     <color name="card_background">#FFFFFF</color>
     <color name="divider">#BDBDBD</color>
