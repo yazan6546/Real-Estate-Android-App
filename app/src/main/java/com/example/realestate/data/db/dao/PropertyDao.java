@@ -1,5 +1,6 @@
 package com.example.realestate.data.db.dao;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -13,15 +14,17 @@ import java.util.List;
 
 @Dao
 public interface PropertyDao {
-     @Insert(onConflict = OnConflictStrategy.REPLACE)
-     void insertProperty(PropertyEntity property);
+     // Queries that need to be observed should return LiveData
+     @Query("SELECT * FROM properties")
+     LiveData<List<PropertyEntity>> getAllProperties();
 
+     @Query("SELECT * FROM properties WHERE property_id = :propertyId")
+     LiveData<PropertyEntity> getPropertyById(int propertyId);
+
+     // One-time operations should NOT use LiveData
      @Insert(onConflict = OnConflictStrategy.REPLACE)
      void insertAll(List<PropertyEntity> properties);
-     @Query("SELECT * FROM properties WHERE property_id = :propertyId")
-     PropertyEntity getPropertyById(int propertyId);
-     @Update
-     void updateProperty(PropertyEntity property);
+
      @Delete
-     void deleteProperty(PropertyEntity property);
+     void delete(PropertyEntity property);
 }
