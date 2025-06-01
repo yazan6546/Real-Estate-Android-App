@@ -5,6 +5,8 @@ import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 
+import java.util.Date;
+
 @Entity(
         tableName = "reservations",
         foreignKeys = {
@@ -30,9 +32,12 @@ public class ReservationEntity {
     public int property_id;
 
     @ColumnInfo(name = "start_date")
-    public String startDate;
+    public Date startDate;
 
     @ColumnInfo(name = "end_date")
-    public String endDate;
+    public Date endDate;
+
+    @ColumnInfo(name = "status")
+    public String status; // e.g., "pending", "confirmed", "cancelled"
 
 }

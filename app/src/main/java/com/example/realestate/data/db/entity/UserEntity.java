@@ -36,4 +36,8 @@ public class UserEntity {
 
     @ColumnInfo(name = "user_type")
     public String userType;
+
+    @ColumnInfo(name = "profile_image")
+    public String profileImage;
+
 }

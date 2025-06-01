@@ -10,9 +10,6 @@ public class PropertyEntity {
     @PrimaryKey(autoGenerate = true)
     public int property_id;
 
-    @ColumnInfo(name = "name")
-    public String name;
-
     @ColumnInfo(name = "description")
     public String description;
 
@@ -20,7 +17,7 @@ public class PropertyEntity {
     public String title;
 
     @ColumnInfo(name = "price")
-    public String price;
+    public double price;
 
     @ColumnInfo(name = "location")
     public String location;
