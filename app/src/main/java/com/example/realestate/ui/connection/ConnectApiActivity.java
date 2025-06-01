@@ -8,12 +8,11 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.realestate.MainActivity;
 import com.example.realestate.R;
-import com.example.realestate.data.api.ApiClient;
-import com.example.realestate.data.db.AppDatabase;
-import com.example.realestate.data.repository.ApiRepositoryImpl;
+import com.example.realestate.RealEstate;
 
 public class ConnectApiActivity extends AppCompatActivity {
 
@@ -24,11 +23,13 @@ public class ConnectApiActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_connect_api);
 
-        // Create repository and ViewModel directly
-        ApiRepositoryImpl repository = new ApiRepositoryImpl(
-                ApiClient.getApiService()
+        // Get repository from app container
+        ConnectApiViewModel.Factory factory = new ConnectApiViewModel.Factory(
+                RealEstate.appContainer.getPropertyRepository()
         );
-        viewModel = new ConnectApiViewModel(repository);
+
+        // Create ViewModel using the factory
+        viewModel = new ViewModelProvider(this, factory).get(ConnectApiViewModel.class);
 
         Button connectButton = findViewById(R.id.connectButton);
         ProgressBar progressBar = findViewById(R.id.progressBar);
@@ -42,7 +43,7 @@ public class ConnectApiActivity extends AppCompatActivity {
                     break;
                 case CONNECTED:
                     progressBar.setVisibility(View.GONE);
-                    startActivity(new Intent(this, MainActivity.class)); // Changed from DashboardActivity to MainActivity
+                    startActivity(new Intent(this, MainActivity.class));
                     finish();
                     break;
                 case FAILED:
