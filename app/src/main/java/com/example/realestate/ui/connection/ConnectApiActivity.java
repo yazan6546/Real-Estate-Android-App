@@ -23,7 +23,6 @@ public class ConnectApiActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_connect_api);
 
-        // Get repository from app container
         ConnectApiViewModel.Factory factory = new ConnectApiViewModel.Factory(
                 RealEstate.appContainer.getPropertyRepository()
         );

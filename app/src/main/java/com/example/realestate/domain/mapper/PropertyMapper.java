@@ -11,6 +11,12 @@ public class PropertyMapper {
         entity.price = dto.price;
         entity.type = dto.type;
         entity.image = dto.imageUrl;
+        entity.location = dto.location; // Assuming location is also part of the entity
+        entity.description = dto.description; // Assuming description is also part of the entity
+        entity.bedrooms = dto.bedrooms; // Assuming bedrooms is also part of the entity
+        entity.bathrooms = dto.bathrooms; // Assuming bathrooms is also part of the entity
+        entity.area = dto.area; // Assuming area is also part of the entity
+
         return entity;
     }
 
