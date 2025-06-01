@@ -3,6 +3,7 @@ package com.example.realestate.data.db;
 import androidx.room.Database;
 import androidx.room.RoomDatabase;
 
+import com.example.realestate.data.db.converters.Converters;
 import com.example.realestate.data.db.dao.*;
 import com.example.realestate.data.db.entity.*;
 
@@ -15,6 +16,8 @@ import androidx.room.TypeConverters;
         ReservationEntity.class
 }, version = 1, exportSchema = false
 )
+
+@TypeConverters({Converters.class})
 
 public abstract class AppDatabase extends RoomDatabase {
     public abstract UserDao userDao();

@@ -4,6 +4,8 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
 
+import java.util.Date;
+
 @Entity(
         tableName = "favorites",
         primaryKeys = {"user_id", "property_id"},
@@ -30,4 +32,7 @@ public class FavoriteEntity {
 
     @ColumnInfo(name = "property_id")
     public int property_id;
+
+    @ColumnInfo(name = "added_date")
+    public Date added_date;
 }
