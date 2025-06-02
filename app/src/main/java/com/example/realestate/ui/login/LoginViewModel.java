@@ -31,6 +31,7 @@ public class LoginViewModel extends ViewModel {
                           boolean isRememberMeChecked) {
         this.userRepository = userRepository;
         this.sharedPrefManager = sharedPrefManager;
+        this.isRememberMeChecked = isRememberMeChecked;
     }
 
     public void login(String email, String password, boolean isRememberMeChecked) {
@@ -49,13 +50,22 @@ public class LoginViewModel extends ViewModel {
                     // Password matches
                     _authState.postValue(AuthState.SUCCESS);
 
-
+                    UserSession userSession = new UserSession(
+                            user.getEmail(),
+                            user.getPassword(),
+                            user.getFirstName(),
+                            user.getLastName(),
+                            user.isAdmin()
+                    );
 
                     if (isRememberMeChecked) {
+                        userSession.setRememberMe(true);
+                        // Save user credentials to SharedPreferences
+                        sharedPrefManager.writeObject("user_session", userSession);
 
                     } else {
                         // Clear saved credentials if "Remember Me" is not checked
-                        sharedPrefManager.clearUserCredentials();
+                        sharedPrefManager.clear();
                     }
                     // Save logged in user to session or preferences here
                 } else {
@@ -77,13 +87,10 @@ public class LoginViewModel extends ViewModel {
     public static class Factory implements ViewModelProvider.Factory {
         private final UserRepository userRepository;
         private final SharedPrefManager sharedPrefManager;
-        private final boolean isRememberMeChecked;
 
-        public Factory(UserRepository userRepository, SharedPrefManager sharedPrefManager,
-                       boolean isRememberMeChecked) {
+        public Factory(UserRepository userRepository, SharedPrefManager sharedPrefManager) {
             this.userRepository = userRepository;
             this.sharedPrefManager = sharedPrefManager;
-            this.isRememberMeChecked = isRememberMeChecked;
         }
 
         @Override

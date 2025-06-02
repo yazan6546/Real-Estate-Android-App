@@ -54,4 +54,9 @@ public class SharedPrefManager {
             return defaultValue;
         }
     }
+
+    public void clear() {
+        editor.clear();
+        editor.commit();
+    }
 }

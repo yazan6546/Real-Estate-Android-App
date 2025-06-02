@@ -49,7 +49,7 @@ public class LoginActivity extends AppCompatActivity {
 
         viewModel = new ViewModelProvider(this,
                 new LoginViewModel.Factory(RealEstate.appContainer.getUserRepository(),
-                        sharedPrefManager, isRememberMeChecked))
+                        sharedPrefManager))
                         .get(LoginViewModel.class);
 
         rememberMeCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {

@@ -7,6 +7,8 @@ public class UserSession {
     private String firstName;
     private String lastName;
 
+    private boolean rememberMe;
+
     public UserSession(String email, String password, String firstName, String lastName,
                        boolean isAdmin) {
 
@@ -15,6 +17,7 @@ public class UserSession {
         this.firstName = firstName;
         this.lastName = lastName;
         this.isAdmin = isAdmin;
+        this.rememberMe = false; // Default value
     }
 
     public String getEmail() {
@@ -34,6 +37,14 @@ public class UserSession {
     }
     public boolean isAdmin() {
         return isAdmin;
+    }
+
+    public boolean isRememberMe() {
+        return rememberMe;
+    }
+
+    public void setRememberMe(boolean rememberMe) {
+        this.rememberMe = rememberMe;
     }
 
 }
