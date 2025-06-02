@@ -8,11 +8,6 @@ public class User {
         FEMALE
     }
 
-    private enum Role {
-        ADMIN,
-        USER
-    }
-
     private String firstName;
     private String lastName;
     private String email;
@@ -21,7 +16,7 @@ public class User {
     private String country;
     private String city;
     private Gender gender;
-    private Role role;
+    private boolean admin;
 
     public User(String firstName, String lastName, String email, String password, String phone, String country) {
         this.firstName = firstName;
@@ -75,5 +70,8 @@ public class User {
         this.city = city;
     }
 
+    public boolean isAdmin() {
+        return admin;
+    }
 
 }

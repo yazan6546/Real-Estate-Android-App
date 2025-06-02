@@ -1,9 +1,11 @@
 package com.example.realestate.ui.login;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -14,6 +16,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.realestate.MainActivity;
 import com.example.realestate.R;
 import com.example.realestate.RealEstate;
+import com.example.realestate.domain.service.SharedPrefManager;
 
 import java.util.Objects;
 
@@ -23,6 +26,10 @@ public class LoginActivity extends AppCompatActivity {
     private EditText passwordInput;
     private Button loginButton;
     private Button registerButton;
+
+    private CheckBox rememberMeCheckbox;
+
+    boolean isRememberMeChecked = false;
     private ProgressBar progressBar;
 
     @Override
@@ -36,10 +43,18 @@ public class LoginActivity extends AppCompatActivity {
         loginButton = findViewById(R.id.loginButton);
         registerButton = findViewById(R.id.registerButton);
         progressBar = findViewById(R.id.progressBar);
+        rememberMeCheckbox = findViewById(R.id.rememberMeCheckbox);
+
+        SharedPrefManager sharedPrefManager = SharedPrefManager.getInstance(this);
 
         viewModel = new ViewModelProvider(this,
-                new LoginViewModel.Factory(RealEstate.appContainer.getUserRepository()))
-                .get(LoginViewModel.class);
+                new LoginViewModel.Factory(RealEstate.appContainer.getUserRepository(),
+                        sharedPrefManager, isRememberMeChecked))
+                        .get(LoginViewModel.class);
+
+        rememberMeCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            isRememberMeChecked = isChecked;
+        });
 
         setupLoginButton();
         observeAuthState();
@@ -49,7 +64,7 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.setOnClickListener(v -> {
             String email = emailInput.getText().toString();
             String password = passwordInput.getText().toString();
-            viewModel.login(email, password);
+            viewModel.login(email, password, isRememberMeChecked);
         });
     }
 

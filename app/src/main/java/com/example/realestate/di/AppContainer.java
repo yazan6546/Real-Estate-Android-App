@@ -8,6 +8,7 @@ import com.example.realestate.data.db.AppDatabase;
 import com.example.realestate.data.repository.PropertyRepository;
 import com.example.realestate.data.repository.PropertyRepositoryImpl;
 import com.example.realestate.data.repository.UserRepository;
+import com.example.realestate.domain.service.SharedPrefManager;
 
 /**
  * Container of objects shared across the whole app
@@ -25,6 +26,7 @@ public class AppContainer {
     private final PropertyRepository propertyRepository;
 
     private final UserRepository userRepository;
+
 
 
     public AppContainer(Context context) {

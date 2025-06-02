@@ -1,4 +1,5 @@
 package com.example.realestate.domain.service;
+import com.google.gson.Gson;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -8,7 +9,7 @@ public class SharedPrefManager {
     private static SharedPrefManager ourInstance = null;
     private static SharedPreferences sharedPreferences = null;
     private SharedPreferences.Editor editor = null;
-    static SharedPrefManager getInstance(Context context) {
+    public static SharedPrefManager getInstance(Context context) {
         if (ourInstance != null) {
             return ourInstance;
         }
@@ -31,7 +32,7 @@ public class SharedPrefManager {
     // Add a method to save objects to SharedPreferences
     public boolean writeObject(String key, Object value) {
         try {
-            com.google.gson.Gson gson = new com.google.gson.Gson();
+            Gson gson = new Gson();
             String json = gson.toJson(value);
             editor.putString(key, json);
             return editor.commit();
@@ -47,7 +48,7 @@ public class SharedPrefManager {
             if (json.isEmpty()) {
                 return defaultValue;
             }
-            com.google.gson.Gson gson = new com.google.gson.Gson();
+            Gson gson = new Gson();
             return gson.fromJson(json, classOfT);
         } catch (Exception e) {
             return defaultValue;
