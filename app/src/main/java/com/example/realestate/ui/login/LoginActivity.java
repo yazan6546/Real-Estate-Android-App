@@ -22,6 +22,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText emailInput;
     private EditText passwordInput;
     private Button loginButton;
+    private Button registerButton;
     private ProgressBar progressBar;
 
     @Override
@@ -33,6 +34,7 @@ public class LoginActivity extends AppCompatActivity {
         emailInput = findViewById(R.id.emailInput);
         passwordInput = findViewById(R.id.passwordInput);
         loginButton = findViewById(R.id.loginButton);
+        registerButton = findViewById(R.id.registerButton);
         progressBar = findViewById(R.id.progressBar);
 
         viewModel = new ViewModelProvider(this,
