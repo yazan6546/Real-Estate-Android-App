@@ -27,11 +27,9 @@ public class LoginViewModel extends ViewModel {
 
 
 
-    public LoginViewModel(UserRepository userRepository, SharedPrefManager sharedPrefManager,
-                          boolean isRememberMeChecked) {
+    public LoginViewModel(UserRepository userRepository, SharedPrefManager sharedPrefManager) {
         this.userRepository = userRepository;
         this.sharedPrefManager = sharedPrefManager;
-        this.isRememberMeChecked = isRememberMeChecked;
     }
 
     public void login(String email, String password, boolean isRememberMeChecked) {
@@ -98,7 +96,7 @@ public class LoginViewModel extends ViewModel {
         public <T extends ViewModel> T create(Class<T> modelClass) {
             if (modelClass.isAssignableFrom(LoginViewModel.class)) {
                 boolean isRememberMeChecked = false;
-                return (T) new LoginViewModel(userRepository, sharedPrefManager, isRememberMeChecked);
+                return (T) new LoginViewModel(userRepository, sharedPrefManager);
             }
             throw new IllegalArgumentException("Unknown ViewModel class");
         }
