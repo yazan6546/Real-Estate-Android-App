@@ -54,4 +54,8 @@ public class AppContainer {
     public PropertyRepository getPropertyRepository() {
         return propertyRepository;
     }
+
+    public UserRepository getUserRepository() {
+        return userRepository;
+    }
 }
