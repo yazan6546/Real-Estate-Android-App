@@ -24,9 +24,6 @@ public class UserRepository {
         userDao.insertUser(user);
     }
 
-    public UserEntity getUserById(int userId) {
-        return userDao.getUserById(userId);
-    }
 
     public void updateUser(UserEntity user) {
         userDao.updateUser(user);

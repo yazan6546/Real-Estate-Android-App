@@ -14,6 +14,7 @@ public class UserEntity {
     public String lastName;
 
     @PrimaryKey
+    @NonNull
     @ColumnInfo(name = "email")
     public String email;
 
@@ -63,11 +64,12 @@ public class UserEntity {
         this.lastName = lastName;
     }
 
+    @NonNull
     public String getEmail() {
         return email;
     }
 
-    public void setEmail(String email) {
+    public void setEmail(@NonNull String email) {
         this.email = email;
     }
 

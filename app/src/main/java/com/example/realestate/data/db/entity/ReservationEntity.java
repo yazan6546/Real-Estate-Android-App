@@ -1,5 +1,6 @@
 package com.example.realestate.data.db.entity;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
@@ -12,8 +13,8 @@ import java.util.Date;
         foreignKeys = {
             @ForeignKey(
                     entity = UserEntity.class,
-                    parentColumns = "user_id",
-                    childColumns = "user_id",
+                    parentColumns = "email",
+                    childColumns = "email",
                     onDelete = ForeignKey.RESTRICT
             ),
             @ForeignKey(
@@ -28,7 +29,10 @@ public class ReservationEntity {
 
     @PrimaryKey(autoGenerate = true)
     public int reservation_id;
-    public int user_id;
+
+    @NonNull
+    @ColumnInfo(name = "email")
+    public String email;
     public int property_id;
 
     @ColumnInfo(name = "start_date")

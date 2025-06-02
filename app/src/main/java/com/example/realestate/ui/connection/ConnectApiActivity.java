@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.realestate.MainActivity;
 import com.example.realestate.R;
 import com.example.realestate.RealEstate;
+import com.example.realestate.ui.login.LoginActivity;
 
 public class ConnectApiActivity extends AppCompatActivity {
 
@@ -42,7 +43,7 @@ public class ConnectApiActivity extends AppCompatActivity {
                     break;
                 case CONNECTED:
                     progressBar.setVisibility(View.GONE);
-                    startActivity(new Intent(this, MainActivity.class));
+                    startActivity(new Intent(this, LoginActivity.class));
                     finish();
                     break;
                 case FAILED:

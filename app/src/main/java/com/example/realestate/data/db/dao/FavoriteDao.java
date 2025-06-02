@@ -14,8 +14,8 @@ public interface FavoriteDao {
     @Insert
     void insertFavorite(FavoriteEntity favorite);
 
-    @Query("SELECT * FROM favorites WHERE user_id = :userId")
-    FavoriteEntity getFavoriteByUserId(int userId);
+    @Query("SELECT * FROM favorites WHERE email = :email")
+    FavoriteEntity getFavoriteByEmail(String email);
 
     @Update
     void updateFavorite(FavoriteEntity favorite);

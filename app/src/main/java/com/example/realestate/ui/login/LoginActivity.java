@@ -15,6 +15,8 @@ import com.example.realestate.MainActivity;
 import com.example.realestate.R;
 import com.example.realestate.RealEstate;
 
+import java.util.Objects;
+
 public class LoginActivity extends AppCompatActivity {
     private LoginViewModel viewModel;
     private EditText emailInput;
@@ -55,15 +57,24 @@ public class LoginActivity extends AppCompatActivity {
                     View.VISIBLE : View.GONE);
 
             if (state == LoginViewModel.AuthState.SUCCESS) {
-                startActivity(new Intent(this, MainActivity.class));
-                finish(); // Close login activity
+                navigateToMainActivity();
             } else if (state == LoginViewModel.AuthState.ERROR) {
                 showErrorMessage(viewModel.errorMessage.getValue());
             }
         });
     }
 
+
     private void showErrorMessage(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+        Toast.makeText(this, Objects.requireNonNullElse
+                (message, "Login failed. Please try again."),
+                Toast.LENGTH_SHORT).show();
+    }
+
+    private void navigateToMainActivity() {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        finish();
+
     }
 }
