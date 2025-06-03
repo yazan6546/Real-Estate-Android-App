@@ -32,7 +32,8 @@ public interface ReservationDao {
     int getReservationCount();
 
     // Count the reservations in all customer countries
-    @Query("SELECT country, COUNT(country) FROM reservations r " +
+    @Query("SELECT country, COUNT(country) as count" +
+            " FROM reservations r " +
            "JOIN users u ON r.email = u.email " +
             "GROUP BY u.country" +
               " ORDER BY COUNT(*) DESC")
