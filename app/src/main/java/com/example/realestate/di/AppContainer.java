@@ -45,8 +45,7 @@ public class AppContainer {
 
         userRepository = new UserRepository(database.userDao());
 
-        // Hardcoded admin user for demonstration purposes
-
+        // Hardcoded admin user for initial setup
         User adminUser = new User("admin@admin.com",
                 Hashing.createPasswordHash("Admin123!"), true);
 
@@ -55,7 +54,6 @@ public class AppContainer {
     }
 
     // Getters for dependencies
-
     public AppDatabase getDatabase() {
         return database;
     }
