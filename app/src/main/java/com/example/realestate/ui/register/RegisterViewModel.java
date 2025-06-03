@@ -21,14 +21,14 @@ public class RegisterViewModel extends ViewModel {
 
     // List of countries and their cities
     private final Map<String, String[]> countriesWithCities = new HashMap<String, String[]>() {{
-        put("USA", new String[]{"New York", "Los Angeles", "Chicago"});
+        put("PS", new String[]{"Nablus", "Tulkarem", "Ramallah"});
         put("UK", new String[]{"London", "Manchester", "Birmingham"});
         put("UAE", new String[]{"Dubai", "Abu Dhabi", "Sharjah"});
     }};
 
     // Country code map
     private final Map<String, String> countryCodeMap = new HashMap<String, String>() {{
-        put("USA", "+1");
+        put("PS", "+970");
         put("UK", "+44");
         put("UAE", "+971");
     }};

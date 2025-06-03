@@ -48,6 +48,12 @@ public class LoginActivity extends AppCompatActivity {
 
         SharedPrefManager sharedPrefManager = SharedPrefManager.getInstance(this);
 
+        if (sharedPrefManager.isUserRememberMe()) {
+            // If user is already logged in, navigate to MainActivity
+            navigateToMainActivity();
+            return;
+        }
+
         viewModel = new ViewModelProvider(this,
                 new LoginViewModel.Factory(RealEstate.appContainer.getUserRepository(),
                         sharedPrefManager))

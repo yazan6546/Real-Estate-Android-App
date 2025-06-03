@@ -59,4 +59,15 @@ public class SharedPrefManager {
         editor.clear();
         editor.commit();
     }
+
+    public boolean isUserRememberMe() {
+        // Check if user session exists in SharedPreferences
+        UserSession userSession = readObject("user_session", UserSession.class, null);
+
+        if (userSession == null) {
+            return false; // No user session found
+        }
+        // Return the remember me status from the user session
+        return userSession.isRememberMe();
+    }
 }
