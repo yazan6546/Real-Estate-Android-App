@@ -30,7 +30,7 @@ import static org.junit.Assert.assertNull;
  * Uses an in-memory database for testing.
  */
 @RunWith(RobolectricTestRunner.class)
-@Config(sdk = {28})
+@Config(sdk = {26})
 public class PropertyDaoTest {
 
     @Rule
