@@ -131,7 +131,8 @@ public class FavoriteDaoTest {
         favoriteDao.insertFavorite(favorite);
 
         // Get favorites by date
-        List<FavoriteEntity> favorites = favoriteDao.getFavoriteByAddedDate(TEST_DATE);
+        Date newDate = new SimpleDateFormat("yyyy-MM-dd", Locale.US).parse(TEST_DATE);
+        List<FavoriteEntity> favorites = favoriteDao.getFavoriteByAddedDate(newDate);
 
         // Verify data
         assertEquals(1, favorites.size());
