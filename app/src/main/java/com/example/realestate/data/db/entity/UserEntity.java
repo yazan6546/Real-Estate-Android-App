@@ -33,8 +33,8 @@ public class UserEntity {
     @ColumnInfo(name = "gender")
     public String gender;
 
-    @ColumnInfo(name = "user_type")
-    public String userType;
+    @ColumnInfo(name = "is_admin")
+    public boolean isAdmin;
 
     @ColumnInfo(name = "profile_image")
     public String profileImage;
@@ -67,6 +67,10 @@ public class UserEntity {
     @NonNull
     public String getEmail() {
         return email;
+    }
+
+    public void setAdmin(boolean admin) {
+        isAdmin = admin;
     }
 
     public void setEmail(@NonNull String email) {

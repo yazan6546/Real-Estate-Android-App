@@ -11,21 +11,23 @@ public class UserMapper {
         entity.setEmail(user.getEmail());
         entity.setPassword(user.getPassword());
         entity.setPhone(user.getPhone());
+        entity.setGender(user.getGender().name());
+        entity.setAdmin(user.isAdmin());
         entity.setCountry(user.getCountry());
         entity.setCity(user.getCity());
         return entity;
     }
 
     public static User fromEntity(UserEntity entity) {
-        User user = new User(
+        return new User(
                 entity.getFirstName(),
                 entity.getLastName(),
                 entity.getEmail(),
                 entity.getPassword(),
                 entity.getPhone(),
-                entity.getCountry()
+                entity.getCountry(),
+                entity.getCity(),
+                entity.isAdmin
         );
-        user.setCity(entity.getCity());
-        return user;
     }
 }

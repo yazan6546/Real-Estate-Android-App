@@ -114,7 +114,9 @@ public class RegisterViewModel extends ViewModel {
                 email,
                 hashedPassword,
                 phone,
-                country
+                country,
+                city,
+                false // Default to non-admin
             );
 
             // Set additional fields that aren't in the constructor

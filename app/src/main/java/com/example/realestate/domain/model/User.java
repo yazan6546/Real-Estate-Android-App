@@ -17,13 +17,16 @@ public class User {
     private Gender gender;
     private boolean admin;
 
-    public User(String firstName, String lastName, String email, String password, String phone, String country) {
+    public User(String firstName, String lastName, String email, String password, String phone,
+                String country, String city, boolean admin) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.password = password;
         this.phone = phone;
         this.country = country;
+        this.city = city;
+        this.admin = admin;
     }
 
     public String getFirstName() {
