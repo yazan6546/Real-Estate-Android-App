@@ -14,8 +14,13 @@ navigationFragment = "2.8.9"
 navigationUi = "2.8.9"
 roomCompiler = "2.7.1"
 activity = "1.10.1"
+mockito = "5.4.0"
+arch-core-testing = "2.2.0"
+monitor = "1.7.2"
 
 [libraries]
+androidx-lifecycle-common = { module = "androidx.lifecycle:lifecycle-common", version.ref = "lifecycleLivedataKtx" }
+androidx-lifecycle-runtime = { module = "androidx.lifecycle:lifecycle-runtime", version.ref = "lifecycleLivedataKtx" }
 androidx-room-guava = { module = "androidx.room:room-guava", version.ref = "roomCompiler" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomCompiler" }
 androidx-room-paging = { module = "androidx.room:room-paging", version.ref = "roomCompiler" }
@@ -38,6 +43,10 @@ navigation-ui = { group = "androidx.navigation", name = "navigation-ui", version
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "converterGson" }
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomCompiler" }
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
+mockito-core = { group = "org.mockito", name = "mockito-core", version.ref = "mockito" }
+mockito-android = { group = "org.mockito", name = "mockito-android", version.ref = "mockito" }
+arch-core-testing = { group = "androidx.arch.core", name = "core-testing", version.ref = "arch-core-testing" }
+androidx-monitor = { group = "androidx.test", name = "monitor", version.ref = "monitor" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

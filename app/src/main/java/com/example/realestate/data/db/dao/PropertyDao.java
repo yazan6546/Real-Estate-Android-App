@@ -25,6 +25,9 @@ public interface PropertyDao {
      @Insert(onConflict = OnConflictStrategy.REPLACE)
      void insertAll(List<PropertyEntity> properties);
 
+     @Insert(onConflict = OnConflictStrategy.REPLACE)
+     void insert(PropertyEntity property);
+
      @Delete
      void delete(PropertyEntity property);
 }
