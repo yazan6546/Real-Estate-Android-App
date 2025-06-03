@@ -24,6 +24,6 @@ public interface ReservationDao {
     @Delete
     void deleteReservation(ReservationEntity reservation);
 
-    @Query("SELECT * FROM reservations WHERE user_id = :userId")
-    List<ReservationEntity> getReservationsByUserId(int userId);
+    @Query("SELECT * FROM reservations WHERE email = :email")
+    List<ReservationEntity> getReservationsByUserId(String email);
 }

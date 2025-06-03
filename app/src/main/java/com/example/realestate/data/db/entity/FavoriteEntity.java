@@ -1,5 +1,6 @@
 package com.example.realestate.data.db.entity;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
@@ -8,12 +9,12 @@ import java.util.Date;
 
 @Entity(
         tableName = "favorites",
-        primaryKeys = {"user_id", "property_id"},
+        primaryKeys = {"email", "property_id"},
         foreignKeys = {
             @ForeignKey(
                     entity = UserEntity.class,
-                    parentColumns = "user_id",
-                    childColumns = "user_id",
+                    parentColumns = "email",
+                    childColumns = "email",
                     onDelete = ForeignKey.CASCADE
             ),
             @ForeignKey(
@@ -27,8 +28,9 @@ import java.util.Date;
 )
 public class FavoriteEntity {
 
-    @ColumnInfo(name = "user_id")
-    public int user_id;
+    @ColumnInfo(name = "email")
+    @NonNull
+    public String email;
 
     @ColumnInfo(name = "property_id")
     public int property_id;

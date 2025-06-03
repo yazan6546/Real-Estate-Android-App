@@ -17,9 +17,6 @@ public interface UserDao {
      @Insert
      void insertUser(UserEntity user);
 
-     @Query("SELECT * FROM users WHERE user_id = :userId")
-     UserEntity getUserById(int userId);
-
      @Update
      void updateUser(UserEntity user);
 

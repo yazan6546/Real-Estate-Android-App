@@ -7,6 +7,8 @@ import com.example.realestate.data.api.ApiService;
 import com.example.realestate.data.db.AppDatabase;
 import com.example.realestate.data.repository.PropertyRepository;
 import com.example.realestate.data.repository.PropertyRepositoryImpl;
+import com.example.realestate.data.repository.UserRepository;
+import com.example.realestate.domain.service.SharedPrefManager;
 
 /**
  * Container of objects shared across the whole app
@@ -23,6 +25,10 @@ public class AppContainer {
     // Repository instances
     private final PropertyRepository propertyRepository;
 
+    private final UserRepository userRepository;
+
+
+
     public AppContainer(Context context) {
         // Initialize database
         database = AppDatabase.getDatabase(context);
@@ -32,6 +38,9 @@ public class AppContainer {
 
         // Initialize repositories
         propertyRepository = new PropertyRepositoryImpl(apiService, database.propertyDao());
+
+        userRepository = new UserRepository(database.userDao());
+
     }
 
     // Getters for dependencies
@@ -46,5 +55,9 @@ public class AppContainer {
 
     public PropertyRepository getPropertyRepository() {
         return propertyRepository;
+    }
+
+    public UserRepository getUserRepository() {
+        return userRepository;
     }
 }
