@@ -56,6 +56,12 @@ public class LoginActivity extends AppCompatActivity {
             isRememberMeChecked = isChecked;
         });
 
+        // Set up the register button to navigate to the registration screen
+        registerButton.setOnClickListener(v -> {
+            Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+            startActivity(intent);
+        });
+
         setupLoginButton();
         observeAuthState();
     }

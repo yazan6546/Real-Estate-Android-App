@@ -13,6 +13,7 @@ lifecycleViewmodelKtx = "2.8.7"
 navigationFragment = "2.8.9"
 navigationUi = "2.8.9"
 roomCompiler = "2.7.1"
+activity = "1.10.1"
 
 [libraries]
 androidx-room-guava = { module = "androidx.room:room-guava", version.ref = "roomCompiler" }
@@ -36,6 +37,7 @@ navigation-fragment = { group = "androidx.navigation", name = "navigation-fragme
 navigation-ui = { group = "androidx.navigation", name = "navigation-ui", version.ref = "navigationUi" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "converterGson" }
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomCompiler" }
+androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
