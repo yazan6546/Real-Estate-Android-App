@@ -1,5 +1,7 @@
 package com.example.realestate.data.repository;
 
+import android.util.Log;
+
 import com.example.realestate.data.db.dao.UserDao;
 import com.example.realestate.data.db.entity.UserEntity;
 import com.example.realestate.domain.mapper.UserMapper;
@@ -21,7 +23,14 @@ public class UserRepository {
     }
 
     public void insertUser(UserEntity user) {
-        userDao.insertUser(user);
+
+        Executors.newSingleThreadExecutor().execute(() -> {
+            try {
+                userDao.insertUser(user);
+            } catch (Exception e) {
+                Log.e("UserRepository", "Error inserting user", e);
+            }
+        });
     }
 
 

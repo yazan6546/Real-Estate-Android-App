@@ -5,6 +5,7 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
+import androidx.room.OnConflictStrategy;
 
 import com.example.realestate.data.db.entity.*;
 
@@ -14,7 +15,7 @@ import java.util.List;
 public interface UserDao {
 
 
-     @Insert
+     @Insert(onConflict = OnConflictStrategy.IGNORE)
      void insertUser(UserEntity user);
 
      @Update

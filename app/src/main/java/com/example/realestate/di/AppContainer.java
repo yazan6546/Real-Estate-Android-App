@@ -5,9 +5,13 @@ import android.content.Context;
 import com.example.realestate.data.api.ApiClient;
 import com.example.realestate.data.api.ApiService;
 import com.example.realestate.data.db.AppDatabase;
+import com.example.realestate.data.db.entity.UserEntity;
 import com.example.realestate.data.repository.PropertyRepository;
 import com.example.realestate.data.repository.PropertyRepositoryImpl;
 import com.example.realestate.data.repository.UserRepository;
+import com.example.realestate.domain.mapper.UserMapper;
+import com.example.realestate.domain.model.User;
+import com.example.realestate.domain.service.Hashing;
 import com.example.realestate.domain.service.SharedPrefManager;
 
 /**
@@ -40,6 +44,13 @@ public class AppContainer {
         propertyRepository = new PropertyRepositoryImpl(apiService, database.propertyDao());
 
         userRepository = new UserRepository(database.userDao());
+
+        // Hardcoded admin user for demonstration purposes
+
+        User adminUser = new User("admin@admin.com",
+                Hashing.createPasswordHash("Admin123!"), true);
+
+        userRepository.insertUser(UserMapper.toEntity(adminUser));
 
     }
 

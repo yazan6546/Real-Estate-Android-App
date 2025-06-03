@@ -29,6 +29,12 @@ public class User {
         this.admin = admin;
     }
 
+    public User(String email, String password, boolean admin) {
+        this.email = email;
+        this.password = password;
+        this.admin = admin;
+    }
+
     public String getFirstName() {
         return firstName;
     }

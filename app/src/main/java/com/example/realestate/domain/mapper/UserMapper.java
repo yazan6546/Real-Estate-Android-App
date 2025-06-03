@@ -6,12 +6,18 @@ import com.example.realestate.domain.model.User;
 public class UserMapper {
     public static UserEntity toEntity(User user) {
         UserEntity entity = new UserEntity();
+
         entity.setFirstName(user.getFirstName());
         entity.setLastName(user.getLastName());
         entity.setEmail(user.getEmail());
         entity.setPassword(user.getPassword());
         entity.setPhone(user.getPhone());
-        entity.setGender(user.getGender().name());
+
+        if (user.getGender() != null) {
+            entity.setGender(user.getGender().name());
+        } else {
+            entity.setGender(null);
+        }
         entity.setAdmin(user.isAdmin());
         entity.setCountry(user.getCountry());
         entity.setCity(user.getCity());
