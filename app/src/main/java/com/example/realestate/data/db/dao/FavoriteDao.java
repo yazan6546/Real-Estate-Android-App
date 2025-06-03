@@ -7,6 +7,7 @@ import androidx.room.Query;
 import androidx.room.Update;
 import com.example.realestate.data.db.entity.*;
 
+import java.util.Date;
 import java.util.List;
 
 @Dao
@@ -24,6 +25,6 @@ public interface FavoriteDao {
     void deleteFavorite(FavoriteEntity favorite);
 
     @Query("SELECT * FROM favorites WHERE added_date = :addedDate")
-    List<FavoriteEntity> getFavoriteByAddedDate(String addedDate);
+    List<FavoriteEntity> getFavoriteByAddedDate(Date addedDate);
 
 }

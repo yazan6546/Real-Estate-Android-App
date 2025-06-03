@@ -44,6 +44,7 @@ dependencies {
     implementation(libs.navigation.fragment)
     implementation(libs.navigation.ui)
     implementation(libs.androidx.activity)
+    implementation(libs.androidx.monitor)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
@@ -76,4 +77,21 @@ dependencies {
 
     // optional - Paging 3 Integration
     implementation(libs.androidx.room.paging)
+
+    // Mockito for unit testing
+    testImplementation(libs.mockito.core)
+    androidTestImplementation(libs.mockito.android)
+
+    // Architecture components testing
+    testImplementation(libs.arch.core.testing)
+
+    // Additional LiveData testing dependencies
+    testImplementation(libs.androidx.lifecycle.runtime)
+    testImplementation(libs.androidx.lifecycle.common)
+
+    // Room testing
+    testImplementation("androidx.test:core:1.5.0")
+    testImplementation("androidx.test.ext:junit:1.1.5")
+    testImplementation("androidx.arch.core:core-testing:2.2.0")
+    testImplementation("org.robolectric:robolectric:4.11.1")
 }
