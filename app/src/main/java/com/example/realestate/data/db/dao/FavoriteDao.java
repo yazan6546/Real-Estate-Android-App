@@ -16,7 +16,7 @@ public interface FavoriteDao {
     void insertFavorite(FavoriteEntity favorite);
 
     @Query("SELECT * FROM favorites WHERE email = :email")
-    FavoriteEntity getFavoriteByEmail(String email);
+    List<FavoriteEntity> getFavoriteByEmail(String email);
 
     @Update
     void updateFavorite(FavoriteEntity favorite);
@@ -26,5 +26,6 @@ public interface FavoriteDao {
 
     @Query("SELECT * FROM favorites WHERE added_date = :addedDate")
     List<FavoriteEntity> getFavoriteByAddedDate(Date addedDate);
+
 
 }

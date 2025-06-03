@@ -2,11 +2,17 @@ package com.example.realestate.data.repository;
 
 import android.util.Log;
 
+import androidx.lifecycle.LiveData;
+
 import com.example.realestate.data.db.dao.UserDao;
 import com.example.realestate.data.db.entity.UserEntity;
+import com.example.realestate.data.db.result.GenderCount;
 import com.example.realestate.domain.mapper.UserMapper;
 import com.example.realestate.domain.model.User;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -59,5 +65,15 @@ public class UserRepository {
 
     public UserEntity getUserByEmailAndPassword(String email, String password) {
         return userDao.getUserByEmailAndPassword(email, password);
+    }
+
+    public Map<String, Integer> getGenderDistribution() {
+        List<GenderCount> counts = userDao.getGenderCounts();
+        Map<String, Integer> genderMap = new HashMap<>();
+
+        for (GenderCount count : counts) {
+            genderMap.put(count.gender, count.count);
+        }
+        return genderMap;
     }
 }

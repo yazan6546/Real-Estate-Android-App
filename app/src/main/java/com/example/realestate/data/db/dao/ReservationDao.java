@@ -6,6 +6,7 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
 import com.example.realestate.data.db.entity.*;
+import com.example.realestate.data.db.result.CountryCount;
 
 import java.util.List;
 
@@ -26,4 +27,16 @@ public interface ReservationDao {
 
     @Query("SELECT * FROM reservations WHERE email = :email")
     List<ReservationEntity> getReservationsByUserId(String email);
+
+    @Query("SELECT COUNT(*) FROM reservations")
+    int getReservationCount();
+
+    // Count the reservations in all customer countries
+    @Query("SELECT country, COUNT(country) FROM reservations r " +
+           "JOIN users u ON r.email = u.email " +
+            "GROUP BY u.country" +
+              " ORDER BY COUNT(*) DESC")
+
+    List<CountryCount> getReservationCountByCountry();
+
 }
