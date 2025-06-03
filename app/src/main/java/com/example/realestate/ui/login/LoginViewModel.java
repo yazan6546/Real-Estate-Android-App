@@ -50,7 +50,6 @@ public class LoginViewModel extends ViewModel {
 
                     UserSession userSession = new UserSession(
                             user.getEmail(),
-                            user.getPassword(),
                             user.getFirstName(),
                             user.getLastName(),
                             user.isAdmin()
