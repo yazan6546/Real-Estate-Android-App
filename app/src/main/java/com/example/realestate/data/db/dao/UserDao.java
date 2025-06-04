@@ -9,12 +9,9 @@ import androidx.room.Update;
 import androidx.room.OnConflictStrategy;
 
 import com.example.realestate.data.db.entity.*;
-import com.example.realestate.data.db.result.CountryCount;
 import com.example.realestate.data.db.result.GenderCount;
-import com.example.realestate.domain.model.User;
 
 import java.util.List;
-import java.util.Map;
 
 @Dao
 public interface UserDao {

@@ -7,6 +7,7 @@ import androidx.room.Room;
 
 import com.example.realestate.data.db.AppDatabase;
 import com.example.realestate.data.db.entity.UserEntity;
+import com.example.realestate.util.LiveDataTestUtil;
 
 import org.junit.After;
 import org.junit.Before;
@@ -137,7 +138,7 @@ public class UserDaoTest {
     }
 
     @Test
-    public void getAllUsers() {
+    public void getAllUsers() throws InterruptedException {
         // Create and insert multiple test users
         userDao.insertUser(createTestUser());
 
@@ -151,7 +152,7 @@ public class UserDaoTest {
         userDao.insertUser(user2);
 
         // Get all users
-        List<UserEntity> allUsers = userDao.getAllUsers().getValue();
+        List<UserEntity> allUsers = LiveDataTestUtil.getValue(userDao.getAllUsers());
 
         // Verify data
         assert allUsers != null;
