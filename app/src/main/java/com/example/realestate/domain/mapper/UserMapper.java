@@ -3,7 +3,6 @@ package com.example.realestate.domain.mapper;
 import com.example.realestate.data.db.entity.UserEntity;
 import com.example.realestate.domain.model.User;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 

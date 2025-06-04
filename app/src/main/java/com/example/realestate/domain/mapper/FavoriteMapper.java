@@ -5,7 +5,6 @@ import com.example.realestate.data.db.entity.PropertyEntity;
 import com.example.realestate.domain.model.Favorite;
 import com.example.realestate.domain.model.Property;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 

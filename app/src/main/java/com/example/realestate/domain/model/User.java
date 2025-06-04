@@ -2,7 +2,7 @@ package com.example.realestate.domain.model;
 
 public class User {
 
-    public static enum Gender {
+    public enum Gender {
         MALE,
         FEMALE
     }
