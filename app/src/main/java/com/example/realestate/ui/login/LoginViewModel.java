@@ -43,7 +43,7 @@ public class LoginViewModel extends ViewModel {
 
         _authState.setValue(AuthState.LOADING);
 
-        userRepository.getUserByEmail(email, new RepositoryCallback<User>() {
+        userRepository.getUserByEmail(email, new RepositoryCallback<>() {
             @Override
             public void onSuccess(User user) {
                 if (user != null && Hashing.verifyPassword(password, user.getPassword())) {

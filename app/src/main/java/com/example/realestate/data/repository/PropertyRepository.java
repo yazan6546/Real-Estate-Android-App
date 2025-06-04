@@ -31,12 +31,4 @@ public interface PropertyRepository {
      * @return LiveData containing the property
      */
     LiveData<PropertyEntity> getPropertyById(int propertyId);
-
-    /**
-     * Callback interface for property operations
-     */
-    interface PropertyOperationCallback {
-        void onSuccess();
-        void onError(Throwable throwable);
-    }
 }
