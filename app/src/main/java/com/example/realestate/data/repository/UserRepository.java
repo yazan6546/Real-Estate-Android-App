@@ -9,6 +9,7 @@ import com.example.realestate.data.db.entity.UserEntity;
 import com.example.realestate.data.db.result.GenderCount;
 import com.example.realestate.domain.mapper.UserMapper;
 import com.example.realestate.domain.model.User;
+import com.example.realestate.domain.service.CallbackUtils;
 
 import java.util.HashMap;
 import java.util.List;
@@ -20,20 +21,16 @@ public class UserRepository {
 
     private final UserDao userDao;
 
-    public interface UserCallback {
-        void onSuccess(User user);
-        void onError(Exception e);
-    }
     public UserRepository(UserDao userDao) {
         this.userDao = userDao;
     }
 
-    public void insertUser(User user, UserCallback callback) {
+    public void insertUser(User user, RepositoryCallback<User> callback) {
 
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
                 userDao.insertUser(UserMapper.toEntity(user));
-                callback.onSuccess(user);
+                callback.onSuccess();
             } catch (Exception e) {
                 Log.e("UserRepository", "Error inserting user", e);
                 callback.onError(e);
@@ -41,8 +38,12 @@ public class UserRepository {
         });
     }
 
+    public void insertUser(User user) {
+        insertUser(user, CallbackUtils.emptyCallback());
+    }
 
-    public void updateUser(User user, UserCallback callback) {
+
+    public void updateUser(User user, RepositoryCallback<User> callback) {
 
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
@@ -65,7 +66,7 @@ public class UserRepository {
         });
     }
 
-    public void getUserByEmail(String email, UserCallback callback) {
+    public void getUserByEmail(String email, RepositoryCallback<User> callback) {
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
                 UserEntity user = userDao.getUserByEmail(email);

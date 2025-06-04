@@ -3,10 +3,9 @@ package com.example.realestate.data.repository;
 import androidx.lifecycle.LiveData;
 
 import com.example.realestate.data.db.entity.PropertyEntity;
+import com.example.realestate.domain.model.Property;
 
 import java.util.List;
-
-import retrofit2.Callback;
 
 /**
  * Repository to handle property data operations, abstracting the origin of the data
@@ -17,7 +16,7 @@ public interface PropertyRepository {
      * Fetch properties from remote source and store them locally
      * @param callback Callback to notify when operation completes
      */
-    void refreshProperties(PropertyOperationCallback callback);
+    void refreshProperties(RepositoryCallback<Property> callback);
 
 
     /**

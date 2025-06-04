@@ -9,6 +9,8 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.realestate.data.db.entity.PropertyEntity;
 import com.example.realestate.data.repository.PropertyRepository;
+import com.example.realestate.data.repository.RepositoryCallback;
+import com.example.realestate.domain.model.Property;
 
 import java.util.List;
 
@@ -28,9 +30,9 @@ public class ConnectApiViewModel extends ViewModel {
     public void connect() {
         _connectionState.setValue(ConnectionState.LOADING);
 
-        propertyRepository.refreshProperties(new PropertyRepository.PropertyOperationCallback() {
+        propertyRepository.refreshProperties(new RepositoryCallback<>() {
             @Override
-            public void onSuccess() {
+            public void onSuccess(Property property) {
                 _connectionState.postValue(ConnectionState.CONNECTED);
             }
 

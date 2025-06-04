@@ -9,6 +9,7 @@ import com.example.realestate.data.db.AppDatabase;
 import com.example.realestate.data.db.entity.UserEntity;
 import com.example.realestate.data.repository.PropertyRepository;
 import com.example.realestate.data.repository.PropertyRepositoryImpl;
+import com.example.realestate.data.repository.RepositoryCallback;
 import com.example.realestate.data.repository.UserRepository;
 import com.example.realestate.domain.mapper.UserMapper;
 import com.example.realestate.domain.model.User;
@@ -55,15 +56,15 @@ public class AppContainer {
         User adminUser = new User("admin@admin.com",
                 Hashing.createPasswordHash("Admin123!"), true);
 
-        userRepository.insertUser(adminUser, new UserRepository.UserCallback() {
+        userRepository.insertUser(adminUser, new RepositoryCallback<User>() {
             @Override
             public void onSuccess(User user) {
                 Toast.makeText(context, "Admin user created successfully", Toast.LENGTH_SHORT).show();
             }
 
             @Override
-            public void onError(Exception e) {
-                Toast.makeText(context, "Error creating admin user: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            public void onError(Throwable t) {
+                Toast.makeText(context, "Error creating admin user: " + t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }

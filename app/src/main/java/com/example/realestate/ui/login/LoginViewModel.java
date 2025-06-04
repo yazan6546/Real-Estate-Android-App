@@ -1,11 +1,14 @@
 package com.example.realestate.ui.login;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.realestate.data.repository.RepositoryCallback;
 import com.example.realestate.data.repository.UserRepository;
 import com.example.realestate.domain.model.User;
 import com.example.realestate.domain.service.Hashing;
@@ -40,7 +43,7 @@ public class LoginViewModel extends ViewModel {
 
         _authState.setValue(AuthState.LOADING);
 
-        userRepository.getUserByEmail(email, new UserRepository.UserCallback() {
+        userRepository.getUserByEmail(email, new RepositoryCallback<User>() {
             @Override
             public void onSuccess(User user) {
                 if (user != null && Hashing.verifyPassword(password, user.getPassword())) {
@@ -72,8 +75,9 @@ public class LoginViewModel extends ViewModel {
             }
 
             @Override
-            public void onError(Exception e) {
-                _errorMessage.postValue("Login failed: " + e.getMessage());
+            public void onError(Throwable t) {
+                Log.e("LoginViewModel", "Login failed", t);
+                _errorMessage.postValue("Login failed: " + t.getMessage());
                 _authState.postValue(AuthState.ERROR);
             }
         });
