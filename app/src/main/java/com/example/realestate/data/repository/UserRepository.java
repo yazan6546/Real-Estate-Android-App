@@ -27,7 +27,7 @@ public class UserRepository {
 
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
-                userDao.insertUser(UserMapper.toEntity(user));
+                userDao.insertUser(UserMapper.fromDomain(user));
                 callback.onSuccess();
             } catch (Exception e) {
                 Log.e("UserRepository", "Error inserting user", e);
@@ -45,7 +45,7 @@ public class UserRepository {
 
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
-                userDao.updateUser(UserMapper.toEntity(user));
+                userDao.updateUser(UserMapper.fromDomain(user));
                 callback.onSuccess();
             } catch (Exception e) {
                 Log.e("UserRepository", "Error updating user", e);
@@ -61,7 +61,7 @@ public class UserRepository {
     public void deleteUser(User user) {
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
-                userDao.deleteUser(UserMapper.toEntity(user));
+                userDao.deleteUser(UserMapper.fromDomain(user));
             } catch (Exception e) {
                 Log.e("UserRepository", "Error deleting user", e);
             }
@@ -69,7 +69,7 @@ public class UserRepository {
     }
 
     public LiveData<List<User>> getAllUsers() {
-        return Transformations.map(userDao.getAllUsers(), UserMapper::fromEntities);
+        return Transformations.map(userDao.getAllUsers(), UserMapper::toDomainList);
     }
 
     public void getUserByEmail(String email, RepositoryCallback<User> callback) {
@@ -77,7 +77,7 @@ public class UserRepository {
             try {
                 UserEntity user = userDao.getUserByEmail(email);
                 if (user != null) {
-                    callback.onSuccess(UserMapper.fromEntity(user));
+                    callback.onSuccess(UserMapper.toDomain(user));
                 } else {
                     callback.onError(new Exception("User not found"));
                 }
