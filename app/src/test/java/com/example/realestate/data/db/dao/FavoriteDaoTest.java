@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Locale;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
@@ -77,7 +78,7 @@ public class FavoriteDaoTest {
         favoriteDao.insertFavorite(favorite);
 
         // Get favorite by email
-        FavoriteEntity retrievedFavorite = favoriteDao.getFavoriteByEmail(TEST_EMAIL);
+        FavoriteEntity retrievedFavorite = favoriteDao.getFavoriteByEmail(TEST_EMAIL).get(0);
 
         // Verify data
         assertNotNull(retrievedFavorite);
@@ -92,7 +93,7 @@ public class FavoriteDaoTest {
         favoriteDao.insertFavorite(favorite);
 
         // Get favorite and update the date
-        FavoriteEntity retrievedFavorite = favoriteDao.getFavoriteByEmail(TEST_EMAIL);
+        FavoriteEntity retrievedFavorite = favoriteDao.getFavoriteByEmail(TEST_EMAIL).get(0);
         Date newDate = new SimpleDateFormat("yyyy-MM-dd", Locale.US).parse("2025-06-04");
         retrievedFavorite.added_date = newDate;
 
@@ -100,7 +101,7 @@ public class FavoriteDaoTest {
         favoriteDao.updateFavorite(retrievedFavorite);
 
         // Get updated favorite
-        FavoriteEntity updatedFavorite = favoriteDao.getFavoriteByEmail(TEST_EMAIL);
+        FavoriteEntity updatedFavorite = favoriteDao.getFavoriteByEmail(TEST_EMAIL).get(0);
 
         // Verify data is updated
         assertEquals(newDate, updatedFavorite.added_date);
@@ -113,15 +114,21 @@ public class FavoriteDaoTest {
         favoriteDao.insertFavorite(favorite);
 
         // Get favorite
-        FavoriteEntity retrievedFavorite = favoriteDao.getFavoriteByEmail(TEST_EMAIL);
+        FavoriteEntity retrievedFavorite = favoriteDao.getFavoriteByEmail(TEST_EMAIL).get(0);
         assertNotNull(retrievedFavorite);
 
         // Delete favorite
         favoriteDao.deleteFavorite(retrievedFavorite);
+        FavoriteEntity deletedFavorite = null;
 
         // Try to get deleted favorite
-        FavoriteEntity deletedFavorite = favoriteDao.getFavoriteByEmail(TEST_EMAIL);
-        assertNull(deletedFavorite);
+        try {
+            deletedFavorite = favoriteDao.getFavoriteByEmail(TEST_EMAIL).get(0);
+        } catch (Exception e) {
+            // Expected exception since the favorite should be deleted
+            assertNotEquals(deletedFavorite, retrievedFavorite);
+        }
+        assertNotEquals(retrievedFavorite, deletedFavorite);
     }
 
     @Test

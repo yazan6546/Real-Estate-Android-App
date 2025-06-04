@@ -1,6 +1,5 @@
 package com.example.realestate.ui.login;
 
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
@@ -11,12 +10,12 @@ import com.example.realestate.data.repository.UserRepository;
 import com.example.realestate.domain.model.User;
 import com.example.realestate.domain.service.Hashing;
 import com.example.realestate.domain.service.SharedPrefManager;
+import com.example.realestate.util.LogUtils;
 
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -40,8 +39,13 @@ public class LoginViewModelTest {
 
     private LoginViewModel viewModel;
 
+    private MockedStatic logMock;
+
     @Before
     public void setUp() {
+        // Mock Android Log class
+        logMock = LogUtils.mockLog();
+
         // Create the mocks explicitly with the correct type information
         authStateObserver = mock(Observer.class);
         errorMessageObserver = mock(Observer.class);
@@ -49,6 +53,14 @@ public class LoginViewModelTest {
         viewModel = new LoginViewModel(userRepository, sharedPrefManager);
         viewModel.authState.observeForever(authStateObserver);
         viewModel.errorMessage.observeForever(errorMessageObserver);
+    }
+
+    @org.junit.After
+    public void tearDown() {
+        // Close the mocked static instance to prevent memory leaks
+        if (logMock != null) {
+            logMock.close();
+        }
     }
 
     @Test
