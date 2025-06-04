@@ -1,7 +1,6 @@
 package com.example.realestate.ui.login;
 
-import android.content.SharedPreferences;
-
+import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -90,11 +89,11 @@ public class LoginViewModel extends ViewModel {
             this.sharedPrefManager = sharedPrefManager;
         }
 
+        @NonNull
         @Override
         @SuppressWarnings("unchecked")
         public <T extends ViewModel> T create(Class<T> modelClass) {
             if (modelClass.isAssignableFrom(LoginViewModel.class)) {
-                boolean isRememberMeChecked = false;
                 return (T) new LoginViewModel(userRepository, sharedPrefManager);
             }
             throw new IllegalArgumentException("Unknown ViewModel class");

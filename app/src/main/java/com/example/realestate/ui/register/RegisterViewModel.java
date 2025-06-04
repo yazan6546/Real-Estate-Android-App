@@ -125,7 +125,7 @@ public class RegisterViewModel extends ViewModel {
 
             // We'll use UserMapper to convert our User object to UserEntity
             // The mapper should handle converting the gender
-            userRepository.insertUser(UserMapper.toEntity(newUser));
+            userRepository.insertUser(newUser);
 
             // Registration successful
             _registerState.postValue(RegisterState.SUCCESS);

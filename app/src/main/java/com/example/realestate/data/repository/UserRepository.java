@@ -18,7 +18,7 @@ import java.util.concurrent.Executors;
 
 public class UserRepository {
 
-    UserDao userDao;
+    private final UserDao userDao;
 
     public interface UserCallback {
         void onSuccess(User user);
@@ -28,24 +28,41 @@ public class UserRepository {
         this.userDao = userDao;
     }
 
-    public void insertUser(UserEntity user) {
+    public void insertUser(User user, UserCallback callback) {
 
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
-                userDao.insertUser(user);
+                userDao.insertUser(UserMapper.toEntity(user));
+                callback.onSuccess(user);
             } catch (Exception e) {
                 Log.e("UserRepository", "Error inserting user", e);
+                callback.onError(e);
             }
         });
     }
 
 
-    public void updateUser(UserEntity user) {
-        userDao.updateUser(user);
+    public void updateUser(User user, UserCallback callback) {
+
+        Executors.newSingleThreadExecutor().execute(() -> {
+            try {
+                userDao.updateUser(UserMapper.toEntity(user));
+                callback.onSuccess(user);
+            } catch (Exception e) {
+                Log.e("UserRepository", "Error updating user", e);
+                callback.onError(e);
+            }
+        });
     }
 
-    public void deleteUser(UserEntity user) {
-        userDao.deleteUser(user);
+    public void deleteUser(User user) {
+        Executors.newSingleThreadExecutor().execute(() -> {
+            try {
+                userDao.deleteUser(UserMapper.toEntity(user));
+            } catch (Exception e) {
+                Log.e("UserRepository", "Error deleting user", e);
+            }
+        });
     }
 
     public void getUserByEmail(String email, UserCallback callback) {
@@ -61,10 +78,6 @@ public class UserRepository {
                 callback.onError(e);
             }
         });
-    }
-
-    public UserEntity getUserByEmailAndPassword(String email, String password) {
-        return userDao.getUserByEmailAndPassword(email, password);
     }
 
     public Map<String, Integer> getGenderDistribution() {
