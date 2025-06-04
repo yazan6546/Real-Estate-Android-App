@@ -3,6 +3,7 @@ package com.example.realestate.data.repository;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Transformations;
 
 import com.example.realestate.data.db.dao.UserDao;
 import com.example.realestate.data.db.entity.UserEntity;
@@ -11,10 +12,7 @@ import com.example.realestate.domain.mapper.UserMapper;
 import com.example.realestate.domain.model.User;
 import com.example.realestate.domain.service.CallbackUtils;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 public class UserRepository {
@@ -48,12 +46,16 @@ public class UserRepository {
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
                 userDao.updateUser(UserMapper.toEntity(user));
-                callback.onSuccess(user);
+                callback.onSuccess();
             } catch (Exception e) {
                 Log.e("UserRepository", "Error updating user", e);
                 callback.onError(e);
             }
         });
+    }
+
+    public void updateUser(User user) {
+        updateUser(user, CallbackUtils.emptyCallback());
     }
 
     public void deleteUser(User user) {
@@ -64,6 +66,10 @@ public class UserRepository {
                 Log.e("UserRepository", "Error deleting user", e);
             }
         });
+    }
+
+    public LiveData<List<User>> getAllUsers() {
+        return Transformations.map(userDao.getAllUsers(), UserMapper::fromEntities);
     }
 
     public void getUserByEmail(String email, RepositoryCallback<User> callback) {
@@ -81,13 +87,7 @@ public class UserRepository {
         });
     }
 
-    public Map<String, Integer> getGenderDistribution() {
-        List<GenderCount> counts = userDao.getGenderCounts();
-        Map<String, Integer> genderMap = new HashMap<>();
-
-        for (GenderCount count : counts) {
-            genderMap.put(count.gender, count.count);
-        }
-        return genderMap;
+    public LiveData<GenderCount> getGenderDistribution() {
+        return userDao.getGenderCounts();
     }
 }

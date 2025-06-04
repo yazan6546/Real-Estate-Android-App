@@ -16,7 +16,6 @@ import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
-import java.io.IOException;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -48,7 +47,7 @@ public class UserDaoTest {
     }
 
     @After
-    public void closeDb() throws IOException {
+    public void closeDb() {
         database.close();
     }
 
@@ -152,9 +151,10 @@ public class UserDaoTest {
         userDao.insertUser(user2);
 
         // Get all users
-        List<UserEntity> allUsers = userDao.getAllUsers();
+        List<UserEntity> allUsers = userDao.getAllUsers().getValue();
 
         // Verify data
+        assert allUsers != null;
         assertEquals(2, allUsers.size());
     }
 

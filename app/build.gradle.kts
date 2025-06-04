@@ -90,8 +90,8 @@ dependencies {
     testImplementation(libs.androidx.lifecycle.common)
 
     // Room testing
-    testImplementation("androidx.test:core:1.5.0")
-    testImplementation("androidx.test.ext:junit:1.1.5")
-    testImplementation("androidx.arch.core:core-testing:2.2.0")
-    testImplementation("org.robolectric:robolectric:4.11.1")
+    testImplementation(libs.androidx.core)
+    testImplementation(libs.androidx.junit.v115)
+    testImplementation(libs.arch.core.testing)
+    testImplementation(libs.robolectric)
 }

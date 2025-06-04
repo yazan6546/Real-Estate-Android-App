@@ -3,6 +3,9 @@ package com.example.realestate.domain.mapper;
 import com.example.realestate.data.db.entity.UserEntity;
 import com.example.realestate.domain.model.User;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class UserMapper {
     public static UserEntity toEntity(User user) {
         UserEntity entity = new UserEntity();
@@ -22,6 +25,12 @@ public class UserMapper {
         entity.setCountry(user.getCountry());
         entity.setCity(user.getCity());
         return entity;
+    }
+
+    public static List<User> fromEntities(List<UserEntity> users) {
+        return users.stream()
+                .map(UserMapper::fromEntity)
+                .collect(Collectors.toList());
     }
 
     public static User fromEntity(UserEntity entity) {
