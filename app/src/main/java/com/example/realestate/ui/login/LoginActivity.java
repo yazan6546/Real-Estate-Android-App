@@ -88,7 +88,9 @@ public class LoginActivity extends AppCompatActivity {
                     View.VISIBLE : View.GONE);
 
             if (state == LoginViewModel.AuthState.SUCCESS) {
-                navigateToMainActivity();
+
+                boolean isAdmin = viewModel.userSession.isAdmin();
+                navigateToMainActivity(isAdmin);
             } else if (state == LoginViewModel.AuthState.ERROR) {
                 showErrorMessage(viewModel.errorMessage.getValue());
             }
