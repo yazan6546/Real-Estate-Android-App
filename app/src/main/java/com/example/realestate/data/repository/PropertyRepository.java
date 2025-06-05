@@ -31,4 +31,12 @@ public interface PropertyRepository {
      * @return LiveData containing the property
      */
     LiveData<Property> getPropertyById(int propertyId);
+
+
+    /**
+     * Get the number of properties
+     * @return number of properties as a livedata integer
+     */
+
+    LiveData<Integer> getPropertyCount();
 }
