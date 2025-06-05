@@ -2,7 +2,6 @@ package com.example.realestate.data.repository;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Transformations;
 
 import com.example.realestate.data.api.ApiService;
 import com.example.realestate.data.api.JsonResponse;
@@ -66,7 +65,7 @@ public class PropertyRepositoryImpl implements PropertyRepository {
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
                 propertyDao.insertAll(properties);
-                callback.onSuccess();
+                callback.onSuccess(null);
             } catch (Exception e) {
                 callback.onError(e);
             }
@@ -74,12 +73,12 @@ public class PropertyRepositoryImpl implements PropertyRepository {
     }
 
     @Override
-    public LiveData<List<Property>> getAllProperties() {
-        return Transformations.map(propertyDao.getAllProperties(), PropertyMapper::toDomainList);
+    public LiveData<List<PropertyEntity>> getAllProperties() {
+        return propertyDao.getAllProperties();
     }
 
     @Override
-    public LiveData<Property> getPropertyById(int propertyId) {
-        return Transformations.map(propertyDao.getPropertyById(propertyId), PropertyMapper::toDomain);
+    public LiveData<PropertyEntity> getPropertyById(int propertyId) {
+        return propertyDao.getPropertyById(propertyId);
     }
 }

@@ -4,9 +4,6 @@ import com.example.realestate.data.api.dto.PropertyDTO;
 import com.example.realestate.data.db.entity.PropertyEntity;
 import com.example.realestate.domain.model.Property;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 public class PropertyMapper {
     public static PropertyEntity toEntity(PropertyDTO dto) {
         PropertyEntity entity = new PropertyEntity();
@@ -56,14 +53,6 @@ public class PropertyMapper {
         property.setBathrooms(entity.bathrooms);
         property.setArea(entity.area);
         return property;
-    }
-
-    public static List<Property> toDomainList(List<PropertyEntity> entities) {
-        if (entities == null) return null;
-
-        return entities.stream()
-                .map(PropertyMapper::toDomain)
-                .collect(Collectors.toList());
     }
 
     public static PropertyEntity fromDomain(Property property) {

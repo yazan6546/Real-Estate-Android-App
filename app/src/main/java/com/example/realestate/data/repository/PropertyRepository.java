@@ -23,12 +23,12 @@ public interface PropertyRepository {
      * Get all properties from local database
      * @return LiveData list of properties
      */
-    LiveData<List<Property>> getAllProperties();
+    LiveData<List<PropertyEntity>> getAllProperties();
 
     /**
      * Get a property by ID from local database
      * @param propertyId the ID of the property
      * @return LiveData containing the property
      */
-    LiveData<Property> getPropertyById(int propertyId);
+    LiveData<PropertyEntity> getPropertyById(int propertyId);
 }
