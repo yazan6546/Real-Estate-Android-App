@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/bg_gradient_light"
     android:fillViewport="true"
-    tools:context=".ui.contactus.ContactUsFragment">
+    tools:context=".ui.user.contactus.ContactUsFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -19,7 +19,7 @@
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_marginTop="32dp"
-            android:contentDescription="TODO"
+            android:contentDescription="@string/todo"
             android:src="@drawable/ic_menu_gallery"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:fontFamily="sans-serif-medium"
-            android:text="Get In Touch"
+            android:text="@string/get_in_touch"
             android:textAlignment="center"
             android:textColor="@color/text_primary"
             android:textSize="32sp"

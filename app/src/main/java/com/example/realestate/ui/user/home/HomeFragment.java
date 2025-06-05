@@ -1,4 +1,4 @@
-package com.example.realestate.ui.home;
+package com.example.realestate.ui.user.home;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

@@ -1,4 +1,4 @@
-package com.example.realestate.ui.contactus;
+package com.example.realestate.ui.user.contactus;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -13,7 +13,6 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.realestate.R;
 import com.example.realestate.databinding.FragmentContactUsBinding;
 
 public class ContactUsFragment extends Fragment {

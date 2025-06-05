@@ -1,4 +1,4 @@
-package com.example.realestate.ui.contactus;
+package com.example.realestate.ui.user.contactus;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
