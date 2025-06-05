@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/nav_home"
-        android:name="com.example.realestate.ui.home.HomeFragment"
+        android:name="com.example.realestate.ui.user.home.HomeFragment"
         android:label="@string/menu_home"
         tools:layout="@layout/fragment_home" />
 <!--    <fragment-->
@@ -36,7 +36,7 @@
 
     <fragment
         android:id="@+id/nav_contact_us"
-        android:name="com.example.realestate.ui.contactus.ContactUsFragment"
+        android:name="com.example.realestate.ui.user.contactus.ContactUsFragment"
         android:label="@string/menu_contact_us"
         tools:layout="@layout/fragment_contact_us" />
 

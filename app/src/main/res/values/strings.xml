@@ -36,5 +36,7 @@
     <string name="register_button">Create Account</string>
     <string name="login_failed">Invalid email or password</string>
     <string name="login_success">Login successful</string>
+    <string name="todo">TODO</string>
+    <string name="get_in_touch">Get In Touch</string>
 </resources>
 
