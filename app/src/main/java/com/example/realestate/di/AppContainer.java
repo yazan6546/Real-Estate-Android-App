@@ -1,25 +1,14 @@
 package com.example.realestate.di;
 
 import android.content.Context;
-import android.widget.Toast;
 
 import com.example.realestate.data.api.ApiClient;
 import com.example.realestate.data.api.ApiService;
 import com.example.realestate.data.db.AppDatabase;
-import com.example.realestate.data.db.entity.UserEntity;
 import com.example.realestate.data.repository.PropertyRepository;
 import com.example.realestate.data.repository.PropertyRepositoryImpl;
-import com.example.realestate.data.repository.RepositoryCallback;
 import com.example.realestate.data.repository.UserRepository;
-import com.example.realestate.domain.mapper.UserMapper;
 import com.example.realestate.domain.model.User;
-import com.example.realestate.domain.service.Hashing;
-import com.example.realestate.domain.service.SharedPrefManager;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 /**
  * Container of objects shared across the whole app
