@@ -5,8 +5,10 @@ import android.content.Context;
 import com.example.realestate.data.api.ApiClient;
 import com.example.realestate.data.api.ApiService;
 import com.example.realestate.data.db.AppDatabase;
+import com.example.realestate.data.repository.FavoriteRepository;
 import com.example.realestate.data.repository.PropertyRepository;
 import com.example.realestate.data.repository.PropertyRepositoryImpl;
+import com.example.realestate.data.repository.ReservationRepository;
 import com.example.realestate.data.repository.UserRepository;
 import com.example.realestate.domain.model.User;
 
@@ -27,6 +29,10 @@ public class AppContainer {
 
     private final UserRepository userRepository;
 
+    private final FavoriteRepository favoriteRepository;
+
+    private final ReservationRepository reservationRepository;
+
 
 
     public AppContainer(Context context) {
@@ -40,6 +46,11 @@ public class AppContainer {
         propertyRepository = new PropertyRepositoryImpl(apiService, database.propertyDao());
 
         userRepository = new UserRepository(database.userDao());
+
+        favoriteRepository = new FavoriteRepository(database.favoriteDao());
+
+        reservationRepository = new ReservationRepository(database.reservationDao());
+
 
         // Hardcoded admin user for initial setup
         User adminUser = new User("admin@admin.com", "Admin123!", true);
@@ -62,5 +73,13 @@ public class AppContainer {
 
     public UserRepository getUserRepository() {
         return userRepository;
+    }
+
+    public FavoriteRepository getFavoriteRepository() {
+        return favoriteRepository;
+    }
+
+    public ReservationRepository getReservationRepository() {
+        return reservationRepository;
     }
 }
