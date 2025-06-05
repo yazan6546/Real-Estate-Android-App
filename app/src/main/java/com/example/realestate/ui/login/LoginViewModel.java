@@ -58,13 +58,14 @@ public class LoginViewModel extends ViewModel {
                     );
 
                     if (isRememberMeChecked) {
+                        // Log in the user without password next time
                         userSession.setRememberMe(true);
                         // Save user credentials to SharedPreferences
                         sharedPrefManager.writeObject("user_session", userSession);
 
                     } else {
                         // Clear saved credentials if "Remember Me" is not checked
-                        sharedPrefManager.clear();
+                        sharedPrefManager.writeObject("user_session", userSession);
                     }
                     // Save logged in user to session or preferences here
                 } else {
