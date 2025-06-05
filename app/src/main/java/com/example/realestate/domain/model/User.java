@@ -54,6 +54,12 @@ public class User {
         setEmail(email);
         setPassword(password);
         setAdmin(admin);
+        setGender(Gender.MALE);
+        setPhone("0594049488");
+        setFirstName("Default");
+        setLastName("User");
+        setCountry("PS");
+        setCity("Tulkarem");
     }
 
     public String getFirstName() {

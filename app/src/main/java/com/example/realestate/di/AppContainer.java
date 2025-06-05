@@ -53,20 +53,9 @@ public class AppContainer {
         userRepository = new UserRepository(database.userDao());
 
         // Hardcoded admin user for initial setup
-        User adminUser = new User("admin@admin.com",
-                Hashing.createPasswordHash("Admin123!"), true);
+        User adminUser = new User("admin@admin.com", "Admin123!", true);
 
-        userRepository.insertUser(adminUser, new RepositoryCallback<User>() {
-            @Override
-            public void onSuccess(User user) {
-                Toast.makeText(context, "Admin user created successfully", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onError(Throwable t) {
-                Toast.makeText(context, "Error creating admin user: " + t.getMessage(), Toast.LENGTH_LONG).show();
-            }
-        });
+        userRepository.insertUser(adminUser);
     }
 
     // Getters for dependencies
