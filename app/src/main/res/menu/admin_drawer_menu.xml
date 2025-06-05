@@ -13,14 +13,6 @@
             android:icon="@android:drawable/ic_menu_my_calendar"
             android:title="View All Reservations" />
         <item
-            android:id="@+id/nav_manage_properties"
-            android:icon="@android:drawable/ic_menu_gallery"
-            android:title="Manage Properties" />
-        <item
-            android:id="@+id/nav_special_offers"
-            android:icon="@android:drawable/ic_menu_mylocation"
-            android:title="Special Offers" />
-        <item
             android:id="@+id/nav_delete_customers"
             android:icon="@android:drawable/ic_menu_delete"
             android:title="Delete Customers" />
@@ -28,6 +20,10 @@
             android:id="@+id/nav_add_new_admin"
             android:icon="@android:drawable/ic_menu_add"
             android:title="Add New Admin" />
+        <item
+            android:id="@+id/nav_special_offers"
+            android:icon="@android:drawable/ic_menu_mylocation"
+            android:title="Special Offers" />
     </group>
 
     <item android:title="Account">

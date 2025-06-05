@@ -191,7 +191,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Top Countries by Reservations"
+                    android:text="Most Reserving Countries"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
