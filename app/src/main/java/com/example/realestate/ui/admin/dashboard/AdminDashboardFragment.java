@@ -1,5 +1,6 @@
 package com.example.realestate.ui.admin.dashboard;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.realestate.R;
 import com.example.realestate.RealEstate;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class AdminDashboardFragment extends Fragment {
 
@@ -71,6 +75,7 @@ public class AdminDashboardFragment extends Fragment {
         viewModel.getTopCountries().observe(getViewLifecycleOwner(), adapter::setCountries);
     }
 
+    @SuppressLint("SetTextI18n")
     private void observeViewModelData() {
         // Observe user count
         viewModel.getUserCount().observe(getViewLifecycleOwner(), count ->

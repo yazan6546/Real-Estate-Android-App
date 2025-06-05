@@ -47,4 +47,5 @@ public interface UserDao {
              "SUM(CASE WHEN gender = 'FEMALE' THEN 1 ELSE 0 END) as female_count " +
              "FROM users WHERE is_admin=0")
      LiveData<GenderCount> getGenderCounts();
+
 }

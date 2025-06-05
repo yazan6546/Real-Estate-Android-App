@@ -93,4 +93,8 @@ public class UserRepository {
     public LiveData<GenderCount> getGenderDistribution() {
         return userDao.getGenderCounts();
     }
+    c
+    public LiveData<Integer> getUserCount() {
+        return userDao.getUserCount();
+    }
 }

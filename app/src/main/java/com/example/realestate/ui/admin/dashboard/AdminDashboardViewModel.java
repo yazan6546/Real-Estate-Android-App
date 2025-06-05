@@ -34,26 +34,24 @@ public class AdminDashboardViewModel extends ViewModel {
     public AdminDashboardViewModel(UserRepository userRepository,
                                   ReservationRepository reservationRepository,
                                   PropertyRepository propertyRepository) {
+
         this.userRepository = userRepository;
         this.reservationRepository = reservationRepository;
         this.propertyRepository = propertyRepository;
 
         // Transform repository data into view model representation
 
-        // Count of users from user repository
-        MutableLiveData<Integer> userCountData = new MutableLiveData<>(0);
-        userRepository.getAllUsers().observeForever(users ->
-                userCountData.setValue(users != null ? users.size() : 0));
-        this.userCount = userCountData;
+        // Count of users from user repository - use Transformations.map instead of observeForever
+        this.userCount = userRepository.getUserCount();
 
         // Reservation count directly from reservation repository
         this.reservationCount = reservationRepository.getReservationCount();
 
-        // Count of properties from property repository
-        MutableLiveData<Integer> propertyCountData = new MutableLiveData<>(0);
-        propertyRepository.getAllProperties().observeForever(properties ->
-                propertyCountData.setValue(properties != null ? properties.size() : 0));
-        this.propertyCount = propertyCountData;
+        // Count of properties from property repository - use Transformations.map instead of observeForever
+        this.propertyCount = Transformations.map(
+            propertyRepository.getAllProperties(),
+            properties -> properties != null ? properties.size() : 0
+        );
 
         // Transform gender count into percentage distribution
         this.genderDistribution = Transformations.map(
