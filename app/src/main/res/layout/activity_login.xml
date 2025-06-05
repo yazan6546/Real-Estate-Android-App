@@ -13,7 +13,7 @@
         android:layout_height="100dp"
         android:layout_marginTop="48dp"
         android:contentDescription="@string/app_name"
-        android:src="@drawable/ic_connection"
+        android:src="@drawable/ic_real_estate"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

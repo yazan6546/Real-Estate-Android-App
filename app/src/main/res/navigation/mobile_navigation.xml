@@ -36,7 +36,7 @@
 
     <fragment
         android:id="@+id/nav_contact_us"
-        android:name="com.example.realestate.ui.user.home.contactus.ContactUsFragment"
+        android:name="com.example.realestate.ui.user.contactus.ContactUsFragment"
         android:label="@string/menu_contact_us"
         tools:layout="@layout/fragment_contact_us" />
 
