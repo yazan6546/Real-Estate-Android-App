@@ -5,8 +5,10 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import com.example.realestate.domain.service.SharedPrefManager;
+import com.example.realestate.domain.service.UserSession;
 import com.example.realestate.ui.login.LoginActivity;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
@@ -50,12 +52,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 R.id.nav_featured_properties, R.id.nav_profile_management, R.id.nav_contact_us)
                 .setOpenableLayout(drawer)
                 .build();
-
         navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
-
+        
         // Set up manual navigation item selection listener
         navigationView.setNavigationItemSelectedListener(this);
+
+        // Update navigation header with user information
+        updateNavigationHeader(navigationView);
     }
 
     @Override
@@ -81,14 +85,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         // Show a logout message
         Snackbar.make(findViewById(R.id.nav_host_fragment_content_main),
-                "Successfully logged out", Snackbar.LENGTH_SHORT).show();
-
-        // Navigate to login screen
+                "Successfully logged out", Snackbar.LENGTH_SHORT).show();        // Navigate to login screen
         Intent intent = new Intent(this, LoginActivity.class);
         // Clear back stack so user can't go back to the app after logout
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
+    }
+
+    private void updateNavigationHeader(NavigationView navigationView) {
+        // Get the header view
+        View headerView = navigationView.getHeaderView(0);
+        
+        // Find the TextViews in the header
+        TextView usernameTextView = headerView.findViewById(R.id.nav_header_username);
+        TextView emailTextView = headerView.findViewById(R.id.nav_header_email);
+        
+        // Get user session from SharedPreferences
+        SharedPrefManager sharedPrefManager = SharedPrefManager.getInstance(this);
+        UserSession userSession = sharedPrefManager.readObject("user_session", UserSession.class, null);
+        
+        // Update with actual user data
+        String fullName = userSession.getFirstName() + " " + userSession.getLastName();
+        usernameTextView.setText(fullName);
+        emailTextView.setText(userSession.getEmail());
     }
 
     @Override
