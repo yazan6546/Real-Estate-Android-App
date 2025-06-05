@@ -39,7 +39,7 @@ public class UserRepository {
 
     public void insertUser(User user) {
 
-        user.setPasswordWithHash(Hashing.createPasswordHash(user.getPassword()));
+        user.hashAndSetPassword();
         insertUser(user, CallbackUtils.emptyCallback());
     }
 

@@ -108,12 +108,11 @@ public class User {
     }
 
     /**
-     * Validates, hashes, and sets the password
-     * @param plainPassword The plain text password to validate and hash
+     * hashes, and sets the password
      */
-    public void setPasswordWithHash(String plainPassword) {
+    public void hashAndSetPassword() {
         // Then hash it and store
-        this.password = Hashing.createPasswordHash(plainPassword);
+        this.password = Hashing.createPasswordHash(password);
     }
 
     public String getPhone() {
