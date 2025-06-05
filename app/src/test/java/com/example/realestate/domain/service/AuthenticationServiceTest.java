@@ -192,7 +192,7 @@ public class AuthenticationServiceTest {
     @Test
     public void validatePhone_validPhone_returnsTrue() {
         // Arrange
-        String validPhone = "1234567890";
+        String validPhone = "234567890";
 
         // Act
         boolean result = AuthenticationService.validatePhone(validPhone);
@@ -204,7 +204,7 @@ public class AuthenticationServiceTest {
     @Test
     public void validatePhone_tooShort_returnsFalse() {
         // Arrange
-        String shortPhone = "123456789";
+        String shortPhone = "23456789";
 
         // Act
         boolean result = AuthenticationService.validatePhone(shortPhone);
@@ -216,7 +216,7 @@ public class AuthenticationServiceTest {
     @Test
     public void validatePhone_tooLong_returnsFalse() {
         // Arrange
-        String longPhone = "12345678901";
+        String longPhone = "2345678901";
 
         // Act
         boolean result = AuthenticationService.validatePhone(longPhone);
@@ -228,7 +228,7 @@ public class AuthenticationServiceTest {
     @Test
     public void validatePhone_containsLetters_returnsFalse() {
         // Arrange
-        String invalidPhone = "123456789a";
+        String invalidPhone = "23456789a";
 
         // Act
         boolean result = AuthenticationService.validatePhone(invalidPhone);

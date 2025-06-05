@@ -55,7 +55,7 @@ public class User {
         setPassword(password);
         setAdmin(admin);
         setGender(Gender.MALE);
-        setPhone("0594049488");
+        setPhone("594049488");
         setFirstName("Default");
         setLastName("User");
         setCountry("PS");
@@ -121,7 +121,7 @@ public class User {
 
     public void setPhone(String phone) {
         if (!AuthenticationService.validatePhone(phone))
-            throw new ValidationException("Phone number must be 10 digits long.");
+            throw new ValidationException("Phone number must be 9 digits long (without the leading 0)");
 
         this.phone = phone;
     }

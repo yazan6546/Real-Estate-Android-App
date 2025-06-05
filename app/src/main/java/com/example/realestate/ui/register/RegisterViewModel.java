@@ -103,7 +103,7 @@ public class RegisterViewModel extends ViewModel {
         // Check if email exists
         userRepository.getUserByEmail(email, new RepositoryCallback<>() {
             @Override
-            public void onSuccess() {
+            public void onSuccess(User existingUser) {
                 // User already exists
                 _errorMessage.postValue("Email is already registered");
                 _registerState.postValue(RegisterState.ERROR);
