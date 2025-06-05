@@ -48,10 +48,7 @@ public class AdminDashboardViewModel extends ViewModel {
         this.reservationCount = reservationRepository.getReservationCount();
 
         // Count of properties from property repository - use Transformations.map instead of observeForever
-        this.propertyCount = Transformations.map(
-            propertyRepository.getAllProperties(),
-            properties -> properties != null ? properties.size() : 0
-        );
+        this.propertyCount = propertyRepository.getPropertyCount();
 
         // Transform gender count into percentage distribution
         this.genderDistribution = Transformations.map(
