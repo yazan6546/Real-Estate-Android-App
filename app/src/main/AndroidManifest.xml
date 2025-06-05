@@ -19,9 +19,9 @@
             android:name=".ui.register.RegisterActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.user.MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.RealEstate.NoActionBar"></activity>
+            android:theme="@style/Theme.RealEstate.NoActionBar" />
         <activity
             android:name=".ui.connection.ConnectApiActivity"
             android:exported="true">
