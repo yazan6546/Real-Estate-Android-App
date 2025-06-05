@@ -143,7 +143,7 @@ public class LoginViewModelTest {
         boolean isRememberMe = true;
 
         // Create a user with the hashed password, not the plain password
-        User user = new User("John", "Doe", email, hashedPassword, "1234567890", "USA",
+        User user = new User("John", "Doe", email, hashedPassword, "234567890", "USA",
                 "Los Angeles", User.Gender.MALE, false);
 
         // Mock the static Hashing class
@@ -178,7 +178,7 @@ public class LoginViewModelTest {
         String password = "wrongPassword";
         String hashedPassword = "hashedPassword@123";
 
-        User user = new User("John", "Doe", email, hashedPassword, "1234567890", "USA",
+        User user = new User("John", "Doe", email, hashedPassword, "234567890", "USA",
                 "Los Angeles", User.Gender.MALE, false);
 
         // Mock the static Hashing class
