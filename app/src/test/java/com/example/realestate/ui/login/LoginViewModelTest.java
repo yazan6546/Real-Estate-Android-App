@@ -131,12 +131,12 @@ public class LoginViewModelTest {
     public void login_validCredentialsWithCorrectPassword_returnsSuccess() {
         // Arrange
         String email = "test@example.com";
-        String password = "password123";
-        String hashedPassword = "hashedPassword";
+        String password = "password123@A";
+        String hashedPassword = "hashedPassword12!A";
         boolean isRememberMe = true;
 
-        User user = new User("John", "Doe", email, hashedPassword, "1234567890", "USA",
-                "Los Angeles", false);
+        User user = new User("John", "Doe", email, password, "1234567890", "USA",
+                "Los Angeles", "Male", false);
         // Mock the static Hashing class
         try (MockedStatic<Hashing> hashingMockedStatic = mockStatic(Hashing.class)) {
             hashingMockedStatic.when(() -> Hashing.verifyPassword(password, hashedPassword)).thenReturn(true);
@@ -163,10 +163,10 @@ public class LoginViewModelTest {
         // Arrange
         String email = "test@example.com";
         String password = "wrongPassword";
-        String hashedPassword = "hashedPassword";
+        String hashedPassword = "hashedPassword@1A";
 
         User user = new User("John", "Doe", email, hashedPassword, "1234567890", "USA",
-                "Los Angeles", false);
+                "Los Angeles", "Male", false);
         // Mock the static Hashing class
         try (MockedStatic<Hashing> hashingMockedStatic = mockStatic(Hashing.class)) {
             hashingMockedStatic.when(() -> Hashing.verifyPassword(password, hashedPassword)).thenReturn(false);
@@ -197,7 +197,7 @@ public class LoginViewModelTest {
         boolean isRememberMe = false;
 
         User user = new User("John", "Doe", email, hashedPassword, "1234567890", "USA",
-                "Los Angeles", false);
+                "Los Angeles", "Male", false);
 
         // Mock the static Hashing class
         try (MockedStatic<Hashing> hashingMockedStatic = mockStatic(Hashing.class)) {
