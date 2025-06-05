@@ -80,7 +80,7 @@ public class UserRepository {
             try {
                 UserEntity user = userDao.getUserByEmail(email);
                 if (user != null) {
-                    callback.onSuccess();
+                    callback.onSuccess(UserMapper.toDomain(user));
                 } else {
                     callback.onError(new Exception("User not found"));
                 }

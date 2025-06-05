@@ -16,7 +16,7 @@ public class AuthenticationService {
     }
 
     public static boolean validatePhone(String phone) {
-        return phone != null && phone.matches("[0-9]{9}");
+        return phone != null && phone.matches("[0-9]{10}");
     }
 
     public static boolean validateName(String name) {
