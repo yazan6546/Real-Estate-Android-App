@@ -1,13 +1,16 @@
 package com.example.realestate.data.db.dao;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.Transaction;
 import androidx.room.Update;
 import com.example.realestate.data.db.entity.*;
 import com.example.realestate.data.db.result.CountryCount;
 
+import java.util.Date;
 import java.util.List;
 
 @Dao
@@ -17,7 +20,7 @@ public interface ReservationDao {
     void insertReservation(ReservationEntity reservation);
 
     @Query("SELECT * FROM reservations WHERE reservation_id = :reservationId")
-    ReservationEntity getReservationById(int reservationId);
+    LiveData<ReservationEntity> getReservationById(int reservationId);
 
     @Update
     void updateReservation(ReservationEntity reservation);
@@ -26,18 +29,25 @@ public interface ReservationDao {
     void deleteReservation(ReservationEntity reservation);
 
     @Query("SELECT * FROM reservations WHERE email = :email")
-    List<ReservationEntity> getReservationsByUserId(String email);
+    LiveData<List<ReservationEntity>> getReservationsByUserId(String email);
 
     @Query("SELECT COUNT(*) FROM reservations")
-    int getReservationCount();
+    LiveData<Integer> getReservationCount();
+
+    @Query("SELECT * FROM reservations WHERE property_id = :propertyId")
+    LiveData<List<ReservationEntity>> getReservationsByPropertyId(int propertyId);
+
+    @Query("SELECT * FROM reservations WHERE status = :status")
+    LiveData<List<ReservationEntity>> getReservationsByStatus(String status);
+
+    @Query("SELECT * FROM reservations WHERE start_date >= :startDate AND end_date <= :endDate")
+    LiveData<List<ReservationEntity>> getReservationsByDateRange(Date startDate, Date endDate);
 
     // Count the reservations in all customer countries
     @Query("SELECT country, COUNT(country) as count" +
             " FROM reservations r " +
-           "JOIN users u ON r.email = u.email " +
+           " JOIN users u ON r.email = u.email " +
             "GROUP BY u.country" +
-              " ORDER BY COUNT(*) DESC")
-
-    List<CountryCount> getReservationCountByCountry();
-
+            " ORDER BY COUNT(*) DESC")
+    LiveData<List<CountryCount>> getReservationCountByCountry();
 }

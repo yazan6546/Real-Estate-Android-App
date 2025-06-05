@@ -5,6 +5,9 @@ import com.example.realestate.data.db.entity.PropertyEntity;
 import com.example.realestate.domain.model.Reservation;
 import com.example.realestate.domain.model.Property;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class ReservationMapper {
 
     public static Reservation toDomain(ReservationEntity entity) {
@@ -29,6 +32,14 @@ public class ReservationMapper {
             reservation.setProperty(property);
         }
         return reservation;
+    }
+    
+    public static List<Reservation> toDomainList(List<ReservationEntity> entities) {
+        if (entities == null) return null;
+
+        return entities.stream()
+                .map(ReservationMapper::toDomain)
+                .collect(Collectors.toList());
     }
 
     public static ReservationEntity fromDomain(Reservation reservation) {

@@ -28,5 +28,9 @@ public interface FavoriteDao {
     @Query("SELECT * FROM favorites WHERE added_date = :addedDate")
     LiveData<List<FavoriteEntity>> getFavoriteByAddedDate(Date addedDate);
 
+    @Query("SELECT COUNT(*) > 0 FROM favorites WHERE email = :email AND property_id = :propertyId")
+    boolean isFavorite(String email, int propertyId);
 
+    @Query("SELECT * FROM favorites WHERE email = :email AND property_id = :propertyId")
+    LiveData<FavoriteEntity> getFavoriteByEmailAndPropertyId(String email, int propertyId);
 }
