@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Transformations;
 
 import com.example.realestate.data.db.dao.FavoriteDao;
-import com.example.realestate.data.db.dao.PropertyDao;
 import com.example.realestate.data.db.entity.FavoriteEntity;
 import com.example.realestate.domain.mapper.FavoriteMapper;
 import com.example.realestate.domain.model.Favorite;

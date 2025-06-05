@@ -3,9 +3,7 @@ package com.example.realestate.data.repository;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Transformations;
 
-import com.example.realestate.data.db.dao.PropertyDao;
 import com.example.realestate.data.db.dao.ReservationDao;
-import com.example.realestate.data.db.entity.PropertyEntity;
 import com.example.realestate.data.db.entity.ReservationEntity;
 import com.example.realestate.data.db.result.CountryCount;
 import com.example.realestate.domain.mapper.ReservationMapper;
