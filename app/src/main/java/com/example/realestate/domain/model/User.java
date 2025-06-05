@@ -2,6 +2,7 @@ package com.example.realestate.domain.model;
 
 import com.example.realestate.domain.exception.ValidationException;
 import com.example.realestate.domain.service.AuthenticationService;
+import com.example.realestate.domain.service.Hashing;
 
 public class User {
 
@@ -22,7 +23,7 @@ public class User {
     private String profileImage;
 
     public User(String firstName, String lastName, String email, String password, String phone,
-                String country, String city, boolean admin) {
+                String country, String city, String gender,  boolean admin) {
 
         setFirstName(firstName);
         setLastName(lastName);
@@ -31,6 +32,21 @@ public class User {
         setPhone(phone);
         setCountry(country);
         setCity(city);
+        setGender(gender);
+        setAdmin(admin);
+    }
+
+    public User(String firstName, String lastName, String email, String password, String phone,
+                String country, String city, Gender gender,  boolean admin) {
+
+        setFirstName(firstName);
+        setLastName(lastName);
+        setEmail(email);
+        setPassword(password);
+        setPhone(phone);
+        setCountry(country);
+        setCity(city);
+        setGender(gender);
         setAdmin(admin);
     }
 
@@ -56,7 +72,7 @@ public class User {
     }
 
     public void setLastName(String lastName) {
-        if (AuthenticationService.validateName(lastName))
+        if (!AuthenticationService.validateName(lastName))
             throw new ValidationException("Last name must be at least 3 characters long.");
 
         this.lastName = lastName;
@@ -85,12 +101,20 @@ public class User {
         this.password = password;
     }
 
+    /**
+     * Validates, hashes, and sets the password
+     * @param plainPassword The plain text password to validate and hash
+     */
+    public void setPasswordWithHash(String plainPassword) {
+        // Then hash it and store
+        this.password = Hashing.createPasswordHash(plainPassword);
+    }
+
     public String getPhone() {
         return phone;
     }
 
     public void setPhone(String phone) {
-
         if (!AuthenticationService.validatePhone(phone))
             throw new ValidationException("Phone number must be 10 digits long.");
 
@@ -131,7 +155,7 @@ public class User {
     public void setGender(String genderStr) {
         try {
             this.gender = Gender.valueOf(genderStr);
-        } catch (ValidationException e) {
+        } catch (Exception e) {
             // Default to MALE if invalid string
             this.gender = Gender.MALE;
         }

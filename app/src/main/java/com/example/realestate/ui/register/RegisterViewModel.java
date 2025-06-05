@@ -8,10 +8,8 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.realestate.data.repository.RepositoryCallback;
 import com.example.realestate.data.repository.UserRepository;
+import com.example.realestate.domain.exception.ValidationException;
 import com.example.realestate.domain.model.User;
-import com.example.realestate.domain.mapper.UserMapper;
-import com.example.realestate.domain.service.AuthenticationService;
-import com.example.realestate.domain.service.Hashing;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,7 +18,7 @@ import java.util.Objects;
 public class RegisterViewModel extends ViewModel {
     private final UserRepository userRepository;
 
-    public enum RegisterState { IDLE, LOADING, SUCCESS, ERROR }
+    public enum RegisterState {IDLE, LOADING, SUCCESS, ERROR}
 
     // List of countries and their cities
     private final Map<String, String[]> countriesWithCities = new HashMap<>() {{
@@ -51,7 +49,7 @@ public class RegisterViewModel extends ViewModel {
     public RegisterViewModel(UserRepository userRepository) {
         this.userRepository = userRepository;
         // Set default country and cities
-        String defaultCountry = "USA";
+        String defaultCountry = "PS";
         _cities.setValue(countriesWithCities.get(defaultCountry));
         _countryCode.setValue(countryCodeMap.get(defaultCountry));
     }
@@ -66,25 +64,47 @@ public class RegisterViewModel extends ViewModel {
     }
 
     public void register(String email, String password, String confirmPassword,
-                        String firstName, String lastName, User.Gender gender,
-                        String country, String city, String phone) {
-
-        // Reset error state
+                         String firstName, String lastName, User.Gender gender,
+                         String country, String city, String phone) {
+        // Reset state
         _registerState.setValue(RegisterState.IDLE);
 
-        // First do all validations
-        if (!validateRegistrationInput(email, password, confirmPassword, firstName, lastName, phone)) {
+        // Check password confirmation first (not handled by User model)
+        if (!password.equals(confirmPassword)) {
+            _errorMessage.setValue("Passwords do not match");
             _registerState.setValue(RegisterState.ERROR);
             return;
         }
 
+        User user;
+
+        try {
+            // Create a single User object - its constructor and setters will handle validation
+            user = new User(
+                    firstName,
+                    lastName,
+                    email,
+                    password,
+                    phone,
+                    country,
+                    city,
+                    gender,
+                    false);
+
+        } catch (ValidationException e) {
+            _errorMessage.setValue(e.getMessage());
+            _registerState.setValue(RegisterState.ERROR);
+            return;
+        }
+
+        // If we reach here, the user object is valid
         _registerState.setValue(RegisterState.LOADING);
 
-        // Check if user already exists
+        // Check if email exists
         userRepository.getUserByEmail(email, new RepositoryCallback<>() {
             @Override
             public void onSuccess() {
-                // User with this email already exists
+                // User already exists
                 _errorMessage.postValue("Email is already registered");
                 _registerState.postValue(RegisterState.ERROR);
             }
@@ -92,8 +112,9 @@ public class RegisterViewModel extends ViewModel {
             @Override
             public void onError(Throwable t) {
                 if (Objects.equals(t.getMessage(), "User not found")) {
-                    // This is good - we can create a new user
-                    createNewUser(email, password, firstName, lastName, gender, country, city, phone);
+                    // This is good - email doesn't exist
+                    userRepository.insertUser(user);
+                    _registerState.postValue(RegisterState.SUCCESS);
                 } else {
                     // Some other error occurred
                     _errorMessage.postValue("Registration failed: " + t.getMessage());
@@ -101,82 +122,6 @@ public class RegisterViewModel extends ViewModel {
                 }
             }
         });
-    }
-
-    private void createNewUser(String email, String password, String firstName,
-                              String lastName, User.Gender gender, String country,
-                              String city, String phone) {
-        try {
-            // Hash the password before storing
-            String hashedPassword = Hashing.createPasswordHash(password);
-
-            // Create a User object with the basic information
-            User newUser = new User(
-                firstName,
-                lastName,
-                email,
-                hashedPassword,
-                phone,
-                country,
-                city,
-                false // Default to non-admin
-            );
-
-            // Set additional fields that aren't in the constructor
-            newUser.setCity(city);
-            newUser.setGender(gender);
-
-            // We'll use UserMapper to convert our User object to UserEntity
-            // The mapper should handle converting the gender
-            userRepository.insertUser(newUser);
-
-            // Registration successful
-            _registerState.postValue(RegisterState.SUCCESS);
-        } catch (Exception e) {
-            _errorMessage.postValue("Failed to create account: " + e.getMessage());
-            _registerState.postValue(RegisterState.ERROR);
-        }
-    }
-
-    private boolean validateRegistrationInput(String email, String password, String confirmPassword,
-                                             String firstName, String lastName, String phone) {
-        // Validate email
-        if (!AuthenticationService.validateEmail(email)) {
-            _errorMessage.setValue("Please enter a valid email address");
-            return false;
-        }
-
-        // Validate password
-        if (!AuthenticationService.validatePassword(password)) {
-            _errorMessage.setValue("Password must be at least 6 characters and include one letter, one number, and one special character");
-            return false;
-        }
-
-        // Check if passwords match
-        if (!password.equals(confirmPassword)) {
-            _errorMessage.setValue("Passwords do not match");
-            return false;
-        }
-
-        // Validate first name
-        if (!AuthenticationService.validateName(firstName)) {
-            _errorMessage.setValue("First name must be at least 3 characters");
-            return false;
-        }
-
-        // Validate last name
-        if (!AuthenticationService.validateName(lastName)) {
-            _errorMessage.setValue("Last name must be at least 3 characters");
-            return false;
-        }
-
-        // Validate phone
-        if (!AuthenticationService.validatePhone(phone)) {
-            _errorMessage.setValue("Please enter a valid 10-digit phone number");
-            return false;
-        }
-
-        return true;
     }
 
     // Factory for creating ViewModel with dependencies

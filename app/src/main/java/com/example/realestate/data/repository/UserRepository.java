@@ -11,6 +11,7 @@ import com.example.realestate.data.db.result.GenderCount;
 import com.example.realestate.domain.mapper.UserMapper;
 import com.example.realestate.domain.model.User;
 import com.example.realestate.domain.service.CallbackUtils;
+import com.example.realestate.domain.service.Hashing;
 
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -37,6 +38,8 @@ public class UserRepository {
     }
 
     public void insertUser(User user) {
+
+        user.setPasswordWithHash(Hashing.createPasswordHash(user.getPassword()));
         insertUser(user, CallbackUtils.emptyCallback());
     }
 

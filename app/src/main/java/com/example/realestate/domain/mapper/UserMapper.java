@@ -20,13 +20,11 @@ public class UserMapper {
                 entity.phone,
                 entity.country,
                 entity.city,
+                entity.gender,
                 entity.isAdmin
         );
 
-        // Set additional fields
-        user.setGender(entity.gender);
         user.setProfileImage(entity.profileImage);
-
         return user;
     }
 
