@@ -2,7 +2,7 @@ package com.example.realestate.domain.model;
 
 public class User {
 
-    public static enum Gender {
+    public enum Gender {
         MALE,
         FEMALE
     }
@@ -16,6 +16,7 @@ public class User {
     private String city;
     private Gender gender;
     private boolean admin;
+    private String profileImage;
 
     public User(String firstName, String lastName, String email, String password, String phone,
                 String country, String city, boolean admin) {
@@ -115,5 +116,13 @@ public class User {
 
     public void setAdmin(boolean admin) {
         this.admin = admin;
+    }
+
+    public String getProfileImage() {
+        return profileImage;
+    }
+
+    public void setProfileImage(String profileImage) {
+        this.profileImage = profileImage;
     }
 }

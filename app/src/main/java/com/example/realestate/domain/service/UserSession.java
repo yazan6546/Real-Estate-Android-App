@@ -2,7 +2,7 @@ package com.example.realestate.domain.service;
 
 public class UserSession {
     private String email;
-    private boolean isAdmin;
+    private final boolean isAdmin;
     private String firstName;
     private String lastName;
 

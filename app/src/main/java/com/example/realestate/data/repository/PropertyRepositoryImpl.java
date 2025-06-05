@@ -9,6 +9,7 @@ import com.example.realestate.data.api.dto.PropertyDTO;
 import com.example.realestate.data.db.dao.PropertyDao;
 import com.example.realestate.data.db.entity.PropertyEntity;
 import com.example.realestate.domain.mapper.PropertyMapper;
+import com.example.realestate.domain.model.Property;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +33,7 @@ public class PropertyRepositoryImpl implements PropertyRepository {
     }
 
     @Override
-    public void refreshProperties(PropertyOperationCallback callback) {
+    public void refreshProperties(RepositoryCallback<Property> callback) {
         apiService.getJson().enqueue(new Callback<>() {
 
             @Override
@@ -60,11 +61,11 @@ public class PropertyRepositoryImpl implements PropertyRepository {
         });
     }
 
-    private void savePropertiesToDatabase(List<PropertyEntity> properties, PropertyOperationCallback callback) {
+    private void savePropertiesToDatabase(List<PropertyEntity> properties, RepositoryCallback<Property> callback) {
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
                 propertyDao.insertAll(properties);
-                callback.onSuccess();
+                callback.onSuccess(null);
             } catch (Exception e) {
                 callback.onError(e);
             }

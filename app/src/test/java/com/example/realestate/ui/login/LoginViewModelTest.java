@@ -1,21 +1,21 @@
 package com.example.realestate.ui.login;
 
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.lifecycle.Observer;
 
+import com.example.realestate.data.repository.RepositoryCallback;
 import com.example.realestate.data.repository.UserRepository;
 import com.example.realestate.domain.model.User;
 import com.example.realestate.domain.service.Hashing;
 import com.example.realestate.domain.service.SharedPrefManager;
+import com.example.realestate.util.LogUtils;
 
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -33,14 +33,19 @@ public class LoginViewModelTest {
     private SharedPrefManager sharedPrefManager;
 
     // Change from generic @Mock to specific mock creation
-    private Observer<LoginViewModel.AuthState> authStateObserver;
+    private Observer authStateObserver;
 
-    private Observer<String> errorMessageObserver;
+    private Observer errorMessageObserver;
 
     private LoginViewModel viewModel;
 
+    private MockedStatic logMock;
+
     @Before
     public void setUp() {
+        // Mock Android Log class
+        logMock = LogUtils.mockLog();
+
         // Create the mocks explicitly with the correct type information
         authStateObserver = mock(Observer.class);
         errorMessageObserver = mock(Observer.class);
@@ -48,6 +53,14 @@ public class LoginViewModelTest {
         viewModel = new LoginViewModel(userRepository, sharedPrefManager);
         viewModel.authState.observeForever(authStateObserver);
         viewModel.errorMessage.observeForever(errorMessageObserver);
+    }
+
+    @org.junit.After
+    public void tearDown() {
+        // Close the mocked static instance to prevent memory leaks
+        if (logMock != null) {
+            logMock.close();
+        }
     }
 
     @Test
@@ -100,10 +113,10 @@ public class LoginViewModelTest {
 
         // Setup the callback mechanism to trigger onError
         doAnswer(invocation -> {
-            UserRepository.UserCallback callback = invocation.getArgument(1);
+            RepositoryCallback<User> callback = invocation.getArgument(1);
             callback.onError(new Exception("User not found"));
             return null;
-        }).when(userRepository).getUserByEmail(eq(email), any(UserRepository.UserCallback.class));
+        }).when(userRepository).getUserByEmail(eq(email), any(RepositoryCallback.class));
 
         // Act
         viewModel.login(email, password, false);
@@ -130,10 +143,10 @@ public class LoginViewModelTest {
 
             // Setup the callback mechanism to trigger onSuccess with our mocked user
             doAnswer(invocation -> {
-                UserRepository.UserCallback callback = invocation.getArgument(1);
+                RepositoryCallback<User> callback = invocation.getArgument(1);
                 callback.onSuccess(user);
                 return null;
-            }).when(userRepository).getUserByEmail(eq(email), any(UserRepository.UserCallback.class));
+            }).when(userRepository).getUserByEmail(eq(email), any(RepositoryCallback.class));
 
             // Act
             viewModel.login(email, password, isRememberMe);
@@ -160,10 +173,10 @@ public class LoginViewModelTest {
 
             // Setup the callback mechanism to trigger onSuccess with our mocked user
             doAnswer(invocation -> {
-                UserRepository.UserCallback callback = invocation.getArgument(1);
+                RepositoryCallback<User> callback = invocation.getArgument(1);
                 callback.onSuccess(user);
                 return null;
-            }).when(userRepository).getUserByEmail(eq(email), any(UserRepository.UserCallback.class));
+            }).when(userRepository).getUserByEmail(eq(email), any(RepositoryCallback.class));
 
             // Act
             viewModel.login(email, password, false);
@@ -192,10 +205,10 @@ public class LoginViewModelTest {
 
             // Setup the callback mechanism to trigger onSuccess with our mocked user
             doAnswer(invocation -> {
-                UserRepository.UserCallback callback = invocation.getArgument(1);
+                RepositoryCallback<User> callback = invocation.getArgument(1);
                 callback.onSuccess(user);
                 return null;
-            }).when(userRepository).getUserByEmail(eq(email), any(UserRepository.UserCallback.class));
+            }).when(userRepository).getUserByEmail(eq(email), any(RepositoryCallback.class));
 
             // Act
             viewModel.login(email, password, isRememberMe);

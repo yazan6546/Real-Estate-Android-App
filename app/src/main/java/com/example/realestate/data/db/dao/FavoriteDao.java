@@ -1,5 +1,6 @@
 package com.example.realestate.data.db.dao;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -16,7 +17,7 @@ public interface FavoriteDao {
     void insertFavorite(FavoriteEntity favorite);
 
     @Query("SELECT * FROM favorites WHERE email = :email")
-    FavoriteEntity getFavoriteByEmail(String email);
+    LiveData<List<FavoriteEntity>> getFavoriteByEmail(String email);
 
     @Update
     void updateFavorite(FavoriteEntity favorite);
@@ -25,6 +26,11 @@ public interface FavoriteDao {
     void deleteFavorite(FavoriteEntity favorite);
 
     @Query("SELECT * FROM favorites WHERE added_date = :addedDate")
-    List<FavoriteEntity> getFavoriteByAddedDate(Date addedDate);
+    LiveData<List<FavoriteEntity>> getFavoriteByAddedDate(Date addedDate);
 
+    @Query("SELECT COUNT(*) > 0 FROM favorites WHERE email = :email AND property_id = :propertyId")
+    boolean isFavorite(String email, int propertyId);
+
+    @Query("SELECT * FROM favorites WHERE email = :email AND property_id = :propertyId")
+    LiveData<FavoriteEntity> getFavoriteByEmailAndPropertyId(String email, int propertyId);
 }

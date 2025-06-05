@@ -9,6 +9,7 @@ import com.example.realestate.data.db.AppDatabase;
 import com.example.realestate.data.db.entity.PropertyEntity;
 import com.example.realestate.data.db.entity.ReservationEntity;
 import com.example.realestate.data.db.entity.UserEntity;
+import com.example.realestate.util.LiveDataTestUtil;
 
 import org.junit.After;
 import org.junit.Before;
@@ -73,13 +74,13 @@ public class ReservationDaoTest {
     }
 
     @Test
-    public void insertAndGetReservationById() {
+    public void insertAndGetReservationById() throws InterruptedException {
         // Create and insert test reservation
         ReservationEntity reservation = createTestReservation();
         reservationDao.insertReservation(reservation);
 
         // Get reservation by ID
-        ReservationEntity retrievedReservation = reservationDao.getReservationById(TEST_RESERVATION_ID);
+        ReservationEntity retrievedReservation = LiveDataTestUtil.getValue(reservationDao.getReservationById(TEST_RESERVATION_ID));
 
         // Verify data
         assertNotNull(retrievedReservation);
@@ -89,51 +90,51 @@ public class ReservationDaoTest {
     }
 
     @Test
-    public void updateReservation() throws ParseException {
+    public void updateReservation() throws ParseException, InterruptedException {
         // Create and insert test reservation
         ReservationEntity reservation = createTestReservation();
         reservationDao.insertReservation(reservation);
 
         // Get reservation and update its status
-        ReservationEntity retrievedReservation = reservationDao.getReservationById(TEST_RESERVATION_ID);
+        ReservationEntity retrievedReservation = LiveDataTestUtil.getValue(reservationDao.getReservationById(TEST_RESERVATION_ID));
         retrievedReservation.status = "cancelled";
 
         // Update reservation
         reservationDao.updateReservation(retrievedReservation);
 
         // Get updated reservation
-        ReservationEntity updatedReservation = reservationDao.getReservationById(TEST_RESERVATION_ID);
+        ReservationEntity updatedReservation = LiveDataTestUtil.getValue(reservationDao.getReservationById(TEST_RESERVATION_ID));
 
         // Verify data is updated
         assertEquals("cancelled", updatedReservation.status);
     }
 
     @Test
-    public void deleteReservation() {
+    public void deleteReservation() throws InterruptedException {
         // Create and insert test reservation
         ReservationEntity reservation = createTestReservation();
         reservationDao.insertReservation(reservation);
 
         // Get reservation
-        ReservationEntity retrievedReservation = reservationDao.getReservationById(TEST_RESERVATION_ID);
+        ReservationEntity retrievedReservation = LiveDataTestUtil.getValue(reservationDao.getReservationById(TEST_RESERVATION_ID));
         assertNotNull(retrievedReservation);
 
         // Delete reservation
         reservationDao.deleteReservation(retrievedReservation);
 
         // Try to get deleted reservation
-        ReservationEntity deletedReservation = reservationDao.getReservationById(TEST_RESERVATION_ID);
+        ReservationEntity deletedReservation = LiveDataTestUtil.getValue(reservationDao.getReservationById(TEST_RESERVATION_ID));
         assertNull(deletedReservation);
     }
 
     @Test
-    public void getReservationsByUserId() {
+    public void getReservationsByUserId() throws InterruptedException {
         // Create and insert test reservation
         ReservationEntity reservation = createTestReservation();
         reservationDao.insertReservation(reservation);
 
         // Get reservations by user email
-        List<ReservationEntity> reservations = reservationDao.getReservationsByUserId(TEST_EMAIL);
+        List<ReservationEntity> reservations = LiveDataTestUtil.getValue(reservationDao.getReservationsByUserId(TEST_EMAIL));
 
         // Verify data
         assertEquals(1, reservations.size());
@@ -141,7 +142,7 @@ public class ReservationDaoTest {
     }
 
     @Test
-    public void multipleReservationsForSameUser() {
+    public void multipleReservationsForSameUser() throws InterruptedException {
         // Create and insert first test reservation
         ReservationEntity reservation1 = createTestReservation();
         reservationDao.insertReservation(reservation1);
@@ -175,7 +176,7 @@ public class ReservationDaoTest {
         reservationDao.insertReservation(reservation2);
 
         // Get reservations by user email
-        List<ReservationEntity> reservations = reservationDao.getReservationsByUserId(TEST_EMAIL);
+        List<ReservationEntity> reservations = LiveDataTestUtil.getValue(reservationDao.getReservationsByUserId(TEST_EMAIL));
 
         // Verify data
         assertEquals(2, reservations.size());

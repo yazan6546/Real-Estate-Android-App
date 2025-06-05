@@ -1,10 +1,12 @@
 package com.example.realestate.ui.register;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.realestate.data.repository.RepositoryCallback;
 import com.example.realestate.data.repository.UserRepository;
 import com.example.realestate.domain.model.User;
 import com.example.realestate.domain.mapper.UserMapper;
@@ -13,6 +15,7 @@ import com.example.realestate.domain.service.Hashing;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class RegisterViewModel extends ViewModel {
     private final UserRepository userRepository;
@@ -20,14 +23,14 @@ public class RegisterViewModel extends ViewModel {
     public enum RegisterState { IDLE, LOADING, SUCCESS, ERROR }
 
     // List of countries and their cities
-    private final Map<String, String[]> countriesWithCities = new HashMap<String, String[]>() {{
+    private final Map<String, String[]> countriesWithCities = new HashMap<>() {{
         put("PS", new String[]{"Nablus", "Tulkarem", "Ramallah"});
         put("UK", new String[]{"London", "Manchester", "Birmingham"});
         put("UAE", new String[]{"Dubai", "Abu Dhabi", "Sharjah"});
     }};
 
     // Country code map
-    private final Map<String, String> countryCodeMap = new HashMap<String, String>() {{
+    private final Map<String, String> countryCodeMap = new HashMap<>() {{
         put("PS", "+970");
         put("UK", "+44");
         put("UAE", "+971");
@@ -78,22 +81,22 @@ public class RegisterViewModel extends ViewModel {
         _registerState.setValue(RegisterState.LOADING);
 
         // Check if user already exists
-        userRepository.getUserByEmail(email, new UserRepository.UserCallback() {
+        userRepository.getUserByEmail(email, new RepositoryCallback<>() {
             @Override
-            public void onSuccess(User user) {
+            public void onSuccess() {
                 // User with this email already exists
                 _errorMessage.postValue("Email is already registered");
                 _registerState.postValue(RegisterState.ERROR);
             }
 
             @Override
-            public void onError(Exception e) {
-                if (e.getMessage().equals("User not found")) {
+            public void onError(Throwable t) {
+                if (Objects.equals(t.getMessage(), "User not found")) {
                     // This is good - we can create a new user
                     createNewUser(email, password, firstName, lastName, gender, country, city, phone);
                 } else {
                     // Some other error occurred
-                    _errorMessage.postValue("Registration failed: " + e.getMessage());
+                    _errorMessage.postValue("Registration failed: " + t.getMessage());
                     _registerState.postValue(RegisterState.ERROR);
                 }
             }
@@ -125,7 +128,7 @@ public class RegisterViewModel extends ViewModel {
 
             // We'll use UserMapper to convert our User object to UserEntity
             // The mapper should handle converting the gender
-            userRepository.insertUser(UserMapper.toEntity(newUser));
+            userRepository.insertUser(newUser);
 
             // Registration successful
             _registerState.postValue(RegisterState.SUCCESS);
@@ -184,6 +187,7 @@ public class RegisterViewModel extends ViewModel {
             this.userRepository = userRepository;
         }
 
+        @NonNull
         @Override
         @SuppressWarnings("unchecked")
         public <T extends ViewModel> T create(Class<T> modelClass) {
