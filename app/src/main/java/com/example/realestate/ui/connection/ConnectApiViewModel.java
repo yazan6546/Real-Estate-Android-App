@@ -32,7 +32,7 @@ public class ConnectApiViewModel extends ViewModel {
 
         propertyRepository.refreshProperties(new RepositoryCallback<>() {
             @Override
-            public void onSuccess(Property property) {
+            public void onSuccess() {
                 _connectionState.postValue(ConnectionState.CONNECTED);
             }
 
