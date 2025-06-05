@@ -49,7 +49,7 @@ public class LoginActivity extends AppCompatActivity {
         SharedPrefManager sharedPrefManager = SharedPrefManager.getInstance(this);
         UserSession userSession = sharedPrefManager.readObject("user_session", UserSession.class, null);
 
-        if (userSession.isRememberMe()) {
+        if (userSession != null && userSession.isRememberMe()) {
             // If user is already logged in, navigate to MainActivity
             navigateToMainActivity(userSession.isAdmin());
             return;
