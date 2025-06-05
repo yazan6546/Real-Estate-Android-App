@@ -110,11 +110,9 @@ public class LoginActivity extends AppCompatActivity {
         if (isAdmin) {
             // If the user is an admin, navigate to the admin dashboard
             intent = new Intent(this, com.example.realestate.ui.admin.AdminDashboardActivity.class);
-            startActivity(intent);
         } else {
             // If the user is a regular user, navigate to the main user activity
             intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
         }
         startActivity(intent);
         finish();
