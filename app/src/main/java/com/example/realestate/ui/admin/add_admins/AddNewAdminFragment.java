@@ -1,4 +1,4 @@
-package com.example.realestate.ui.admin.users;
+package com.example.realestate.ui.admin.add_admins;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

@@ -1,4 +1,4 @@
-package com.example.realestate.ui.admin.users;
+package com.example.realestate.ui.admin.delete_customers;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

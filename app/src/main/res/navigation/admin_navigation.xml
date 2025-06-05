@@ -31,13 +31,13 @@
 
     <fragment
         android:id="@+id/nav_delete_customers"
-        android:name="com.example.realestate.ui.admin.users.DeleteCustomersFragment"
+        android:name="com.example.realestate.ui.admin.delete_customers.DeleteCustomersFragment"
         android:label="Delete Customers"
         tools:layout="@layout/fragment_delete_customers" />
 
     <fragment
         android:id="@+id/nav_add_new_admin"
-        android:name="com.example.realestate.ui.admin.users.AddNewAdminFragment"
+        android:name="com.example.realestate.ui.admin.add_admins.AddNewAdminFragment"
         android:label="Add New Admin"
         tools:layout="@layout/fragment_add_new_admin" />
 </navigation>

@@ -8,6 +8,7 @@
     tools:context=".ui.admin.special.SpecialOffersFragment">
 
     <androidx.recyclerview.widget.RecyclerView
+
         android:id="@+id/offersRecyclerView"
         android:layout_width="0dp"
         android:layout_height="0dp"
