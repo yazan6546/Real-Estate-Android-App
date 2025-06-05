@@ -176,7 +176,7 @@ public class LoginViewModelTest {
         // Arrange
         String email = "test@example.com";
         String password = "wrongPassword";
-        String hashedPassword = "hashedPassword";
+        String hashedPassword = "hashedPassword@123";
 
         User user = new User("John", "Doe", email, hashedPassword, "1234567890", "USA",
                 "Los Angeles", User.Gender.MALE, false);
