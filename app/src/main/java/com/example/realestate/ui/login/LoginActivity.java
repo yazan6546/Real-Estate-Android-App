@@ -12,6 +12,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.realestate.domain.service.UserSession;
 import com.example.realestate.ui.user.MainActivity;
 import com.example.realestate.R;
 import com.example.realestate.RealEstate;
@@ -46,10 +47,11 @@ public class LoginActivity extends AppCompatActivity {
         rememberMeCheckbox = findViewById(R.id.rememberMeCheckbox);
 
         SharedPrefManager sharedPrefManager = SharedPrefManager.getInstance(this);
+        UserSession userSession = sharedPrefManager.readObject("user_session", UserSession.class, null);
 
-        if (sharedPrefManager.isUserRememberMe()) {
+        if (userSession.isRememberMe()) {
             // If user is already logged in, navigate to MainActivity
-            navigateToMainActivity();
+            navigateToMainActivity(userSession.isAdmin());
             return;
         }
 
@@ -100,8 +102,18 @@ public class LoginActivity extends AppCompatActivity {
                 Toast.LENGTH_SHORT).show();
     }
 
-    private void navigateToMainActivity() {
-        Intent intent = new Intent(this, MainActivity.class);
+    private void navigateToMainActivity(boolean isAdmin) {
+
+        Intent intent;
+        if (isAdmin) {
+            // If the user is an admin, navigate to the admin dashboard
+            intent = new Intent(this, com.example.realestate.ui.admin.AdminDashboardActivity.class);
+            startActivity(intent);
+        } else {
+            // If the user is a regular user, navigate to the main user activity
+            intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+        }
         startActivity(intent);
         finish();
 
