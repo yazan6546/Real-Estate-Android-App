@@ -82,4 +82,9 @@ public class PropertyRepositoryImpl implements PropertyRepository {
     public LiveData<Property> getPropertyById(int propertyId) {
         return Transformations.map(propertyDao.getPropertyById(propertyId), PropertyMapper::toDomain);
     }
+
+    @Override
+    public LiveData<Integer> getPropertyCount() {
+        return propertyDao.getPropertyCount();
+    }
 }

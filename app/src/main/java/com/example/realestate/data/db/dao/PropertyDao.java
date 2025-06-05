@@ -30,4 +30,7 @@ public interface PropertyDao {
 
      @Delete
      void delete(PropertyEntity property);
+
+     @Query("SELECT COUNT(*) FROM properties")
+     LiveData<Integer> getPropertyCount();
 }

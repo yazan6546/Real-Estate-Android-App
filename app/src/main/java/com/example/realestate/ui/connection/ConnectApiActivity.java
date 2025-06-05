@@ -10,7 +10,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.realestate.MainActivity;
 import com.example.realestate.R;
 import com.example.realestate.RealEstate;
 import com.example.realestate.ui.login.LoginActivity;

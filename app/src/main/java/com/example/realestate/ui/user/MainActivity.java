@@ -1,4 +1,4 @@
-package com.example.realestate;
+package com.example.realestate.ui.user;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,6 +7,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.example.realestate.R;
 import com.example.realestate.domain.service.SharedPrefManager;
 import com.example.realestate.domain.service.UserSession;
 import com.example.realestate.ui.login.LoginActivity;

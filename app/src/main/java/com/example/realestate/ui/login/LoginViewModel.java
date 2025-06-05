@@ -27,6 +27,8 @@ public class LoginViewModel extends ViewModel {
     private final MutableLiveData<String> _errorMessage = new MutableLiveData<>();
     public final LiveData<String> errorMessage = _errorMessage;
 
+    public UserSession userSession = null;
+
 
 
     public LoginViewModel(UserRepository userRepository, SharedPrefManager sharedPrefManager) {
@@ -50,7 +52,7 @@ public class LoginViewModel extends ViewModel {
                     // Password matches
                     _authState.postValue(AuthState.SUCCESS);
 
-                    UserSession userSession = new UserSession(
+                    userSession = new UserSession(
                             user.getEmail(),
                             user.getFirstName(),
                             user.getLastName(),
