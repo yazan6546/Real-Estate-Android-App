@@ -4,7 +4,6 @@ import com.example.realestate.data.db.entity.ReservationEntity;
 import com.example.realestate.data.db.entity.PropertyEntity;
 import com.example.realestate.domain.model.Reservation;
 import com.example.realestate.domain.model.Property;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
