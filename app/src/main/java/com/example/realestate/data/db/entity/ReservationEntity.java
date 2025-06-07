@@ -33,6 +33,7 @@ public class ReservationEntity {
     @NonNull
     @ColumnInfo(name = "email")
     public String email;
+
     public int property_id;
 
     @ColumnInfo(name = "start_date")
