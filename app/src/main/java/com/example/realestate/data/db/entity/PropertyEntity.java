@@ -37,6 +37,14 @@ public class PropertyEntity {
     @ColumnInfo(name = "area")
     public String area;
 
+    @ColumnInfo(name = "is_featured")
+    public boolean isFeatured;
+
+    @ColumnInfo(name = "discount")
+    public double discount;
+
+
+
 
 
 }

@@ -13,7 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.realestate.domain.service.UserSession;
-import com.example.realestate.ui.user.MainActivity;
+import com.example.realestate.DashboardActivity;
 import com.example.realestate.R;
 import com.example.realestate.RealEstate;
 import com.example.realestate.domain.service.SharedPrefManager;
@@ -51,18 +51,17 @@ public class LoginActivity extends AppCompatActivity {
 
         if (userSession != null && userSession.isRememberMe()) {
             // If user is already logged in, navigate to MainActivity
-            navigateToMainActivity(userSession.isAdmin());
+            navigateToMainActivity();
             return;
         }
 
         viewModel = new ViewModelProvider(this,
                 new LoginViewModel.Factory(RealEstate.appContainer.getUserRepository(),
                         sharedPrefManager))
-                        .get(LoginViewModel.class);
+                .get(LoginViewModel.class);
 
-        rememberMeCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            isRememberMeChecked = isChecked;
-        });
+        rememberMeCheckbox.setOnCheckedChangeListener((buttonView, isChecked) ->
+                isRememberMeChecked = isChecked);
 
         // Set up the register button to navigate to the registration screen
         registerButton.setOnClickListener(v -> {
@@ -89,8 +88,7 @@ public class LoginActivity extends AppCompatActivity {
 
             if (state == LoginViewModel.AuthState.SUCCESS) {
 
-                boolean isAdmin = viewModel.userSession.isAdmin();
-                navigateToMainActivity(isAdmin);
+                navigateToMainActivity();
             } else if (state == LoginViewModel.AuthState.ERROR) {
                 showErrorMessage(viewModel.errorMessage.getValue());
             }
@@ -100,20 +98,13 @@ public class LoginActivity extends AppCompatActivity {
 
     private void showErrorMessage(String message) {
         Toast.makeText(this, Objects.requireNonNullElse
-                (message, "Login failed. Please try again."),
+                        (message, "Login failed. Please try again."),
                 Toast.LENGTH_SHORT).show();
     }
 
-    private void navigateToMainActivity(boolean isAdmin) {
+    private void navigateToMainActivity() {
+        Intent intent = new Intent(this, DashboardActivity.class);
 
-        Intent intent;
-        if (isAdmin) {
-            // If the user is an admin, navigate to the admin dashboard
-            intent = new Intent(this, com.example.realestate.ui.admin.AdminDashboardActivity.class);
-        } else {
-            // If the user is a regular user, navigate to the main user activity
-            intent = new Intent(this, MainActivity.class);
-        }
         startActivity(intent);
         finish();
 

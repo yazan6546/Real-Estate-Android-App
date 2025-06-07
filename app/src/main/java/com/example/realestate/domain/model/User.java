@@ -39,9 +39,9 @@ public class User {
     public User(String firstName, String lastName, String email, String password, String phone,
                 String country, String city, Gender gender,  boolean admin) {
 
+        setEmail(email);
         setFirstName(firstName);
         setLastName(lastName);
-        setEmail(email);
         setPassword(password);
         setPhone(phone);
         setCountry(country);
