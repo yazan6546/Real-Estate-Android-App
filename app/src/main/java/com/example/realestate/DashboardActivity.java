@@ -54,11 +54,9 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
         // Set up the FAB if it exists
         if (fab != null) {
-            fab.setOnClickListener(view -> {
-                Snackbar.make(view, isAdmin ? "Add new property" : "Action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null)
-                        .setAnchorView(fab).show();
-            });
+            fab.setOnClickListener(view -> Snackbar.make(view, isAdmin ? "Add new property" : "Action", Snackbar.LENGTH_LONG)
+                    .setAction("Action", null)
+                    .setAnchorView(fab).show());
         }
 
         // Setup navigation based on role

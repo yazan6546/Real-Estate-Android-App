@@ -44,5 +44,6 @@
     <string name="special_offers">Special Offers</string>
     <string name="account">Account</string>
     <string name="logout">Logout</string>
+    <string name="add_admin_text">Add New Administrator</string>
 </resources>
 
