@@ -79,8 +79,9 @@ public class CustomerAdapter extends RecyclerView.Adapter<CustomerAdapter.Custom
             // Set email
             customerEmailTextView.setText(customer.getEmail());
             String phoneNumber = customer.getPhone();
+            String country = customer.getCountry();
 
-            customerPhoneTextView.setText(PhoneFormatter.formatMobile(phoneNumber, "Palestine"));
+            customerPhoneTextView.setText(PhoneFormatter.formatMobile(phoneNumber, country));
             
             // Set profile image (use default person icon for now)
             customerImageView.setImageResource(R.drawable.ic_person);
