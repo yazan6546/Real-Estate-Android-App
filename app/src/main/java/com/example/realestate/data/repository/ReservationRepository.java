@@ -59,7 +59,7 @@ public class ReservationRepository {
             try {
                 ReservationEntity entity = ReservationMapper.fromDomain(reservation);
                 reservationDao.insertReservation(entity);
-                callback.onSuccess();
+                callback.onSuccess(reservation);
             } catch (Exception e) {
                 callback.onError(e);
             }

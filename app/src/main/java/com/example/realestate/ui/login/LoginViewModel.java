@@ -34,6 +34,8 @@ public class LoginViewModel extends ViewModel {
 
         this._authState = new MutableLiveData<>(AuthState.IDLE);
         this._errorMessage = "Default error message";
+
+
     }
 
     public LiveData<AuthState> getAuthState() {
