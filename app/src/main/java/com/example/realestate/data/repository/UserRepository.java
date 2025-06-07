@@ -60,12 +60,14 @@ public class UserRepository {
         updateUser(user, CallbackUtils.emptyCallback());
     }
 
-    public void deleteUser(User user) {
+    public void deleteUser(User user, RepositoryCallback<User> callback) {
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
                 userDao.deleteUser(UserMapper.fromDomain(user));
+                callback.onSuccess();
             } catch (Exception e) {
                 Log.e("UserRepository", "Error deleting user", e);
+                callback.onError(e);
             }
         });
     }
@@ -73,6 +75,11 @@ public class UserRepository {
     public LiveData<List<User>> getAllUsers() {
         return Transformations.map(userDao.getAllUsers(), UserMapper::toDomainList);
     }
+
+    public LiveData<List<User>> getAllNormalUsers() {
+        return Transformations.map(userDao.getAllNormalUsers(), UserMapper::toDomainList);
+    }
+
 
     public void getUserByEmail(String email, RepositoryCallback<User> callback) {
         Executors.newSingleThreadExecutor().execute(() -> {

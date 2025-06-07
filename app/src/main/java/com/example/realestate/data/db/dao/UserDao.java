@@ -38,6 +38,9 @@ public interface UserDao {
      @Query("SELECT * FROM users")
      LiveData<List<UserEntity>> getAllUsers();
 
+     @Query("SELECT * FROM users WHERE is_admin=0")
+     LiveData<List<UserEntity>> getAllNormalUsers();
+
      @Query("SELECT COUNT(*) FROM users WHERE is_admin=0")
      LiveData<Integer> getUserCount();
 
