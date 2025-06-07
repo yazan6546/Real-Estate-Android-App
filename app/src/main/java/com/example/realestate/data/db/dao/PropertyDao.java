@@ -22,10 +22,10 @@ public interface PropertyDao {
      LiveData<PropertyEntity> getPropertyById(int propertyId);
 
      // One-time operations should NOT use LiveData
-     @Insert(onConflict = OnConflictStrategy.REPLACE)
+     @Insert(onConflict = OnConflictStrategy.IGNORE)
      void insertAll(List<PropertyEntity> properties);
 
-     @Insert(onConflict = OnConflictStrategy.REPLACE)
+     @Insert(onConflict = OnConflictStrategy.IGNORE)
      void insert(PropertyEntity property);
 
      @Delete

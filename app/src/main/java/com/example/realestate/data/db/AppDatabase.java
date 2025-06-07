@@ -48,7 +48,7 @@ public abstract class AppDatabase extends RoomDatabase {
                                 public void onCreate(@NonNull SupportSQLiteDatabase db) {
                                     super.onCreate(db);
                                     // Load test data from SQL file
-                                    executeSqlFile(context, db, "test_data_inserts.sql");
+                                    executeSqlFile(context, db);
                                 }
                             })
                             .build();
@@ -62,9 +62,9 @@ public abstract class AppDatabase extends RoomDatabase {
      * Loads and executes SQL statements from an SQL file in the assets folder
      * Now using transactions to maintain integrity
      */
-    private static void executeSqlFile(Context context, SupportSQLiteDatabase db, String fileName) {
+    private static void executeSqlFile(Context context, SupportSQLiteDatabase db) {
         try {
-            InputStream is = context.getAssets().open(fileName);
+            InputStream is = context.getAssets().open("test_data_inserts.sql");
             BufferedReader reader = new BufferedReader(new InputStreamReader(is));
             StringBuilder statement = new StringBuilder();
             String line;
@@ -102,7 +102,7 @@ public abstract class AppDatabase extends RoomDatabase {
             reader.close();
         } catch (IOException e) {
             e.printStackTrace();
-            Log.e("AppDatabase", "Failed to load SQL file: " + fileName, e);
+            Log.e("AppDatabase", "Failed to load SQL file: " + "test_data_inserts.sql", e);
         }
     }
 
@@ -129,7 +129,7 @@ public abstract class AppDatabase extends RoomDatabase {
                     }
 
                     // Split the SQL file into sections for properties and reservations
-                    executeSqlFile(context, db, "test_data_inserts.sql");
+                    executeSqlFile(context, db);
 
                     Log.d("AppDatabase", "Test data loaded successfully");
                 } catch (Exception e) {

@@ -1,7 +1,6 @@
 package com.example.realestate.di;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.example.realestate.data.api.ApiClient;
 import com.example.realestate.data.api.ApiService;
@@ -11,12 +10,7 @@ import com.example.realestate.data.repository.PropertyRepository;
 import com.example.realestate.data.repository.PropertyRepositoryImpl;
 import com.example.realestate.data.repository.ReservationRepository;
 import com.example.realestate.data.repository.UserRepository;
-import com.example.realestate.domain.model.Reservation;
 import com.example.realestate.domain.model.User;
-
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.util.Date;
 
 /**
  * Container of objects shared across the whole app
