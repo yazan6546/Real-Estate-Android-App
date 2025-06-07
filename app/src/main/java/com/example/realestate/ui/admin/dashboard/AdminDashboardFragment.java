@@ -18,9 +18,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.realestate.R;
 import com.example.realestate.RealEstate;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class AdminDashboardFragment extends Fragment {
 
     private AdminDashboardViewModel viewModel;
@@ -100,50 +97,5 @@ public class AdminDashboardFragment extends Fragment {
                 genderProgressBar.setProgress(malePercentage);
             }
         });
-    }
-
-    // Adapter class for country statistics
-    private static class CountryAdapter extends RecyclerView.Adapter<CountryAdapter.CountryViewHolder> {
-        private List<CountryStatItem> countries = new ArrayList<>();
-
-        public void setCountries(List<CountryStatItem> countries) {
-            this.countries = countries;
-            notifyDataSetChanged();
-        }
-
-        @NonNull
-        @Override
-        public CountryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_country_stat, parent, false);
-            return new CountryViewHolder(view);
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull CountryViewHolder holder, int position) {
-            CountryStatItem item = countries.get(position);
-            holder.bind(item);
-        }
-
-        @Override
-        public int getItemCount() {
-            return countries.size();
-        }
-
-        static class CountryViewHolder extends RecyclerView.ViewHolder {
-            private final TextView countryNameTextView;
-            private final TextView countTextView;
-
-            CountryViewHolder(@NonNull View itemView) {
-                super(itemView);
-                countryNameTextView = itemView.findViewById(R.id.countryNameTextView);
-                countTextView = itemView.findViewById(R.id.countTextView);
-            }
-
-            void bind(CountryStatItem item) {
-                countryNameTextView.setText(item.getCountry());
-                countTextView.setText(String.valueOf(item.getCount()));
-            }
-        }
     }
 }
