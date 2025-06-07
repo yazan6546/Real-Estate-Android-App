@@ -20,8 +20,9 @@
             android:exported="false"
             android:theme="@style/Theme.RealEstate.NoActionBar" />
         <activity
-            android:name=".ui.register.RegisterActivity"
-            android:exported="false" />
+            android:name=".ui.register.RegistrationActivity"
+            android:exported="false"
+            android:theme="@style/Theme.RealEstate.NoActionBar" />
         <activity
             android:name=".ui.connection.ConnectApiActivity"
             android:exported="true">

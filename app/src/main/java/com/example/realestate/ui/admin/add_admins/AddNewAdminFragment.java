@@ -1,173 +1,39 @@
 package com.example.realestate.ui.admin.add_admins;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ProgressBar;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.Spinner;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 
-import com.example.realestate.R;
-import com.example.realestate.RealEstate;
-import com.example.realestate.domain.model.User;
+import com.example.realestate.ui.registration.RegistrationFragment;
 
+/**
+ * Legacy wrapper for AddNewAdminFragment that uses the new RegistrationFragment
+ * This maintains backward compatibility while using the new unified registration system
+ */
 public class AddNewAdminFragment extends Fragment {
-
-    private AddNewAdminViewModel viewModel;
-
-    private EditText emailInput;
-    private EditText firstNameInput;
-    private EditText lastNameInput;
-    private EditText passwordInput;
-    private EditText confirmPasswordInput;
-    private Spinner genderSpinner;
-    private Spinner countrySpinner;
-    private Spinner citySpinner;
-    private EditText phoneNumberInput;
-    private TextView countryCodeText;
-    private Button addAdminButton;
-    private ProgressBar progressBar;
-
-    // Using User.Gender enum from the User class
-    private User.Gender selectedGender = User.Gender.MALE;
-    private String selectedCountry;
-    private String selectedCity;
-
-    private void findViews(View root) {
-        emailInput = root.findViewById(R.id.emailInput);
-        firstNameInput = root.findViewById(R.id.firstNameInput);
-        lastNameInput = root.findViewById(R.id.lastNameInput);
-        passwordInput = root.findViewById(R.id.passwordInput);
-        confirmPasswordInput = root.findViewById(R.id.confirmPasswordInput);
-        genderSpinner = root.findViewById(R.id.genderSpinner);
-        countrySpinner = root.findViewById(R.id.countrySpinner);
-        citySpinner = root.findViewById(R.id.citySpinner);
-        phoneNumberInput = root.findViewById(R.id.phoneNumberInput);
-        countryCodeText = root.findViewById(R.id.countryCodeText);
-        addAdminButton = root.findViewById(R.id.addAdminButton);
-        progressBar = root.findViewById(R.id.progressBar);
-    }
-
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_add_new_admin, container, false);
+        // Create the new RegistrationFragment configured for admin registration
+        RegistrationFragment registrationFragment = RegistrationFragment.newInstance(
+                true, // isAdmin = true
+                "Add New Admin", // title
+                "Add Admin" // buttonText
+        );
 
-        findViews(root);
+        // Replace this fragment with the registration fragment
+        getParentFragmentManager()
+                .beginTransaction()
+                .replace(getId(), registrationFragment)
+                .commit();
 
-        return root;
+        // Return a placeholder view that will be immediately replaced
+        return new View(requireContext());
     }
-
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-
-
-        // Initialize ViewModel
-        viewModel = new ViewModelProvider(this,
-                new AddNewAdminViewModel.Factory(
-                        RealEstate.appContainer.getUserRepository()))
-                .get(AddNewAdminViewModel.class);
-
-
-        // Setup country and city spinners with dummy data for now
-        setupSpinners();
-
-        // Setup button click listener
-        addAdminButton.setOnClickListener(v -> Log.d("AddNewAdminFragment", "Add Admin button clicked"));
-
-        // Observe operation status
-        viewModel.getOperationStatus().observe(getViewLifecycleOwner(), success -> {
-            if (success) {
-                Toast.makeText(requireContext(), "New admin added successfully", Toast.LENGTH_SHORT).show();
-//                clearForm();
-            }
-        });
-
-        // Observe error messages
-        viewModel.getErrorMessage().observe(getViewLifecycleOwner(), errorMsg -> {
-            if (errorMsg != null && !errorMsg.isEmpty()) {
-                Toast.makeText(requireContext(), errorMsg, Toast.LENGTH_LONG).show();
-            }
-        });
-    }
-
-    private void setupSpinners() {
-        // Sample data - in a real app, this would come from a repository or service
-        String[] countries = {"United States", "United Kingdom", "Canada", "Australia", "UAE", "Palestine"};
-        ArrayAdapter<String> countryAdapter = new ArrayAdapter<>(
-                requireContext(), android.R.layout.simple_spinner_dropdown_item, countries);
-        countrySpinner.setAdapter(countryAdapter);
-
-        String[] cities = {"New York", "London", "Toronto", "Sydney", "Dubai", "Nablus"};
-        ArrayAdapter<String> cityAdapter = new ArrayAdapter<>(
-                requireContext(), android.R.layout.simple_spinner_dropdown_item, cities);
-        citySpinner.setAdapter(cityAdapter);
-    }
-
-//    private void addNewAdmin() {
-//        // Get values from form
-//        String email = emailEditText.getText().toString();
-//        String password = passwordEditText.getText().toString();
-//        String confirmPassword = confirmPasswordEditText.getText().toString();
-//        String firstName = firstNameEditText.getText().toString();
-//        String lastName = lastNameEditText.getText().toString();
-//        String phone = phoneEditText.getText().toString();
-//        String country = countrySpinner.getSelectedItem().toString();
-//        String city = citySpinner.getSelectedItem().toString();
-//
-//        // Get selected gender
-//        User.Gender gender = User.Gender.MALE; // Default
-//        int selectedId = genderRadioGroup.getCheckedRadioButtonId();
-//        if (selectedId != -1) {
-//            RadioButton radioButton = genderRadioGroup.findViewById(selectedId);
-//            if (radioButton != null) {
-//                String genderText = radioButton.getText().toString();
-//                if (genderText.equalsIgnoreCase("female")) {
-//                    gender = User.Gender.FEMALE;
-//                }
-//            }
-//        }
-//
-//        // Basic validation
-//        if (email.isEmpty() || password.isEmpty() || firstName.isEmpty() || lastName.isEmpty()) {
-//            Toast.makeText(requireContext(), "Please fill all required fields", Toast.LENGTH_SHORT).show();
-//            return;
-//        }
-//
-//        if (!password.equals(confirmPassword)) {
-//            Toast.makeText(requireContext(), "Passwords do not match", Toast.LENGTH_SHORT).show();
-//            return;
-//        }
-//
-//        // Call ViewModel to add new admin
-//        viewModel.addNewAdmin(email, password, firstName, lastName, phone, country, city, gender);
-//    }
-
-//    private void clearForm() {
-//        emailEditText.setText("");
-//        passwordEditText.setText("");
-//        confirmPasswordEditText.setText("");
-//        firstNameEditText.setText("");
-//        lastNameEditText.setText("");
-//        phoneEditText.setText("");
-//        countrySpinner.setSelection(0);
-//        citySpinner.setSelection(0);
-//    }
 }

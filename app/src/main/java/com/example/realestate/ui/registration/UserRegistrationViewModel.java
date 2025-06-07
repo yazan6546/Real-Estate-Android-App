@@ -1,4 +1,4 @@
-package com.example.realestate.ui.admin.add_admins;
+package com.example.realestate.ui.registration;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
@@ -8,10 +8,9 @@ import com.example.realestate.data.repository.UserRepository;
 import com.example.realestate.domain.model.User;
 import com.example.realestate.ui.base.BaseRegistrationViewModel;
 
-// 2. Regular user registration ViewModel
-public class AddNewAdminViewModel extends BaseRegistrationViewModel {
+public class UserRegistrationViewModel extends BaseRegistrationViewModel {
 
-    public AddNewAdminViewModel(UserRepository userRepository) {
+    public UserRegistrationViewModel(UserRepository userRepository) {
         super(userRepository);
     }
 
@@ -20,10 +19,10 @@ public class AddNewAdminViewModel extends BaseRegistrationViewModel {
                          String country, String city, String phone) {
         // Call the base method with isAdmin = false
         registerUser(email, password, confirmPassword, firstName, lastName,
-                gender, country, city, phone, true);
+                gender, country, city, phone, false);
     }
 
-    // Factory for regular user registration
+    // Factory for user registration
     public static class Factory implements ViewModelProvider.Factory {
         private final UserRepository userRepository;
 
@@ -35,10 +34,10 @@ public class AddNewAdminViewModel extends BaseRegistrationViewModel {
         @Override
         @SuppressWarnings("unchecked")
         public <T extends ViewModel> T create(Class<T> modelClass) {
-            if (modelClass.isAssignableFrom(AddNewAdminViewModel.class)) {
-                return (T) new AddNewAdminViewModel(userRepository);
+            if (modelClass.isAssignableFrom(UserRegistrationViewModel.class)) {
+                return (T) new UserRegistrationViewModel(userRepository);
             }
-            throw new IllegalArgumentException("Unknown ViewModel class");
+            throw new IllegalArgumentException("Unknown ViewModel class: " + modelClass.getName());
         }
     }
 }
