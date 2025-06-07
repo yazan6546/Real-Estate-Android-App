@@ -7,8 +7,8 @@ public class CountryService {
 
     public static final Map<String, String[]> countriesWithCities = new HashMap<>() {{
         put("Palestine", new String[]{"Nablus", "Tulkarem", "Ramallah"});
-        put("UAE", new String[]{"London", "Manchester", "Birmingham"});
-        put("Jordan", new String[]{"Dubai", "Abu Dhabi", "Sharjah"});
+        put("Jordan", new String[]{"Amman", "Al Karak", "Irbid"});
+        put("UAE", new String[]{"Dubai", "Abu Dhabi", "Sharjah"});
     }};
 
     public static final Map<String, String> countryCodeMap = new HashMap<>() {{
