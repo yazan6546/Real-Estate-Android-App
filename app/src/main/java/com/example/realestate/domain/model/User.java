@@ -92,7 +92,7 @@ public class User {
         if (!AuthenticationService.validateEmail(email))
             throw new ValidationException("Invalid email format.");
 
-        this.email = email;
+        this.email = email.toLowerCase();
     }
 
     public String getPassword() {
