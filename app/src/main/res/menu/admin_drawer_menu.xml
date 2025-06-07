@@ -30,7 +30,7 @@
         <menu>
             <item
                 android:id="@+id/nav_admin_logout"
-                android:icon="@android:drawable/ic_lock_power_off"
+                android:icon="@drawable/ic_logout"
                 android:title="Logout" />
         </menu>
     </item>

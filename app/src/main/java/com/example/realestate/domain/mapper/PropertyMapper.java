@@ -20,6 +20,8 @@ public class PropertyMapper {
         entity.bedrooms = dto.bedrooms;
         entity.bathrooms = dto.bathrooms;
         entity.area = dto.area;
+        entity.isFeatured = false;
+        entity.discount = 0.0; // Default value, can be set later
 
         return entity;
     }
