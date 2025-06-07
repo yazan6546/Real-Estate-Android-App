@@ -12,6 +12,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.realestate.R;
 import com.example.realestate.domain.model.User;
+import com.example.realestate.domain.service.CountryService;
+import com.example.realestate.domain.service.PhoneFormatter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +55,7 @@ public class CustomerAdapter extends RecyclerView.Adapter<CustomerAdapter.Custom
         return customers.size();
     }
 
-    class CustomerViewHolder extends RecyclerView.ViewHolder {
+    public class CustomerViewHolder extends RecyclerView.ViewHolder {
         private final ImageView customerImageView;
         private final TextView customerNameTextView;
         private final TextView customerEmailTextView;
@@ -76,9 +78,9 @@ public class CustomerAdapter extends RecyclerView.Adapter<CustomerAdapter.Custom
             
             // Set email
             customerEmailTextView.setText(customer.getEmail());
-            
-            // Set phone number with country code
-            customerPhoneTextView.setText(customer.getPhone());
+            String phoneNumber = customer.getPhone();
+
+            customerPhoneTextView.setText(PhoneFormatter.formatMobile(phoneNumber, "Palestine"));
             
             // Set profile image (use default person icon for now)
             customerImageView.setImageResource(R.drawable.ic_person);

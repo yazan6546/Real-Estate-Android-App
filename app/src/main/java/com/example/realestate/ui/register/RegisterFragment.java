@@ -237,7 +237,8 @@ public class RegisterFragment extends Fragment {
         // Observe country code for phone number
         viewModel.countryCode.observe(getViewLifecycleOwner(), code -> {
             if (code != null) {
-                countryCodeText.setText(code);
+                String phoneCode = "+" + code; // Ensure the code starts with '+'
+                countryCodeText.setText(phoneCode);
             }
         });
 
