@@ -14,7 +14,6 @@
     <string name="menu_featured_properties">Featured Properties</string>
     <string name="menu_profile_management">Profile Management</string>
     <string name="menu_contact_us">Contact Us</string>
-    <string name="menu_logout">Logout</string>
 
     <!-- Connect API Strings -->
     <string name="connect_api_title">Welcome to Real Estate</string>
@@ -38,5 +37,12 @@
     <string name="login_success">Login successful</string>
     <string name="todo">TODO</string>
     <string name="get_in_touch">Get In Touch</string>
+    <string name="statistics_dashboard">Statistics Dashboard</string>
+    <string name="view_all_reservations">View All Reservations</string>
+    <string name="delete_customers">Delete Customers</string>
+    <string name="add_new_admin">Add New Admin</string>
+    <string name="special_offers">Special Offers</string>
+    <string name="account">Account</string>
+    <string name="logout">Logout</string>
 </resources>
 

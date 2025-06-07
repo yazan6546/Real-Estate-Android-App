@@ -40,7 +40,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         isAdmin = userSession != null && userSession.isAdmin();
 
         // Set the appropriate layout based on role
-        setContentView(R.layout.activity_main);
+        setContentView(isAdmin ? R.layout.activity_admin_dashboard:R.layout.activity_main);
 
         // Find views with proper IDs based on role
         Toolbar toolbar = findViewById(isAdmin ? R.id.toolbar_admin : R.id.toolbar_user);

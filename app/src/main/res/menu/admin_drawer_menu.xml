@@ -7,31 +7,31 @@
         <item
             android:id="@+id/nav_admin_dashboard"
             android:icon="@android:drawable/ic_menu_compass"
-            android:title="Statistics Dashboard" />
+            android:title="@string/statistics_dashboard" />
         <item
             android:id="@+id/nav_view_all_reservations"
             android:icon="@android:drawable/ic_menu_my_calendar"
-            android:title="View All Reservations" />
+            android:title="@string/view_all_reservations" />
         <item
             android:id="@+id/nav_delete_customers"
             android:icon="@android:drawable/ic_menu_delete"
-            android:title="Delete Customers" />
+            android:title="@string/delete_customers" />
         <item
             android:id="@+id/nav_add_new_admin"
             android:icon="@android:drawable/ic_menu_add"
-            android:title="Add New Admin" />
+            android:title="@string/add_new_admin" />
         <item
             android:id="@+id/nav_special_offers"
             android:icon="@android:drawable/ic_menu_mylocation"
-            android:title="Special Offers" />
+            android:title="@string/special_offers" />
     </group>
 
-    <item android:title="Account">
+    <item android:title="@string/account">
         <menu>
             <item
                 android:id="@+id/nav_admin_logout"
                 android:icon="@drawable/ic_logout"
-                android:title="Logout" />
+                android:title="@string/logout" />
         </menu>
     </item>
 </menu>
