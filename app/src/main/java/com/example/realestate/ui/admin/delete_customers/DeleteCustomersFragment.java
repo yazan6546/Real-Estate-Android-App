@@ -1,9 +1,12 @@
 package com.example.realestate.ui.admin.delete_customers;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -15,11 +18,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.realestate.R;
 import com.example.realestate.RealEstate;
+import com.example.realestate.domain.model.User;
 
-public class DeleteCustomersFragment extends Fragment {
+public class DeleteCustomersFragment extends Fragment implements CustomerAdapter.OnCustomerDeleteListener {
 
     private DeleteCustomersViewModel viewModel;
     private RecyclerView customersRecyclerView;
+    private CustomerAdapter customerAdapter;
+    private TextView emptyView;
+    private ProgressBar progressBar;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -28,6 +35,8 @@ public class DeleteCustomersFragment extends Fragment {
 
         // Initialize views
         customersRecyclerView = root.findViewById(R.id.customersRecyclerView);
+        emptyView = root.findViewById(R.id.emptyView);
+        progressBar = root.findViewById(R.id.progressBar);
 
         return root;
     }
@@ -42,19 +51,56 @@ public class DeleteCustomersFragment extends Fragment {
                         RealEstate.appContainer.getUserRepository()))
                 .get(DeleteCustomersViewModel.class);
 
+        // Set up adapter
+        customerAdapter = new CustomerAdapter(this);
+
         // Set up recycler view
         customersRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        customersRecyclerView.setAdapter(customerAdapter);
 
         // Observe changes to the customers list
         viewModel.getCustomers().observe(getViewLifecycleOwner(), customers -> {
-            // Update UI with customers (would update adapter in a real implementation)
-        });
-
-        // Observe operation status for feedback
-        viewModel.getOperationStatus().observe(getViewLifecycleOwner(), success -> {
-            if (success) {
-                Toast.makeText(requireContext(), "Customer deleted successfully", Toast.LENGTH_SHORT).show();
+            if (customers != null && !customers.isEmpty()) {
+                customerAdapter.setCustomers(customers);
+                customersRecyclerView.setVisibility(View.VISIBLE);
+                emptyView.setVisibility(View.GONE);
+            } else {
+                customersRecyclerView.setVisibility(View.GONE);
+                emptyView.setVisibility(View.VISIBLE);
             }
         });
+
+        viewModel.getAuthState().observe(getViewLifecycleOwner(), authState -> {
+            switch (authState) {
+                case LOADING:
+                    progressBar.setVisibility(View.VISIBLE);
+                    break;
+                case SUCCESS:
+                    Toast.makeText(requireContext(), "Customer deleted successfully", Toast.LENGTH_SHORT).show();
+                    progressBar.setVisibility(View.GONE);
+                    break;
+                case ERROR:
+                    progressBar.setVisibility(View.GONE);
+                    Toast.makeText(requireContext(), "Error Occurred: " + viewModel.getErrorMessage() , Toast.LENGTH_SHORT).show();
+                    break;
+                default:
+                    progressBar.setVisibility(View.GONE);
+                    break;
+            }
+        });
+
+    }
+
+    @Override
+    public void onDeleteCustomer(User customer) {
+        // Show confirmation dialog
+        new AlertDialog.Builder(requireContext())
+                .setTitle("Delete Customer")
+                .setMessage("Are you sure you want to delete " + customer.getFirstName() + " " + customer.getLastName() + "?")
+                .setPositiveButton("Delete", (dialog, which) -> {
+                    viewModel.deleteCustomer(customer);
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
     }
 }

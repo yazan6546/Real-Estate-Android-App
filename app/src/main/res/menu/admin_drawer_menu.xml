@@ -6,23 +6,23 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_admin_dashboard"
-            android:icon="@android:drawable/ic_menu_compass"
+            android:icon="@drawable/ic_admin_dashboard"
             android:title="@string/statistics_dashboard" />
         <item
             android:id="@+id/nav_view_all_reservations"
-            android:icon="@android:drawable/ic_menu_my_calendar"
+            android:icon="@drawable/ic_admin_reservations"
             android:title="@string/view_all_reservations" />
         <item
             android:id="@+id/nav_delete_customers"
-            android:icon="@android:drawable/ic_menu_delete"
+            android:icon="@drawable/ic_admin_delete_customers"
             android:title="@string/delete_customers" />
         <item
             android:id="@+id/nav_add_new_admin"
-            android:icon="@android:drawable/ic_menu_add"
+            android:icon="@drawable/ic_admin_add_admin"
             android:title="@string/add_new_admin" />
         <item
             android:id="@+id/nav_special_offers"
-            android:icon="@android:drawable/ic_menu_mylocation"
+            android:icon="@drawable/ic_admin_special_offers"
             android:title="@string/special_offers" />
     </group>
 

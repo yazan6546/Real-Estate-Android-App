@@ -21,12 +21,9 @@ public class LoginViewModel extends ViewModel {
 
     public enum AuthState { IDLE, LOADING, SUCCESS, ERROR }
 
-    private final MutableLiveData<AuthState> _authState = new MutableLiveData<>(AuthState.IDLE);
-    public final LiveData<AuthState> authState = _authState;
+    private final MutableLiveData<AuthState> _authState;
 
-    private final MutableLiveData<String> _errorMessage = new MutableLiveData<>();
-    public final LiveData<String> errorMessage = _errorMessage;
-
+    private String _errorMessage;
     public UserSession userSession = null;
 
 
@@ -34,11 +31,22 @@ public class LoginViewModel extends ViewModel {
     public LoginViewModel(UserRepository userRepository, SharedPrefManager sharedPrefManager) {
         this.userRepository = userRepository;
         this.sharedPrefManager = sharedPrefManager;
+
+        this._authState = new MutableLiveData<>(AuthState.IDLE);
+        this._errorMessage = "Default error message";
+    }
+
+    public LiveData<AuthState> getAuthState() {
+        return _authState;
+    }
+
+    public String getErrorMessage() {
+        return _errorMessage;
     }
 
     public void login(String email, String password, boolean isRememberMeChecked) {
         if (email.isEmpty() || password.isEmpty()) {
-            _errorMessage.setValue("Email and password cannot be empty");
+            _errorMessage = "Email and password cannot be empty";
             _authState.setValue(AuthState.ERROR);
             return;
         }
@@ -72,7 +80,7 @@ public class LoginViewModel extends ViewModel {
                     // Save logged in user to session or preferences here
                 } else {
                     // Invalid credentials
-                    _errorMessage.postValue("Invalid email or password");
+                    _errorMessage = ("Invalid email or password");
                     _authState.postValue(AuthState.ERROR);
                 }
             }
@@ -80,7 +88,7 @@ public class LoginViewModel extends ViewModel {
             @Override
             public void onError(Throwable t) {
                 Log.e("LoginViewModel", "Login failed", t);
-                _errorMessage.postValue("Login failed: " + t.getMessage());
+                _errorMessage = t.getMessage();
                 _authState.postValue(AuthState.ERROR);
             }
         });
