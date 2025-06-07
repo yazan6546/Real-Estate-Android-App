@@ -37,7 +37,7 @@
 
     <fragment
         android:id="@+id/nav_add_new_admin"
-        android:name="com.example.realestate.ui.registration.RegistrationFragment"
+        android:name="com.example.realestate.ui.register.RegisterFragment"
         android:label="Add New Admin"
         tools:layout="@layout/fragment_add_new_admin">
         <argument

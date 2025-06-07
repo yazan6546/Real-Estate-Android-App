@@ -8,7 +8,6 @@ import com.example.realestate.data.repository.UserRepository;
 import com.example.realestate.domain.model.User;
 import com.example.realestate.ui.base.BaseRegistrationViewModel;
 
-// 2. Regular user registration ViewModel
 public class RegisterViewModel extends BaseRegistrationViewModel {
 
     public RegisterViewModel(UserRepository userRepository) {
@@ -23,7 +22,7 @@ public class RegisterViewModel extends BaseRegistrationViewModel {
                 gender, country, city, phone, false);
     }
 
-    // Factory for regular user registration
+    // Factory for user registration
     public static class Factory implements ViewModelProvider.Factory {
         private final UserRepository userRepository;
 
@@ -38,7 +37,7 @@ public class RegisterViewModel extends BaseRegistrationViewModel {
             if (modelClass.isAssignableFrom(RegisterViewModel.class)) {
                 return (T) new RegisterViewModel(userRepository);
             }
-            throw new IllegalArgumentException("Unknown ViewModel class");
+            throw new IllegalArgumentException("Unknown ViewModel class: " + modelClass.getName());
         }
     }
 }

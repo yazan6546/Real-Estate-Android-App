@@ -9,7 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.example.realestate.ui.registration.RegistrationFragment;
+import com.example.realestate.ui.register.RegisterFragment;
 
 /**
  * Legacy wrapper for AddNewAdminFragment that uses the new RegistrationFragment
@@ -21,7 +21,7 @@ public class AddNewAdminFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         // Create the new RegistrationFragment configured for admin registration
-        RegistrationFragment registrationFragment = RegistrationFragment.newInstance(
+        RegisterFragment registerFragment = RegisterFragment.newInstance(
                 true, // isAdmin = true
                 "Add New Admin", // title
                 "Add Admin" // buttonText
@@ -30,7 +30,7 @@ public class AddNewAdminFragment extends Fragment {
         // Replace this fragment with the registration fragment
         getParentFragmentManager()
                 .beginTransaction()
-                .replace(getId(), registrationFragment)
+                .replace(getId(), registerFragment)
                 .commit();
 
         // Return a placeholder view that will be immediately replaced

@@ -1,4 +1,4 @@
-package com.example.realestate.ui.registration;
+package com.example.realestate.ui.register;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -22,8 +22,9 @@ import com.example.realestate.R;
 import com.example.realestate.RealEstate;
 import com.example.realestate.domain.model.User;
 import com.example.realestate.ui.base.BaseRegistrationViewModel;
+import com.example.realestate.ui.admin.add_admins.AddNewAdminViewModel;
 
-public class RegistrationFragment extends Fragment {
+public class RegisterFragment extends Fragment {
 
     private static final String ARG_IS_ADMIN = "is_admin";
     private static final String ARG_TITLE = "title";
@@ -52,8 +53,8 @@ public class RegistrationFragment extends Fragment {
     private String selectedCountry;
     private String selectedCity;
 
-    public static RegistrationFragment newInstance(boolean isAdmin, String title, String buttonText) {
-        RegistrationFragment fragment = new RegistrationFragment();
+    public static RegisterFragment newInstance(boolean isAdmin, String title, String buttonText) {
+        RegisterFragment fragment = new RegisterFragment();
         Bundle args = new Bundle();
         args.putBoolean(ARG_IS_ADMIN, isAdmin);
         args.putString(ARG_TITLE, title);
@@ -97,12 +98,12 @@ public class RegistrationFragment extends Fragment {
         // Initialize the appropriate ViewModel based on registration type
         if (isAdminRegistration) {
             viewModel = new ViewModelProvider(this,
-                    new AdminRegistrationViewModel.Factory(RealEstate.appContainer.getUserRepository()))
-                    .get(AdminRegistrationViewModel.class);
+                    new AddNewAdminViewModel.Factory(RealEstate.appContainer.getUserRepository()))
+                    .get(AddNewAdminViewModel.class);
         } else {
             viewModel = new ViewModelProvider(this,
-                    new UserRegistrationViewModel.Factory(RealEstate.appContainer.getUserRepository()))
-                    .get(UserRegistrationViewModel.class);
+                    new RegisterViewModel.Factory(RealEstate.appContainer.getUserRepository()))
+                    .get(RegisterViewModel.class);
         }
 
         setupSpinners();
@@ -198,11 +199,11 @@ public class RegistrationFragment extends Fragment {
             String phone = phoneNumberInput.getText().toString().trim();
 
             if (isAdminRegistration) {
-                ((AdminRegistrationViewModel) viewModel).register(
+                ((AddNewAdminViewModel) viewModel).register(
                         email, password, confirmPassword, firstName, lastName,
                         selectedGender, selectedCountry, selectedCity, phone);
             } else {
-                ((UserRegistrationViewModel) viewModel).register(
+                ((RegisterViewModel) viewModel).register(
                         email, password, confirmPassword, firstName, lastName,
                         selectedGender, selectedCountry, selectedCity, phone);
             }

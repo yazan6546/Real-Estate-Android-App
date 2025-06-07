@@ -17,7 +17,7 @@ import com.example.realestate.DashboardActivity;
 import com.example.realestate.R;
 import com.example.realestate.RealEstate;
 import com.example.realestate.domain.service.SharedPrefManager;
-import com.example.realestate.ui.register.RegistrationActivity;
+import com.example.realestate.ui.register.RegisterActivity;
 
 import java.util.Objects;
 
@@ -65,7 +65,7 @@ public class LoginActivity extends AppCompatActivity {
 
         // Set up the register button to navigate to the registration screen
         registerButton.setOnClickListener(v -> {
-            Intent intent = new Intent(this, RegistrationActivity.class);
+            Intent intent = new Intent(this, RegisterActivity.class);
             startActivity(intent);
         });
 
