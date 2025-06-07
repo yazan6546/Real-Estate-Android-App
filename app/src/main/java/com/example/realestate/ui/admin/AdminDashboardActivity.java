@@ -110,11 +110,9 @@ public class AdminDashboardActivity extends AppCompatActivity implements Navigat
         UserSession userSession = sharedPrefManager.readObject("user_session", UserSession.class, null);
 
         // Update with actual user data
-        if (userSession != null) {
-            String fullName = userSession.getFirstName() + " " + userSession.getLastName();
-            usernameTextView.setText(fullName);
-            emailTextView.setText(userSession.getEmail());
-        }
+        String fullName = userSession.getFirstName() + " " + userSession.getLastName();
+        usernameTextView.setText(fullName);
+        emailTextView.setText(userSession.getEmail());
     }
 
     @Override
