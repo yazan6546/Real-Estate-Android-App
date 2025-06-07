@@ -82,15 +82,19 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void observeAuthState() {
-        viewModel.authState.observe(this, state -> {
-            progressBar.setVisibility(state == LoginViewModel.AuthState.LOADING ?
-                    View.VISIBLE : View.GONE);
-
-            if (state == LoginViewModel.AuthState.SUCCESS) {
-
-                navigateToMainActivity();
-            } else if (state == LoginViewModel.AuthState.ERROR) {
-                showErrorMessage(viewModel.errorMessage.getValue());
+        viewModel.getAuthState().observe(this, state -> {
+            switch (state) {
+                case LOADING:
+                    progressBar.setVisibility(View.VISIBLE);
+                    break;
+                case SUCCESS:
+                    progressBar.setVisibility(View.GONE);
+                    navigateToMainActivity();
+                    break;
+                case ERROR:
+                    progressBar.setVisibility(View.GONE);
+                    showErrorMessage(viewModel.getErrorMessage());
+                    break;
             }
         });
     }
