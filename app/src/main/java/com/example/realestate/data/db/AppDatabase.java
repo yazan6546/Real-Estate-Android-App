@@ -1,16 +1,23 @@
 package com.example.realestate.data.db;
 
 import android.content.Context;
+import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
+import androidx.room.TypeConverters;
+import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import com.example.realestate.data.db.converters.Converters;
 import com.example.realestate.data.db.dao.*;
 import com.example.realestate.data.db.entity.*;
 
-import androidx.room.TypeConverters;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 @Database(entities = {
         UserEntity.class,
@@ -36,10 +43,76 @@ public abstract class AppDatabase extends RoomDatabase {
                 if (instance == null) {
                     instance = Room.databaseBuilder(context.getApplicationContext(),
                                     AppDatabase.class, "realestate_database")
+                            .addCallback(new Callback() {
+                                @Override
+                                public void onCreate(@NonNull SupportSQLiteDatabase db) {
+                                    super.onCreate(db);
+                                    // Load test data from SQL file
+                                    executeSqlFile(context, db, "test_data_inserts.sql");
+                                }
+                            })
                             .build();
                 }
             }
         }
         return instance;
+    }
+
+    /**
+     * Loads and executes SQL statements from an SQL file in the assets folder
+     */
+    private static void executeSqlFile(Context context, SupportSQLiteDatabase db, String fileName) {
+        try {
+            InputStream is = context.getAssets().open(fileName);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+            StringBuilder statement = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                // Skip empty lines and comments
+                line = line.trim();
+                if (line.isEmpty() || line.startsWith("--")) {
+                    continue;
+                }
+
+                statement.append(line);
+
+                // Execute statement when it's complete (ends with semicolon)
+                if (line.endsWith(";")) {
+                    try {
+                        db.execSQL(statement.toString());
+                    } catch (Exception e) {
+                        Log.e("AppDatabase", "Error executing SQL: " + statement, e);
+                    }
+                    statement = new StringBuilder();
+                } else {
+                    statement.append(" ");
+                }
+            }
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.e("AppDatabase", "Failed to load SQL file: " + fileName, e);
+        }
+    }
+
+    /**
+     * Utility method to reset the database with test data
+     * Can be called from a developer menu or testing functions
+     */
+    public static void resetWithTestData(Context context) {
+        if (instance != null) {
+            new Thread(() -> {
+                SupportSQLiteDatabase db = instance.getOpenHelper().getWritableDatabase();
+
+                // Clear existing data first
+                db.execSQL("DELETE FROM reservations");
+                db.execSQL("DELETE FROM favorites");
+                db.execSQL("DELETE FROM properties");
+                db.execSQL("DELETE FROM users");
+
+                // Load test data
+                executeSqlFile(context, db, "test_data_inserts.sql");
+            }).start();
+        }
     }
 }
