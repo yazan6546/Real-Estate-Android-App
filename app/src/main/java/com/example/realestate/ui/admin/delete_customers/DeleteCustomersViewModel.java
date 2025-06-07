@@ -18,61 +18,49 @@ public class DeleteCustomersViewModel extends ViewModel {
 
     private final UserRepository userRepository;
 
-    private final MutableLiveData<Boolean> _isLoading = new MutableLiveData<>(false);
-    public final LiveData<Boolean> isLoading = _isLoading;
+    public enum AuthState { IDLE, LOADING, SUCCESS, ERROR }
 
-    private final MutableLiveData<Boolean> _operationStatus = new MutableLiveData<>();
-    public final LiveData<Boolean> operationStatus = _operationStatus;
+    private final MutableLiveData<AuthState> _authState;
+
+    private String _errorMessage;
 
     // Use LiveData directly from repository and filter customers
     public final LiveData<List<User>> customers;
 
     public DeleteCustomersViewModel(UserRepository userRepository) {
         this.userRepository = userRepository;
+        customers = userRepository.getAllNormalUsers();
+        this._authState = new MutableLiveData<>(AuthState.IDLE);
+        this._errorMessage = "Default error message";
 
-        // Transform the LiveData to filter out admin users
-        this.customers = Transformations.map(userRepository.getAllUsers(), users -> {
-            if (users != null) {
-                return users.stream()
-                        .filter(user -> !user.isAdmin())
-                        .collect(Collectors.toList());
-            }
-            return null;
-        });
     }
 
     public LiveData<List<User>> getCustomers() {
         return customers;
     }
 
-    public LiveData<Boolean> getIsLoading() {
-        return isLoading;
+    public LiveData<AuthState> getAuthState() {
+        return _authState;
     }
 
-    public LiveData<Boolean> getOperationStatus() {
-        return operationStatus;
+    public String getErrorMessage() {
+        return _errorMessage;
     }
 
-    public void loadCustomers() {
-        // No need to manually load since we're using LiveData
-        // The customers LiveData will automatically update when data changes
-    }
 
     public void deleteCustomer(User customer) {
-        _isLoading.setValue(true);
+        _authState.postValue(AuthState.LOADING);
 
-        userRepository.deleteUser(customer, new RepositoryCallback<User>() {
+        userRepository.deleteUser(customer, new RepositoryCallback<>() {
             @Override
-            public void onSuccess(User result) {
-                _isLoading.setValue(false);
-                _operationStatus.setValue(true);
-                // No need to manually reload - LiveData will automatically update
+            public void onSuccess() {
+                _authState.setValue(AuthState.SUCCESS);
             }
 
             @Override
             public void onError(Throwable t) {
-                _isLoading.setValue(false);
-                _operationStatus.setValue(false);
+                _errorMessage = t.getMessage();
+                _authState.setValue(AuthState.ERROR);
             }
         });
     }

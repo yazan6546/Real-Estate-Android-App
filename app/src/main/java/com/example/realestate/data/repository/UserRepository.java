@@ -76,6 +76,11 @@ public class UserRepository {
         return Transformations.map(userDao.getAllUsers(), UserMapper::toDomainList);
     }
 
+    public LiveData<List<User>> getAllNormalUsers() {
+        return Transformations.map(userDao.getAllNormalUsers(), UserMapper::toDomainList);
+    }
+
+
     public void getUserByEmail(String email, RepositoryCallback<User> callback) {
         Executors.newSingleThreadExecutor().execute(() -> {
             try {

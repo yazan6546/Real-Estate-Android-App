@@ -70,27 +70,25 @@ public class DeleteCustomersFragment extends Fragment implements CustomerAdapter
             }
         });
 
-        // Observe operation status for feedback
-        viewModel.getOperationStatus().observe(getViewLifecycleOwner(), success -> {
-            if (success != null) {
-                if (success) {
+        viewModel.getAuthState().observe(getViewLifecycleOwner(), authState -> {
+            switch (authState) {
+                case LOADING:
+                    progressBar.setVisibility(View.VISIBLE);
+                    break;
+                case SUCCESS:
                     Toast.makeText(requireContext(), "Customer deleted successfully", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(requireContext(), "Failed to delete customer", Toast.LENGTH_SHORT).show();
-                }
+                    progressBar.setVisibility(View.GONE);
+                    break;
+                case ERROR:
+                    progressBar.setVisibility(View.GONE);
+                    Toast.makeText(requireContext(), "Error Occurred: " + viewModel.getErrorMessage() , Toast.LENGTH_SHORT).show();
+                    break;
+                default:
+                    progressBar.setVisibility(View.GONE);
+                    break;
             }
         });
 
-        // Observe loading state
-        viewModel.getIsLoading().observe(getViewLifecycleOwner(), isLoading -> {
-            if (isLoading) {
-                progressBar.setVisibility(View.VISIBLE);
-            } else {
-                progressBar.setVisibility(View.GONE);
-            }
-        });
-
-        // No need to manually load customers since we're using LiveData
     }
 
     @Override
