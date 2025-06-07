@@ -12,11 +12,11 @@
         android:layout_height="wrap_content"
         android:hint="Email"
         app:endIconMode="clear_text"
-        app:helperText="This will be your primary key"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:startIconDrawable="@drawable/ic_email">
+        app:startIconDrawable="@drawable/ic_email"
+        app:helperText="This will be your primary key">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/emailInput"
@@ -34,11 +34,11 @@
         android:layout_marginTop="16dp"
         android:hint="First Name"
         app:endIconMode="clear_text"
-        app:helperText="Minimum 3 characters"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/emailInputLayout"
-        app:startIconDrawable="@drawable/ic_person">
+        app:startIconDrawable="@drawable/ic_person"
+        app:helperText="Minimum 3 characters">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/firstNameInput"
@@ -56,11 +56,11 @@
         android:layout_marginTop="16dp"
         android:hint="Last Name"
         app:endIconMode="clear_text"
-        app:helperText="Minimum 3 characters"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/firstNameInputLayout"
-        app:startIconDrawable="@drawable/ic_person">
+        app:startIconDrawable="@drawable/ic_person"
+        app:helperText="Minimum 3 characters">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/lastNameInput"
@@ -78,11 +78,11 @@
         android:layout_marginTop="16dp"
         android:hint="Password"
         app:endIconMode="password_toggle"
-        app:helperText="Min 6 chars, with letter, number, special char"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/lastNameInputLayout"
-        app:startIconDrawable="@drawable/ic_lock">
+        app:startIconDrawable="@drawable/ic_lock"
+        app:helperText="Min 6 chars, with letter, number, special char">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/passwordInput"
@@ -126,7 +126,7 @@
 
     <Spinner
         android:id="@+id/genderSpinner"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:background="@drawable/bg_spinner"
@@ -151,7 +151,7 @@
 
     <Spinner
         android:id="@+id/countrySpinner"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:background="@drawable/bg_spinner"
@@ -176,7 +176,7 @@
 
     <Spinner
         android:id="@+id/citySpinner"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:background="@drawable/bg_spinner"
@@ -187,8 +187,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cityLabel" />
 
-    <!-- Phone Number Field (optional, can be uncommented if needed) -->
-    <!--
+    <!-- Phone Number Field -->
     <TextView
         android:id="@+id/phoneLabel"
         android:layout_width="wrap_content"
@@ -238,5 +237,5 @@
                 android:inputType="phone" />
         </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
-    -->
+
 </androidx.constraintlayout.widget.ConstraintLayout>
