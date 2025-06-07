@@ -8,6 +8,7 @@ import com.example.realestate.data.db.entity.ReservationEntity;
 import com.example.realestate.data.db.result.CountryCount;
 import com.example.realestate.domain.mapper.ReservationMapper;
 import com.example.realestate.domain.model.Reservation;
+import com.example.realestate.domain.service.CallbackUtils;
 
 import java.util.Date;
 import java.util.List;
@@ -63,6 +64,10 @@ public class ReservationRepository {
                 callback.onError(e);
             }
         });
+    }
+
+    public void addReservation(Reservation reservation) {
+        addReservation(reservation, CallbackUtils.emptyCallback());
     }
 
     // Update an existing reservation
