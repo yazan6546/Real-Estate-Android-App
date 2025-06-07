@@ -15,13 +15,15 @@ import java.util.Date;
                     entity = UserEntity.class,
                     parentColumns = "email",
                     childColumns = "email",
-                    onDelete = ForeignKey.RESTRICT
+                    onDelete = ForeignKey.RESTRICT,
+                    onUpdate = ForeignKey.CASCADE
             ),
             @ForeignKey(
                     entity = PropertyEntity.class,
                     parentColumns = "property_id",
                     childColumns = "property_id",
-                    onDelete = ForeignKey.RESTRICT
+                    onDelete = ForeignKey.RESTRICT,
+                    onUpdate = ForeignKey.CASCADE
             )
         }
 )
