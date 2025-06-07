@@ -1,5 +1,8 @@
 package com.example.realestate.ui.base;
 
+import static com.example.realestate.domain.service.CountryService.countriesWithCities;
+import static com.example.realestate.domain.service.CountryService.countryCodeMap;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -8,6 +11,7 @@ import com.example.realestate.data.repository.RepositoryCallback;
 import com.example.realestate.data.repository.UserRepository;
 import com.example.realestate.domain.exception.ValidationException;
 import com.example.realestate.domain.model.User;
+import com.example.realestate.domain.service.CountryService;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,17 +24,7 @@ public abstract class BaseRegistrationViewModel extends ViewModel {
     public enum RegisterState {IDLE, LOADING, SUCCESS, ERROR}
 
     // Common data structures for countries and cities
-    protected final Map<String, String[]> countriesWithCities = new HashMap<>() {{
-        put("PS", new String[]{"Nablus", "Tulkarem", "Ramallah"});
-        put("UK", new String[]{"London", "Manchester", "Birmingham"});
-        put("UAE", new String[]{"Dubai", "Abu Dhabi", "Sharjah"});
-    }};
 
-    protected final Map<String, String> countryCodeMap = new HashMap<>() {{
-        put("PS", "+970");
-        put("UK", "+44");
-        put("UAE", "+971");
-    }};
 
     protected final MutableLiveData<RegisterState> _registerState = new MutableLiveData<>(RegisterState.IDLE);
     public final LiveData<RegisterState> registerState = _registerState;
