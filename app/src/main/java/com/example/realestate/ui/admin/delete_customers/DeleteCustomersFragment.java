@@ -55,6 +55,9 @@ public class DeleteCustomersFragment extends Fragment {
             if (success) {
                 Toast.makeText(requireContext(), "Customer deleted successfully", Toast.LENGTH_SHORT).show();
             }
+            else {
+                Toast.makeText(requireContext(), "Failed to delete customer", Toast.LENGTH_SHORT).show();
+            }
         });
     }
 }

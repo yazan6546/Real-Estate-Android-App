@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.realestate.data.repository.RepositoryCallback;
 import com.example.realestate.data.repository.UserRepository;
 import com.example.realestate.domain.model.User;
 
@@ -14,7 +15,7 @@ import java.util.List;
 
 public class DeleteCustomersViewModel extends ViewModel {
     private final UserRepository userRepository;
-    private final MutableLiveData<List<User>> customers = new MutableLiveData<>(new ArrayList<>());
+    private LiveData<List<User>> customers;
     private final MutableLiveData<Boolean> operationStatus = new MutableLiveData<>(false);
 
     public DeleteCustomersViewModel(UserRepository userRepository) {
@@ -32,14 +33,24 @@ public class DeleteCustomersViewModel extends ViewModel {
     }
 
     public void loadCustomers() {
-        // Temporary implementation - would normally load from repository
-        customers.setValue(new ArrayList<>());
+        customers = userRepository.getAllUsers();
     }
 
     public void deleteCustomer(User customer) {
-        // Temporary implementation - would normally call repository
-        // For now, just simulate success
-        operationStatus.setValue(true);
+        userRepository.deleteUser(customer, new RepositoryCallback<>() {
+
+            @Override
+            public void onSuccess() {
+                operationStatus.setValue(true);
+                // Reload customers after deletion
+                loadCustomers();
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                operationStatus.setValue(false);
+            }
+        });
     }
 
     // Factory for creating ViewModel with dependencies
