@@ -36,16 +36,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_main);
 
         // Find all views manually using findViewById
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        FloatingActionButton fab = findViewById(R.id.fab);
-        drawer = findViewById(R.id.drawer_layout);
+        Toolbar toolbar = findViewById(R.id.toolbar_user);
+        FloatingActionButton fab = findViewById(R.id.fab_user);
+        drawer = findViewById(R.id.drawer_layout_user);
         NavigationView navigationView = findViewById(R.id.nav_view);
 
         setSupportActionBar(toolbar);
 
         fab.setOnClickListener(view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 .setAction("Action", null)
-                .setAnchorView(R.id.fab).show());
+                .setAnchorView(R.id.fab_user).show());
 
         // Build app bar configuration but EXCLUDE the logout item so it doesn't appear as a destination
         mAppBarConfiguration = new AppBarConfiguration.Builder(

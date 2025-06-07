@@ -36,16 +36,16 @@ public class AdminDashboardActivity extends AppCompatActivity implements Navigat
         setContentView(R.layout.activity_admin_dashboard);
 
         // Find all views manually using findViewById
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        FloatingActionButton fab = findViewById(R.id.fab);
-        drawer = findViewById(R.id.drawer_layout);
+        Toolbar toolbar = findViewById(R.id.toolbar_admin);
+        FloatingActionButton fab = findViewById(R.id.fab_admin);
+        drawer = findViewById(R.id.drawer_layout_admin);
         NavigationView navigationView = findViewById(R.id.nav_view);
 
         setSupportActionBar(toolbar);
 
         fab.setOnClickListener(view -> Snackbar.make(view, "Add new property", Snackbar.LENGTH_LONG)
                 .setAction("Action", null)
-                .setAnchorView(R.id.fab).show());
+                .setAnchorView(R.id.fab_admin).show());
 
         // Build app bar configuration but EXCLUDE the logout item so it doesn't appear as a destination
         mAppBarConfiguration = new AppBarConfiguration.Builder(
@@ -84,10 +84,6 @@ public class AdminDashboardActivity extends AppCompatActivity implements Navigat
         // Clear user session data
         SharedPrefManager sharedPrefManager = SharedPrefManager.getInstance(this);
         sharedPrefManager.clear();
-
-        // Show a logout message
-        Snackbar.make(findViewById(R.id.nav_host_fragment_content_admin),
-                "Successfully logged out", Snackbar.LENGTH_SHORT).show();
 
         // Navigate to login screen
         Intent intent = new Intent(this, LoginActivity.class);
