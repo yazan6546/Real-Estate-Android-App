@@ -54,13 +54,13 @@ public class DeleteCustomersViewModel extends ViewModel {
         userRepository.deleteUser(customer, new RepositoryCallback<>() {
             @Override
             public void onSuccess() {
-                _authState.setValue(AuthState.SUCCESS);
+                _authState.postValue(AuthState.SUCCESS);
             }
 
             @Override
             public void onError(Throwable t) {
                 _errorMessage = t.getMessage();
-                _authState.setValue(AuthState.ERROR);
+                _authState.postValue(AuthState.ERROR);
             }
         });
     }
