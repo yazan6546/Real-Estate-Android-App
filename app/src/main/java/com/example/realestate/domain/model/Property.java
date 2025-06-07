@@ -10,10 +10,30 @@ public class Property {
     private String type;
     private int bedrooms;
     private int bathrooms;
+
+    private boolean isFeatured;
+
+    private double discount;
     private String area;
 
     public Property() {
         // Default constructor
+    }
+
+    public Property(int propertyId, String description, String title, double price, String location,
+                    String image, String type, int bedrooms, int bathrooms, String area, boolean isFeatured, double discount) {
+        this.propertyId = propertyId;
+        this.description = description;
+        this.title = title;
+        this.price = price;
+        this.location = location;
+        this.image = image;
+        this.type = type;
+        this.bedrooms = bedrooms;
+        this.bathrooms = bathrooms;
+        this.area = area;
+        this.isFeatured = isFeatured;
+        this.discount = discount;
     }
 
     // Getters and setters
@@ -95,5 +115,20 @@ public class Property {
 
     public void setArea(String area) {
         this.area = area;
+    }
+    public boolean isFeatured() {
+        return isFeatured;
+    }
+
+    public void setFeatured(boolean featured) {
+        isFeatured = featured;
+    }
+
+    public double getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(double discount) {
+        this.discount = discount;
     }
 }
