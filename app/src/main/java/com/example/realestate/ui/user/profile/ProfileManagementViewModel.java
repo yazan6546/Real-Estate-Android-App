@@ -73,7 +73,7 @@ public class ProfileManagementViewModel extends ViewModel {
     public void loadUserProfile(String email) {
         updateState.postValue(UpdateState.LOADING);
 
-        userRepository.getUserByEmail(email, new RepositoryCallback<User>() {
+        userRepository.getUserByEmail(email, new RepositoryCallback<>() {
             @Override
             public void onSuccess(User user) {
                 currentUser.postValue(user);

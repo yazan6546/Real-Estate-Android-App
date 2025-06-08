@@ -1,19 +1,16 @@
 package com.example.realestate.data.repository;
 
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.Transformations;
 
 import com.example.realestate.data.db.dao.PropertyDao;
 import com.example.realestate.data.db.dao.ReservationDao;
-import com.example.realestate.data.db.entity.PropertyEntity;
 import com.example.realestate.data.db.entity.ReservationEntity;
 import com.example.realestate.data.db.result.CountryCount;
 import com.example.realestate.domain.mapper.ReservationMapper;
 import com.example.realestate.domain.model.Reservation;
 import com.example.realestate.domain.service.CallbackUtils;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -21,11 +18,9 @@ import java.util.concurrent.Executors;
 public class ReservationRepository {
 
     private final ReservationDao reservationDao;
-    private final PropertyDao propertyDao;
 
     public ReservationRepository(ReservationDao reservationDao, PropertyDao propertyDao) {
         this.reservationDao = reservationDao;
-        this.propertyDao = propertyDao;
     }
 
     // Get reservation by ID with transformed domain model
@@ -42,6 +37,11 @@ public class ReservationRepository {
 
     public LiveData<List<Reservation>> getReservationsWithPropertyByUserId(String email) {
         return Transformations.map(reservationDao.getReservationsWithPropertyByUserId(email),
+                ReservationMapper::toDomainWithPropertyList);
+    }
+
+    public LiveData<List<Reservation>> getAllReservationsWithProperty() {
+        return Transformations.map(reservationDao.getAllReservationsWithProperty(),
                 ReservationMapper::toDomainWithPropertyList);
     }
 
