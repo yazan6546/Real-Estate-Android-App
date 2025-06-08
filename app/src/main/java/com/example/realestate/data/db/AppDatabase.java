@@ -24,7 +24,7 @@ import java.io.InputStreamReader;
         PropertyEntity.class,
         FavoriteEntity.class,
         ReservationEntity.class
-}, version = 1
+}, version = 2
 )
 
 @TypeConverters({Converters.class})
@@ -51,6 +51,7 @@ public abstract class AppDatabase extends RoomDatabase {
                                     executeSqlFile(context, db);
                                 }
                             })
+                            .fallbackToDestructiveMigration() // Add this line to handle version changes
                             .build();
                 }
             }
@@ -63,6 +64,8 @@ public abstract class AppDatabase extends RoomDatabase {
      * Now using transactions to maintain integrity
      */
     private static void executeSqlFile(Context context, SupportSQLiteDatabase db) {
+
+//        resetWithTestData(context);
         try {
             InputStream is = context.getAssets().open("test_data_inserts.sql");
             BufferedReader reader = new BufferedReader(new InputStreamReader(is));
@@ -84,6 +87,7 @@ public abstract class AppDatabase extends RoomDatabase {
                     // Execute statement when it's complete (ends with semicolon)
                     if (line.endsWith(";")) {
                         try {
+
                             db.execSQL(statement.toString());
                         } catch (Exception e) {
                             Log.e("AppDatabase", "Error executing SQL: " + statement, e);
@@ -121,6 +125,7 @@ public abstract class AppDatabase extends RoomDatabase {
                     try {
                         // Clear existing data in reverse order of foreign key dependencies
                         db.execSQL("DELETE FROM reservations");
+                        db.execSQL("DELETE FROM properties");
                         db.execSQL("DELETE FROM favorites");
                         db.execSQL("DELETE FROM users");
                         db.setTransactionSuccessful();

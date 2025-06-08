@@ -6,6 +6,7 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
+import androidx.room.Transaction;
 import androidx.room.Update;
 
 import com.example.realestate.data.db.entity.*;
@@ -23,9 +24,11 @@ public interface PropertyDao {
 
      // One-time operations should NOT use LiveData
      @Insert(onConflict = OnConflictStrategy.REPLACE)
+     @Transaction
      void insertAll(List<PropertyEntity> properties);
 
      @Insert(onConflict = OnConflictStrategy.REPLACE)
+     @Transaction
      void insert(PropertyEntity property);
 
      @Delete
