@@ -65,7 +65,8 @@ public class PropertyRepositoryImpl implements PropertyRepository {
     private void savePropertiesToDatabase(List<PropertyEntity> properties, RepositoryCallback<Property> callback) {
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
-                propertyDao.insertAll(properties);
+                propertyDao.insertNewProperties(properties);
+                propertyDao.updateExistingProperties(properties);
                 callback.onSuccess();
             } catch (Exception e) {
                 callback.onError(e);
