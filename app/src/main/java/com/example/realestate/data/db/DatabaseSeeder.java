@@ -70,22 +70,22 @@ public class DatabaseSeeder {
     private List<User> createInitialUsers() {
         List<User> users = new ArrayList<>();
 
-        // Admin user
-        User admin = new User(
-                "Yazan",           // firstName
-                "Naser",           // lastName
-                "yazan@example.com", // email
-                "yazan123A!",        // password
-                "594049488", // phone
-                "Palestine",       // country
-                "Ramallah",            // city
-                "MALE",            // gender
-                false               // isAdmin
+        // Regular users - adding both sets of users to ensure compatibility
+        // First set - Local app users
+        User user1 = new User(
+                "Yazan",
+                "Naser",
+                "yazan@example.com",
+                "yazan123A!",
+                "594049488",
+                "Palestine",
+                "Ramallah",
+                "MALE",
+                false
         );
-        users.add(admin);
+        users.add(user1);
 
-        // Regular customer users
-        User customer1 = new User(
+        User user2 = new User(
                 "Ahmad",
                 "Ali",
                 "ahmad@example.com",
@@ -96,9 +96,9 @@ public class DatabaseSeeder {
                 "MALE",
                 false
         );
-        users.add(customer1);
+        users.add(user2);
 
-        User customer2 = new User(
+        User user3 = new User(
                 "Sara",
                 "Mohammad",
                 "sara@example.com",
@@ -109,9 +109,9 @@ public class DatabaseSeeder {
                 "FEMALE",
                 false
         );
-        users.add(customer2);
+        users.add(user3);
 
-        User customer3 = new User(
+        User user4 = new User(
                 "Omar",
                 "Hassan",
                 "omar@example.com",
@@ -122,9 +122,9 @@ public class DatabaseSeeder {
                 "MALE",
                 false
         );
-        users.add(customer3);
+        users.add(user4);
 
-        User customer4 = new User(
+        User user5 = new User(
                 "Lina",
                 "Khalil",
                 "lina@example.com",
@@ -135,9 +135,9 @@ public class DatabaseSeeder {
                 "FEMALE",
                 false
         );
-        users.add(customer4);
+        users.add(user5);
 
-        User customer5 = new User(
+        User user6 = new User(
                 "Fadi",
                 "Salim",
                 "fadi@example.com",
@@ -148,9 +148,9 @@ public class DatabaseSeeder {
                 "MALE",
                 false
         );
-        users.add(customer5);
+        users.add(user6);
 
-        User customer6 = new User(
+        User user7 = new User(
                 "Nour",
                 "Ahmad",
                 "nour@example.com",
@@ -161,10 +161,87 @@ public class DatabaseSeeder {
                 "FEMALE",
                 false
         );
-        users.add(customer6);
+        users.add(user7);
 
+        // Second set - SQL file users (for favorites)
+        User sqlUser1 = new User(
+                "John",
+                "Smith",
+                "john.smith@example.com",
+                "A!password123",
+                "789123456",
+                "Jordan",
+                "Amman",
+                "MALE",
+                false
+        );
+        users.add(sqlUser1);
 
+        User sqlUser2 = new User(
+                "Sara",
+                "Ahmad",
+                "sara.ahmad@example.com",
+                "securePwd456!",
+                "599123456",
+                "Palestine",
+                "Ramallah",
+                "FEMALE",
+                false
+        );
+        users.add(sqlUser2);
 
+        User sqlUser3 = new User(
+                "Mohamed",
+                "Ali",
+                "mohamed.ali@example.com",
+                "userPass789@",
+                "501234567",
+                "UAE",
+                "Dubai",
+                "MALE",
+                false
+        );
+        users.add(sqlUser3);
+
+        User sqlUser4 = new User(
+                "Layla",
+                "Hassan",
+                "layla.hassan@example.com",
+                "laylaPass2023!",
+                "778456789",
+                "Jordan",
+                "Irbid",
+                "FEMALE",
+                false
+        );
+        users.add(sqlUser4);
+
+        User sqlUser5 = new User(
+                "Omar",
+                "Khalid",
+                "omar.khalid@example.com",
+                "omar2023Secure!",
+                "592345678",
+                "Palestine",
+                "Nablus",
+                "MALE",
+                false
+        );
+        users.add(sqlUser5);
+
+        // Admin users from SQL file
+        User admin1 = new User(
+                "Admin",
+                "User",
+                "admin.user@realestate.com",
+                "adminSecure123!",
+                "777888999",
+                "Jordan",
+                "Al Karak",
+                "MALE",
+                true
+        );
+        users.add(admin1);
 
         return users;
     }
