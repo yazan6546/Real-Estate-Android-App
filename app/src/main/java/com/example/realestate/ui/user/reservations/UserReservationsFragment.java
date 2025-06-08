@@ -81,13 +81,13 @@ public class UserReservationsFragment extends Fragment {
                         viewModel.loadUserReservations(currentUserEmail);
                         break;
                     case 1: // Pending
-                        viewModel.loadUserReservationsByStatus(currentUserEmail, "pending");
+                        viewModel.loadUserReservationsByStatus(currentUserEmail, "Pending");
                         break;
                     case 2: // Confirmed
-                        viewModel.loadUserReservationsByStatus(currentUserEmail, "confirmed");
+                        viewModel.loadUserReservationsByStatus(currentUserEmail, "Confirmed");
                         break;
                     case 3: // Cancelled
-                        viewModel.loadUserReservationsByStatus(currentUserEmail, "cancelled");
+                        viewModel.loadUserReservationsByStatus(currentUserEmail, "Cancelled");
                         break;
                 }
             }
