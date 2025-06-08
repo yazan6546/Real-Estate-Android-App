@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:showIn="navigation_view">    <group android:checkableBehavior="single">
+    tools:showIn="navigation_view">
+    <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_home"
             android:icon="@drawable/ic_home"
@@ -12,6 +13,10 @@
             android:title="@string/menu_properties" />
         <item
             android:id="@+id/nav_your_reservations"
+            android:icon="@drawable/ic_calendar"
+            android:title="@string/menu_your_reservations" />
+        <item
+            android:id="@+id/nav_your_favorites"
             android:icon="@drawable/ic_favorite"
             android:title="@string/menu_your_favorites" />
         <item
@@ -19,17 +24,17 @@
             android:icon="@drawable/ic_star"
             android:title="@string/menu_featured_properties" />
         <item
-            android:id="@+id/nav_profile_management"
-            android:icon="@drawable/ic_person"
-            android:title="@string/menu_profile_management" />
-        <item
             android:id="@+id/nav_contact_us"
             android:icon="@drawable/ic_phone"
             android:title="@string/menu_contact_us" />
     </group>
 
-    <item android:title="@string/account">
+    <item android:title="My Account">
         <menu>
+            <item
+                android:id="@+id/nav_profile_management"
+                android:icon="@drawable/ic_person"
+                android:title="@string/menu_profile_management" />
             <item
                 android:id="@+id/nav_logout"
                 android:icon="@drawable/ic_logout"
@@ -37,4 +42,3 @@
         </menu>
     </item>
 </menu>
-
