@@ -11,6 +11,10 @@
     <color name="blue_200">#FF90CAF9</color>
     <color name="blue_500">#FF1976D2</color>
     <color name="blue_700">#FF003B95</color>
+    <color name="blue_800">#FF002171</color>
+    
+    <!-- Gray color palette -->
+    <color name="gray_300">#FFE0E0E0</color>
     
     <!-- Modern Contact Us Colors -->
     <color name="primary_blue">#FF1E88E5</color>

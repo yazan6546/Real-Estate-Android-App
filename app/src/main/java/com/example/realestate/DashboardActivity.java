@@ -1,10 +1,12 @@
 package com.example.realestate;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,6 +18,9 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.example.realestate.RealEstate;
+import com.example.realestate.data.repository.RepositoryCallback;
+import com.example.realestate.domain.model.User;
 import com.example.realestate.domain.service.SharedPrefManager;
 import com.example.realestate.domain.service.UserSession;
 import com.example.realestate.ui.login.LoginActivity;
@@ -40,7 +45,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         isAdmin = userSession != null && userSession.isAdmin();
 
         // Set the appropriate layout based on role
-        setContentView(isAdmin ? R.layout.activity_admin_dashboard:R.layout.activity_main);
+        setContentView(isAdmin ? R.layout.activity_admin_dashboard : R.layout.activity_main);
 
         // Find views with proper IDs based on role
         Toolbar toolbar = findViewById(isAdmin ? R.id.toolbar_admin : R.id.toolbar_user);
@@ -54,9 +59,10 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
         // Set up the FAB if it exists
         if (fab != null) {
-            fab.setOnClickListener(view -> Snackbar.make(view, isAdmin ? "Add new property" : "Action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null)
-                    .setAnchorView(fab).show());
+            fab.setOnClickListener(
+                    view -> Snackbar.make(view, isAdmin ? "Add new property" : "Action", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null)
+                            .setAnchorView(fab).show());
         }
 
         // Setup navigation based on role
@@ -75,7 +81,8 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             // Find NavController for admin layout
             navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_admin);
         } else {
-            // Build app bar configuration but EXCLUDE the logout item so it doesn't appear as a destination
+            // Build app bar configuration but EXCLUDE the logout item so it doesn't appear
+            // as a destination
             mAppBarConfiguration = new AppBarConfiguration.Builder(
                     R.id.nav_home, R.id.nav_properties, R.id.nav_your_reservations,
                     R.id.nav_featured_properties, R.id.nav_profile_management, R.id.nav_contact_us)
@@ -100,12 +107,28 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         updateNavigationHeader(navigationView, userSession);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // Refresh navigation header when returning to dashboard (e.g., after profile
+        // update)
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        SharedPrefManager sharedPrefManager = SharedPrefManager.getInstance(this);
+        UserSession userSession = sharedPrefManager.readObject("user_session", UserSession.class, null);
+
+        if (navigationView != null && userSession != null) {
+            updateNavigationHeader(navigationView, userSession);
+        }
+    }
+
     private void updateNavigationHeader(NavigationView navigationView, UserSession userSession) {
         View headerView = navigationView.getHeaderView(0);
 
-        // Find header TextViews
+        // Find header views
         TextView usernameTextView = headerView.findViewById(R.id.nav_header_username);
         TextView emailTextView = headerView.findViewById(R.id.nav_header_email);
+        ImageView profileImageView = headerView.findViewById(R.id.nav_header_profile_image);
 
         if (userSession != null) {
             String displayName = userSession.getFirstName() + " " + userSession.getLastName();
@@ -114,7 +137,36 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             }
             usernameTextView.setText(displayName);
             emailTextView.setText(userSession.getEmail());
+
+            // Load profile image from stored user data
+            loadProfileImageForUser(userSession.getEmail(), profileImageView);
         }
+    }
+
+    private void loadProfileImageForUser(String email, ImageView profileImageView) {
+        // Get the user repository and load the current user's profile image
+        RealEstate.appContainer.getUserRepository().getUserByEmail(email, new RepositoryCallback<User>() {
+            @Override
+            public void onSuccess(User user) {
+                if (user != null && user.getProfileImage() != null && !user.getProfileImage().isEmpty()) {
+                    try {
+                        // Use Glide to load the profile image from URI
+                    } catch (Exception e) {
+                        // If loading fails, use default placeholder
+                        profileImageView.setImageResource(R.drawable.ic_person);
+                    }
+                } else {
+                    // Use default placeholder if no profile image is set
+                    profileImageView.setImageResource(R.drawable.ic_person);
+                }
+            }
+
+            @Override
+            public void onError(Throwable t) {
+                // Use default placeholder if user loading fails
+                profileImageView.setImageResource(R.drawable.ic_person);
+            }
+        });
     }
 
     @Override
