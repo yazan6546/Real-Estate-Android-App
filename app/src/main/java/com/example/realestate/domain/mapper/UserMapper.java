@@ -29,13 +29,18 @@ public class UserMapper {
         return user;
     }
 
-    public static UserEntity fromDomain(User user) {
+    public static UserEntity fromDomain(User user, boolean isHash) {
         if (user == null) return null;
 
 
         UserEntity entity = new UserEntity();
         entity.email = user.getEmail();
-        entity.password = Hashing.createPasswordHash(user.getPassword());
+
+        if (isHash)
+            entity.password = Hashing.createPasswordHash(user.getPassword());
+        else
+            entity.password = user.getPassword(); // Use plain password if not hashing
+
         entity.firstName = user.getFirstName();
         entity.lastName = user.getLastName();
         entity.phone = user.getPhone();
@@ -46,6 +51,10 @@ public class UserMapper {
         entity.profileImage = user.getProfileImage();
 
         return entity;
+    }
+
+    public static UserEntity fromDomain(User user) {
+        return fromDomain(user, true);
     }
 
     public static List<User> toDomainList(List<UserEntity> users) {

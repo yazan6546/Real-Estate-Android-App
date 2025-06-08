@@ -71,6 +71,18 @@ public class UserRepository {
         });
     }
 
+    public void updateUserNoHash(User user, RepositoryCallback<User> callback) {
+        Executors.newSingleThreadExecutor().execute(() -> {
+            try {
+                userDao.updateUser(UserMapper.fromDomain(user, false));
+                callback.onSuccess();
+            } catch (Exception e) {
+                Log.e("UserRepository", "Error updating user without hashing password", e);
+                callback.onError(e);
+            }
+        });
+    }
+
     public void updateUser(User user) {
         updateUser(user, CallbackUtils.emptyCallback());
     }
