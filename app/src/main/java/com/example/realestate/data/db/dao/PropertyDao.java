@@ -27,6 +27,14 @@ public interface PropertyDao {
      @Transaction
      void insertAll(List<PropertyEntity> properties);
 
+
+     @Insert(onConflict = OnConflictStrategy.IGNORE)
+     void insertNewProperties(List<PropertyEntity> properties);
+
+     @Update
+     void updateExistingProperties(List<PropertyEntity> properties);
+
+
      @Insert(onConflict = OnConflictStrategy.REPLACE)
      @Transaction
      void insert(PropertyEntity property);
