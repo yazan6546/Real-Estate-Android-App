@@ -31,6 +31,7 @@ public class DeleteCustomersViewModel extends ViewModel {
         this.userRepository = userRepository;
         customers = userRepository.getAllNormalUsers();
         this._authState = new MutableLiveData<>(AuthState.IDLE);
+        this._authState.postValue(AuthState.IDLE);
         this._errorMessage = "Default error message";
 
     }
@@ -63,6 +64,11 @@ public class DeleteCustomersViewModel extends ViewModel {
                 _authState.postValue(AuthState.ERROR);
             }
         });
+
+    }
+
+    public void resetAuthState() {
+        _authState.postValue(AuthState.IDLE);
     }
 
     // Factory for ViewModel creation with dependencies
