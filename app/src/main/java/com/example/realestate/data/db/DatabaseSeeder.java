@@ -1,8 +1,10 @@
 package com.example.realestate.data.db;
 
+import com.example.realestate.data.repository.FavoriteRepository;
 import com.example.realestate.data.repository.PropertyRepository;
 import com.example.realestate.data.repository.ReservationRepository;
 import com.example.realestate.data.repository.UserRepository;
+import com.example.realestate.domain.model.Favorite;
 import com.example.realestate.domain.model.Property;
 import com.example.realestate.domain.model.Reservation;
 import com.example.realestate.domain.model.User;
@@ -17,13 +19,16 @@ import java.util.List;
 public class DatabaseSeeder {
 
     private final UserRepository userRepository;
-    private final PropertyRepository propertyRepository;
     private final ReservationRepository reservationRepository;
+    private final FavoriteRepository favoriteRepository;
 
-    public DatabaseSeeder(UserRepository userRepository, PropertyRepository propertyRepository, ReservationRepository reservationRepository) {
+    public DatabaseSeeder(
+            UserRepository userRepository,
+            ReservationRepository reservationRepository,
+            FavoriteRepository favoriteRepository) {
         this.userRepository = userRepository;
-        this.propertyRepository = propertyRepository;
         this.reservationRepository = reservationRepository;
+        this.favoriteRepository = favoriteRepository;
     }
 
     /**
@@ -31,8 +36,8 @@ public class DatabaseSeeder {
      */
     public void seedDatabase() {
         seedUsers();
-        seedProperties();
         seedReservations();
+        seedFavorites();
     }
 
     /**
@@ -44,19 +49,19 @@ public class DatabaseSeeder {
     }
 
     /**
-     * Creates and inserts initial properties using the repository
-     */
-    public void seedProperties() {
-        List<Property> initialProperties = createInitialProperties();
-        propertyRepository.insertAll(initialProperties);
-    }
-
-    /**
      * Creates and inserts initial reservations using the repository
      */
     public void seedReservations() {
         List<Reservation> initialReservations = createInitialReservations();
         reservationRepository.insertAll(initialReservations);
+    }
+
+    /**
+     * Creates and inserts initial favorites using the repository
+     */
+    public void seedFavorites() {
+        List<Favorite> initialFavorites = createInitialFavorites();
+        favoriteRepository.insertAll(initialFavorites);
     }
 
     /**
@@ -161,118 +166,128 @@ public class DatabaseSeeder {
         return users;
     }
 
-    /**
-     * Creates a list of initial properties similar to the SQL file
-     */
-    private List<Property> createInitialProperties() {
-        List<Property> properties = new ArrayList<>();
-
-        // Create properties similar to SQL file
-        Property property1 = new Property();
-        property1.setPropertyId(101);
-        property1.setTitle("Modern 2-Bedroom Apartment");
-        property1.setType("Apartment");
-        property1.setPrice(85000);
-        property1.setLocation("Ramallah, Palestine");
-        property1.setArea("120 m²");
-        property1.setBedrooms(2);
-        property1.setBathrooms(2);
-        property1.setImage("https://example.com/images/apartment1.jpg");
-        property1.setDescription("Beautiful apartment with city view, close to shopping malls.");
-        property1.setFeatured(true);
-        property1.setDiscount(0);
-        properties.add(property1);
-
-        Property property2 = new Property();
-        property2.setPropertyId(102);
-        property2.setTitle("Luxury Family Villa");
-        property2.setType("Villa");
-        property2.setPrice(450000);
-        property2.setLocation("Amman, Jordan");
-        property2.setArea("350 m²");
-        property2.setBedrooms(5);
-        property2.setBathrooms(4);
-        property2.setImage("https://example.com/images/villa1.jpg");
-        property2.setDescription("Spacious villa with private pool and large garden.");
-        property2.setFeatured(false);
-        property2.setDiscount(0);
-        properties.add(property2);
-
-        Property property3 = new Property();
-        property3.setPropertyId(103);
-        property3.setTitle("Residential Land Plot");
-        property3.setType("Land");
-        property3.setPrice(120000);
-        property3.setLocation("Aleppo, Syria");
-        property3.setArea("500 m²");
-        property3.setBedrooms(0);
-        property3.setBathrooms(0);
-        property3.setImage("https://example.com/images/land1.jpg");
-        property3.setDescription("Prime land suitable for residential development.");
-        property3.setFeatured(false);
-        property3.setDiscount(0);
-        properties.add(property3);
-
-        // Add more properties as needed to match your SQL file
-
-        return properties;
-    }
-
-    /**
-     * Creates a list of initial reservations similar to the SQL file
-     */
     private List<Reservation> createInitialReservations() {
         List<Reservation> reservations = new ArrayList<>();
 
-        // First user reservations
-        reservations.add(createReservation(
-                "yazan@example.com",
-                101,
-                new Date(1751317200000L),
-                new Date(1751749200000L),
-                "Confirmed"
-        ));
+        // John Smith's reservations
+        reservations.add(createReservation("john.smith@example.com", 101, 1751317200000L, 1751749200000L, "Confirmed"));
+        reservations.add(createReservation("john.smith@example.com", 106, 1753908000000L, 1754340000000L, "Pending"));
+        reservations.add(createReservation("john.smith@example.com", 112, 1757602800000L, 1759071600000L, "Confirmed"));
+        reservations.add(createReservation("john.smith@example.com", 104, 1759589600000L, 1760458800000L, "Cancelled"));
+        reservations.add(createReservation("john.smith@example.com", 109, 1761196800000L, 1762060800000L, "Pending"));
+        reservations.add(createReservation("john.smith@example.com", 115, 1764993600000L, 1765943600000L, "Confirmed"));
+        reservations.add(createReservation("john.smith@example.com", 118, 1767290400000L, 1768240400000L, "Pending"));
+        reservations.add(createReservation("john.smith@example.com", 101, 1770055200000L, 1770487200000L, "Confirmed"));
+        reservations.add(createReservation("john.smith@example.com", 106, 1772074800000L, 1772919600000L, "Pending"));
+        reservations.add(createReservation("john.smith@example.com", 112, 1776037200000L, 1777506000000L, "Confirmed"));
 
-        reservations.add(createReservation(
-                "yazan@example.com",
-                102,
-                new Date(1753908000000L),
-                new Date(1754340000000L),
-                "Pending"
-        ));
+        // Sara Ahmad's reservations
+        reservations.add(createReservation("sara.ahmad@example.com", 102, 1751749200000L, 1752613200000L, "Confirmed"));
+        reservations.add(createReservation("sara.ahmad@example.com", 107, 1754340000000L, 1755204000000L, "Pending"));
+        reservations.add(createReservation("sara.ahmad@example.com", 110, 1756684800000L, 1757548800000L, "Confirmed"));
+        reservations.add(createReservation("sara.ahmad@example.com", 114, 1759157600000L, 1760021600000L, "Completed"));
+        reservations.add(createReservation("sara.ahmad@example.com", 116, 1762060800000L, 1762924800000L, "Cancelled"));
+        reservations.add(createReservation("sara.ahmad@example.com", 119, 1763788800000L, 1764652800000L, "Confirmed"));
+        reservations.add(createReservation("sara.ahmad@example.com", 102, 1768154400000L, 1769018400000L, "Pending"));
+        reservations.add(createReservation("sara.ahmad@example.com", 107, 1770487200000L, 1771351200000L, "Confirmed"));
+        reservations.add(createReservation("sara.ahmad@example.com", 110, 1772919600000L, 1773783600000L, "Pending"));
+        reservations.add(createReservation("sara.ahmad@example.com", 114, 1775299200000L, 1776163200000L, "Confirmed"));
 
-        // Second user reservations
-        reservations.add(createReservation(
-                "ahmad@example.com",
-                102,
-                new Date(1751749200000L),
-                new Date(1752613200000L),
-                "Confirmed"
-        ));
+        // Mohamed Ali's reservations
+        reservations.add(createReservation("mohamed.ali@example.com", 103, 1751299200000L, 1751904000000L, "Confirmed"));
+        reservations.add(createReservation("mohamed.ali@example.com", 108, 1754340000000L, 1754944800000L, "Pending"));
+        reservations.add(createReservation("mohamed.ali@example.com", 111, 1757602800000L, 1758207600000L, "Confirmed"));
+        reservations.add(createReservation("mohamed.ali@example.com", 113, 1760458800000L, 1761063600000L, "Cancelled"));
+        reservations.add(createReservation("mohamed.ali@example.com", 117, 1763788800000L, 1764393600000L, "Confirmed"));
+        reservations.add(createReservation("mohamed.ali@example.com", 120, 1766685600000L, 1767290400000L, "Pending"));
+        reservations.add(createReservation("mohamed.ali@example.com", 103, 1769450400000L, 1770055200000L, "Confirmed"));
+        reservations.add(createReservation("mohamed.ali@example.com", 108, 1772919600000L, 1773524400000L, "Pending"));
+        reservations.add(createReservation("mohamed.ali@example.com", 111, 1776037200000L, 1776642000000L, "Confirmed"));
+        reservations.add(createReservation("mohamed.ali@example.com", 117, 1778629200000L, 1779234000000L, "Pending"));
 
-        reservations.add(createReservation(
-                "ahmad@example.com",
-                103,
-                new Date(1754340000000L),
-                new Date(1755204000000L),
-                "Pending"
-        ));
+        // Layla Hassan's reservations
+        reservations.add(createReservation("layla.hassan@example.com", 104, 1751317200000L, 1751749200000L, "Confirmed"));
+        reservations.add(createReservation("layla.hassan@example.com", 109, 1753908000000L, 1754340000000L, "Pending"));
+        reservations.add(createReservation("layla.hassan@example.com", 115, 1757602800000L, 1759071600000L, "Confirmed"));
+        reservations.add(createReservation("layla.hassan@example.com", 118, 1760458800000L, 1760926800000L, "Completed"));
+        reservations.add(createReservation("layla.hassan@example.com", 101, 1762060800000L, 1762492800000L, "Cancelled"));
+        reservations.add(createReservation("layla.hassan@example.com", 106, 1764993600000L, 1765947600000L, "Confirmed"));
+        reservations.add(createReservation("layla.hassan@example.com", 112, 1768154400000L, 1769018400000L, "Pending"));
+        reservations.add(createReservation("layla.hassan@example.com", 104, 1770487200000L, 1770919200000L, "Confirmed"));
+        reservations.add(createReservation("layla.hassan@example.com", 109, 1772919600000L, 1773351600000L, "Pending"));
+        reservations.add(createReservation("layla.hassan@example.com", 115, 1775299200000L, 1776163200000L, "Confirmed"));
 
-        // Add more reservations as needed to match your SQL file
+        // Omar Khalid's reservations
+        reservations.add(createReservation("omar.khalid@example.com", 105, 1751317200000L, 1752613200000L, "Confirmed"));
+        reservations.add(createReservation("omar.khalid@example.com", 110, 1756684800000L, 1757548800000L, "Pending"));
+        reservations.add(createReservation("omar.khalid@example.com", 114, 1759157600000L, 1760021600000L, "Confirmed"));
+        reservations.add(createReservation("omar.khalid@example.com", 116, 1762060800000L, 1762924800000L, "Cancelled"));
+        reservations.add(createReservation("omar.khalid@example.com", 119, 1764993600000L, 1765947600000L, "Confirmed"));
+        reservations.add(createReservation("omar.khalid@example.com", 102, 1768154400000L, 1769018400000L, "Pending"));
+        reservations.add(createReservation("omar.khalid@example.com", 107, 1770487200000L, 1771351200000L, "Confirmed"));
+        reservations.add(createReservation("omar.khalid@example.com", 105, 1772919600000L, 1773351600000L, "Pending"));
+        reservations.add(createReservation("omar.khalid@example.com", 110, 1775299200000L, 1776163200000L, "Confirmed"));
+        reservations.add(createReservation("omar.khalid@example.com", 114, 1777602000000L, 1778246400000L, "Pending"));
 
         return reservations;
     }
 
     /**
+     * Creates a list of initial favorites for users
+     */
+    private List<Favorite> createInitialFavorites() {
+        List<Favorite> favorites = new ArrayList<>();
+
+        // Add some sample favorites for each user
+        // John Smith's favorites
+        favorites.add(createFavorite("john.smith@example.com", 101, new Date(1750000000000L)));
+        favorites.add(createFavorite("john.smith@example.com", 105, new Date(1750100000000L)));
+        favorites.add(createFavorite("john.smith@example.com", 112, new Date(1750200000000L)));
+
+        // Sara Ahmad's favorites
+        favorites.add(createFavorite("sara.ahmad@example.com", 102, new Date(1750010000000L)));
+        favorites.add(createFavorite("sara.ahmad@example.com", 110, new Date(1750110000000L)));
+        favorites.add(createFavorite("sara.ahmad@example.com", 116, new Date(1750210000000L)));
+
+        // Mohamed Ali's favorites
+        favorites.add(createFavorite("mohamed.ali@example.com", 103, new Date(1750020000000L)));
+        favorites.add(createFavorite("mohamed.ali@example.com", 108, new Date(1750120000000L)));
+        favorites.add(createFavorite("mohamed.ali@example.com", 113, new Date(1750220000000L)));
+
+        // Layla Hassan's favorites
+        favorites.add(createFavorite("layla.hassan@example.com", 104, new Date(1750030000000L)));
+        favorites.add(createFavorite("layla.hassan@example.com", 109, new Date(1750130000000L)));
+        favorites.add(createFavorite("layla.hassan@example.com", 115, new Date(1750230000000L)));
+
+        // Omar Khalid's favorites
+        favorites.add(createFavorite("omar.khalid@example.com", 105, new Date(1750040000000L)));
+        favorites.add(createFavorite("omar.khalid@example.com", 107, new Date(1750140000000L)));
+        favorites.add(createFavorite("omar.khalid@example.com", 119, new Date(1750240000000L)));
+
+        return favorites;
+    }
+
+    /**
      * Helper method to create a reservation object
      */
-    private Reservation createReservation(String email, int propertyId, Date startDate, Date endDate, String status) {
+    private Reservation createReservation(String email, int propertyId, long startDateMillis, long endDateMillis, String status) {
         Reservation reservation = new Reservation();
         reservation.setEmail(email);
         reservation.setPropertyId(propertyId);
-        reservation.setStartDate(startDate);
-        reservation.setEndDate(endDate);
+        reservation.setStartDate(new Date(startDateMillis));
+        reservation.setEndDate(new Date(endDateMillis));
         reservation.setStatus(status);
         return reservation;
+    }
+
+    /**
+     * Helper method to create a favorite object
+     */
+    private Favorite createFavorite(String email, int propertyId, Date addedDate) {
+        Favorite favorite = new Favorite();
+        favorite.setEmail(email);
+        favorite.setPropertyId(propertyId);
+        favorite.setAddedDate(addedDate);
+        return favorite;
     }
 }

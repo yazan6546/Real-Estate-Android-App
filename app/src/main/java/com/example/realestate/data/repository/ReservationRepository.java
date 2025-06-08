@@ -70,6 +70,22 @@ public class ReservationRepository {
         addReservation(reservation, CallbackUtils.emptyCallback());
     }
 
+    public void insertAll(List<Reservation> reservations, RepositoryCallback<Void> callback) {
+        Executors.newSingleThreadExecutor().execute(() -> {
+            try {
+                List<ReservationEntity> entities = ReservationMapper.fromDomainList(reservations);
+                reservationDao.insertAll(entities);
+                callback.onSuccess(null);
+            } catch (Exception e) {
+                callback.onError(e);
+            }
+        });
+    }
+
+    public void insertAll(List<Reservation> reservations) {
+        insertAll(reservations, CallbackUtils.emptyCallback());
+    }
+
     // Update an existing reservation
     public void updateReservation(Reservation reservation, RepositoryCallback<Reservation> callback) {
         Executors.newSingleThreadExecutor().execute(() -> {
