@@ -11,14 +11,16 @@ import androidx.room.Update;
 
 import com.example.realestate.data.db.entity.ReservationEntity;
 import com.example.realestate.data.db.entity.ReservationWithPropertyEntity;
+import com.example.realestate.data.db.result.CountryCount;
 
+import java.util.Date;
 import java.util.List;
 
 @Dao
 public interface ReservationDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    long insertReservation(ReservationEntity reservation);
+    void insertReservation(ReservationEntity reservation);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     List<Long> insertAll(List<ReservationEntity> reservations);
@@ -37,6 +39,31 @@ public interface ReservationDao {
 
     @Query("SELECT * FROM reservations WHERE status = :status")
     LiveData<List<ReservationEntity>> getReservationsByStatus(String status);
+
+
+    @Query("SELECT * FROM reservations WHERE email = :userEmail")
+    LiveData<List<ReservationEntity>> getReservationsByUserId(String userEmail);
+
+    /**
+     * Query to get reservations by date range
+     */
+    @Query("SELECT * FROM reservations WHERE start_date >= :startDate AND end_date <= :endDate")
+    LiveData<List<ReservationEntity>> getReservationsByDateRange(Date startDate, Date endDate);
+
+    /**
+     * Transaction query to get reservation with property details by reservation ID
+     */
+
+    @Transaction
+    @Query("SELECT * FROM reservations WHERE reservation_id = :reservationId")
+    LiveData<ReservationWithPropertyEntity> getReservationWithPropertyById(int reservationId);
+
+    /**
+     * Query to get reservation by property ID
+     */
+
+    @Query("SELECT * FROM reservations WHERE property_id = :propertyId")
+    LiveData<List<ReservationEntity>> getReservationsByPropertyId(int propertyId);
 
     /**
      * Transaction query to get reservations with property details for a specific user
@@ -65,4 +92,17 @@ public interface ReservationDao {
     @Transaction
     @Query("SELECT * FROM reservations WHERE status = :status")
     LiveData<List<ReservationWithPropertyEntity>> getAllReservationsWithPropertyByStatus(String status);
+
+
+    @Query("SELECT COUNT(*) FROM reservations")
+    LiveData<Integer> getReservationCount();
+
+
+    // Count the reservations in all customer countries
+    @Query("SELECT country, COUNT(country) as count" +
+            " FROM reservations r " +
+            " JOIN users u ON r.email = u.email " +
+            "GROUP BY u.country" +
+            " ORDER BY COUNT(*) DESC")
+    LiveData<List<CountryCount>> getReservationCountByCountry();
 }
