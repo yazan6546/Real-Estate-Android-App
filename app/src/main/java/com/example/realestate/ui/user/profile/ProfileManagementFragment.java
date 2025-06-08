@@ -115,9 +115,6 @@ public class ProfileManagementFragment extends Fragment {
         setupSpinners();
         setupButtons();
         observeViewModel();
-
-        // Load current user profile
-        loadCurrentUser();
     }
 
     private void initializeViews(View view) {
@@ -291,14 +288,6 @@ public class ProfileManagementFragment extends Fragment {
         } else {
             // Use default placeholder if no profile image is set
             profileImageView.setImageResource(R.drawable.ic_person);
-        }
-    }
-
-    private void loadCurrentUser() {
-        SharedPrefManager sharedPrefManager = SharedPrefManager.getInstance(requireContext());
-        UserSession userSession = sharedPrefManager.readObject("user_session", UserSession.class, null);
-        if (userSession != null) {
-            viewModel.loadUserProfile(userSession.getEmail());
         }
     }
 

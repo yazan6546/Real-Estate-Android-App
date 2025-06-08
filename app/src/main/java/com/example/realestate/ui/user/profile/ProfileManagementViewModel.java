@@ -28,7 +28,7 @@ public class ProfileManagementViewModel extends ViewModel {
     }
 
     // LiveData for UI state
-    private final MutableLiveData<User> currentUser;
+    private final LiveData<User> currentUser;
     private final MutableLiveData<UpdateState> updateState = new MutableLiveData<>(UpdateState.IDLE);
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
     private final MutableLiveData<String[]> cities = new MutableLiveData<>();
@@ -40,9 +40,8 @@ public class ProfileManagementViewModel extends ViewModel {
 
     public ProfileManagementViewModel(UserRepository userRepository, SharedPrefManager sharedPrefManager) {
         this.userRepository = userRepository;
-        currentUser = new MutableLiveData<>();
-        String email = sharedPrefManager.getCurrentUserEmail();
-        loadUserProfile(email);
+        String userEmail = sharedPrefManager.getCurrentUserEmail();
+        currentUser = userRepository.getUserByEmailLive(userEmail);
     }
 
     // Public getters for LiveData
@@ -69,27 +68,6 @@ public class ProfileManagementViewModel extends ViewModel {
     public Uri getProfileImageUri() {
         return profileImageUri;
     } // Load user profile
-
-    public void loadUserProfile(String email) {
-        updateState.postValue(UpdateState.LOADING);
-
-        userRepository.getUserByEmail(email, new RepositoryCallback<>() {
-            @Override
-            public void onSuccess(User user) {
-                currentUser.postValue(user);
-                updateState.postValue(UpdateState.IDLE);
-
-                // Set country and trigger city loading
-                onCountrySelected(user.getCountry());
-            }
-
-            @Override
-            public void onError(Throwable t) {
-                errorMessage.postValue("Failed to load profile: " + t.getMessage());
-                updateState.postValue(UpdateState.ERROR);
-            }
-        });
-    } // Update profile information
 
     public void updateProfile(String firstName, String lastName, String phone,
             User.Gender gender, String country, String city) {
@@ -121,7 +99,6 @@ public class ProfileManagementViewModel extends ViewModel {
             userRepository.updateUser(updatedUser, new RepositoryCallback<>() {
                 @Override
                 public void onSuccess() {
-                    currentUser.postValue(updatedUser);
                     updateState.postValue(UpdateState.SUCCESS);
                     profileImageUri = null; // Reset after successful update
                 }
@@ -170,8 +147,19 @@ public class ProfileManagementViewModel extends ViewModel {
             // Preserve profile image
             updatedUser.setProfileImage(user.getProfileImage());
 
-            // Hash the new password before storing
-            updatedUser.hashAndSetPassword();
+            // Update in repository
+            userRepository.updateUser(updatedUser, new RepositoryCallback<>() {
+                @Override
+                public void onSuccess() {
+                    updateState.postValue(UpdateState.SUCCESS);
+                }
+
+                @Override
+                public void onError(Throwable t) {
+                    errorMessage.postValue("Failed to change password: " + t.getMessage());
+                    updateState.postValue(UpdateState.ERROR);
+                }
+            });
 
         } catch (ValidationException e) {
             errorMessage.postValue(e.getMessage());
