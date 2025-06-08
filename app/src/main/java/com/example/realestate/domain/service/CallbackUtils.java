@@ -19,15 +19,6 @@ public class CallbackUtils {
 
     public static <T> RepositoryCallback<T> emptyCallback() {
         return new RepositoryCallback<>() {
-            @Override
-            public void onSuccess(T result) {
-                // No operation
-            }
-
-            @Override
-            public void onError(Throwable t) {
-                // No operation
-            }
         };
     }
 }

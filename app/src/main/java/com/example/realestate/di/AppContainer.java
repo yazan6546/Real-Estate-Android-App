@@ -33,8 +33,6 @@ public class AppContainer {
 
     private final ReservationRepository reservationRepository;
 
-
-
     public AppContainer(Context context) {
         // Initialize database
         database = AppDatabase.getDatabase(context);
@@ -46,16 +44,19 @@ public class AppContainer {
         propertyRepository = new PropertyRepositoryImpl(apiService, database.propertyDao());
 
         userRepository = new UserRepository(database.userDao());
-
         favoriteRepository = new FavoriteRepository(database.favoriteDao());
 
-        reservationRepository = new ReservationRepository(database.reservationDao());
-
+        reservationRepository = new ReservationRepository(database.reservationDao(), database.propertyDao());
 
         // Hardcoded admin user for initial setup
         User adminUser = new User("admin@admin.com", "Admin123!", true);
 
         userRepository.insertUser(adminUser);
+
+        User user = new User("yazan", "abualoun", "yazanaboeloun@gmail.com", "Admin123!", "594049488", "Jordan",
+                "Amman", User.Gender.MALE, false);
+        userRepository.insertUser(user);
+
     }
 
     // Getters for dependencies

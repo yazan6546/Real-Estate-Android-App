@@ -2,6 +2,7 @@ package com.example.realestate.domain.mapper;
 
 import com.example.realestate.data.db.entity.UserEntity;
 import com.example.realestate.domain.model.User;
+import com.example.realestate.domain.service.Hashing;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,9 +32,10 @@ public class UserMapper {
     public static UserEntity fromDomain(User user) {
         if (user == null) return null;
 
+
         UserEntity entity = new UserEntity();
         entity.email = user.getEmail();
-        entity.password = user.getPassword();
+        entity.password = Hashing.createPasswordHash(user.getPassword());
         entity.firstName = user.getFirstName();
         entity.lastName = user.getLastName();
         entity.phone = user.getPhone();
@@ -49,6 +51,12 @@ public class UserMapper {
     public static List<User> toDomainList(List<UserEntity> users) {
         return users.stream()
                 .map(UserMapper::toDomain)
+                .collect(Collectors.toList());
+    }
+
+    public static List<UserEntity> fromDomainList(List<User> users) {
+        return users.stream()
+                .map(UserMapper::fromDomain)
                 .collect(Collectors.toList());
     }
 }

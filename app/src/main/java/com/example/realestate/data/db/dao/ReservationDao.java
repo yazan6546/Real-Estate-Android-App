@@ -19,6 +19,9 @@ public interface ReservationDao {
     @Insert
     void insertReservation(ReservationEntity reservation);
 
+    @Insert
+    void insertAll(List<ReservationEntity> reservations);
+
     @Query("SELECT * FROM reservations WHERE reservation_id = :reservationId")
     LiveData<ReservationEntity> getReservationById(int reservationId);
 
@@ -46,7 +49,7 @@ public interface ReservationDao {
     // Count the reservations in all customer countries
     @Query("SELECT country, COUNT(country) as count" +
             " FROM reservations r " +
-           " JOIN users u ON r.email = u.email " +
+            " JOIN users u ON r.email = u.email " +
             "GROUP BY u.country" +
             " ORDER BY COUNT(*) DESC")
     LiveData<List<CountryCount>> getReservationCountByCountry();

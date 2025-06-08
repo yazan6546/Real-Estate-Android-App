@@ -16,6 +16,9 @@ public interface FavoriteDao {
     @Insert
     void insertFavorite(FavoriteEntity favorite);
 
+    @Insert
+    void insertAll(List<FavoriteEntity> favorites);
+
     @Query("SELECT * FROM favorites WHERE email = :email")
     LiveData<List<FavoriteEntity>> getFavoriteByEmail(String email);
 

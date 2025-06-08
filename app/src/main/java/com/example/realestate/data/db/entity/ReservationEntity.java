@@ -15,13 +15,15 @@ import java.util.Date;
                     entity = UserEntity.class,
                     parentColumns = "email",
                     childColumns = "email",
-                    onDelete = ForeignKey.RESTRICT
+                    onDelete = ForeignKey.RESTRICT,
+                    onUpdate = ForeignKey.CASCADE
             ),
             @ForeignKey(
                     entity = PropertyEntity.class,
                     parentColumns = "property_id",
                     childColumns = "property_id",
-                    onDelete = ForeignKey.RESTRICT
+                    onDelete = ForeignKey.RESTRICT,
+                    onUpdate = ForeignKey.CASCADE
             )
         }
 )
@@ -33,6 +35,7 @@ public class ReservationEntity {
     @NonNull
     @ColumnInfo(name = "email")
     public String email;
+
     public int property_id;
 
     @ColumnInfo(name = "start_date")

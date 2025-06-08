@@ -1,16 +1,25 @@
 package com.example.realestate.ui.admin.reservations;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.realestate.data.repository.RepositoryCallback;
 import com.example.realestate.data.repository.ReservationRepository;
 import com.example.realestate.domain.model.Reservation;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
 
 public class ViewAllReservationsViewModel extends ViewModel {
     private final ReservationRepository reservationRepository;

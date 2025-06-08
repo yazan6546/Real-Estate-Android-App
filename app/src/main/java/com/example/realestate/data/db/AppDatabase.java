@@ -17,7 +17,7 @@ import androidx.room.TypeConverters;
         PropertyEntity.class,
         FavoriteEntity.class,
         ReservationEntity.class
-}, version = 1
+}, version = 2
 )
 
 @TypeConverters({Converters.class})
@@ -36,6 +36,7 @@ public abstract class AppDatabase extends RoomDatabase {
                 if (instance == null) {
                     instance = Room.databaseBuilder(context.getApplicationContext(),
                                     AppDatabase.class, "realestate_database")
+                            .createFromAsset("realestate_database.db")
                             .build();
                 }
             }

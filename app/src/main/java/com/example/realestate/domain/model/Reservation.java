@@ -18,6 +18,16 @@ public class Reservation {
         // Default constructor
     }
 
+    public Reservation(int reservationId, String email, int propertyId, Date start,
+                       Date end, String status) {
+        this.reservationId = reservationId;
+        this.email = email;
+        this.propertyId = propertyId;
+        this.startDate = start;
+        this.endDate = end;
+        this.status = status;
+    }
+
     // Getters and setters
     public int getReservationId() {
         return reservationId;

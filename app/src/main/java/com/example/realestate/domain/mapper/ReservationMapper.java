@@ -4,7 +4,6 @@ import com.example.realestate.data.db.entity.ReservationEntity;
 import com.example.realestate.data.db.entity.PropertyEntity;
 import com.example.realestate.domain.model.Reservation;
 import com.example.realestate.domain.model.Property;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -53,5 +52,13 @@ public class ReservationMapper {
         entity.endDate = reservation.getEndDate();
         entity.status = reservation.getStatus();
         return entity;
+    }
+
+    public static List<ReservationEntity> fromDomainList(List<Reservation> reservations) {
+        if (reservations == null) return null;
+
+        return reservations.stream()
+                .map(ReservationMapper::fromDomain)
+                .collect(Collectors.toList());
     }
 }

@@ -58,7 +58,7 @@ public class User {
         setPhone("594049488");
         setFirstName("Default");
         setLastName("User");
-        setCountry("PS");
+        setCountry("Palestine");
         setCity("Tulkarem");
     }
 

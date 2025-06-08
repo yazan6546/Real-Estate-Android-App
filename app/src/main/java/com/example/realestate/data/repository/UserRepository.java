@@ -24,7 +24,6 @@ public class UserRepository {
     }
 
     public void insertUser(User user, RepositoryCallback<User> callback) {
-
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
                 userDao.insertUser(UserMapper.fromDomain(user));
@@ -36,9 +35,24 @@ public class UserRepository {
         });
     }
 
-    public void insertUser(User user) {
+    public void insertAll(List<User> users, RepositoryCallback<Void> callback) {
 
-        user.hashAndSetPassword();
+        Executors.newSingleThreadExecutor().execute(() -> {
+            try {
+                userDao.insertAll(UserMapper.fromDomainList(users));
+                callback.onSuccess();
+            } catch (Exception e) {
+                Log.e("UserRepository", "Error inserting initial users", e);
+                callback.onError(e);
+            }
+        });
+    }
+
+    public void insertAll(List<User> users) {
+        insertAll(users, CallbackUtils.emptyCallback());
+    }
+
+    public void insertUser(User user) {
         insertUser(user, CallbackUtils.emptyCallback());
     }
 

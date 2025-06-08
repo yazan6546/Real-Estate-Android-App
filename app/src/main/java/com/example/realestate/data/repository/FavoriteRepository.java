@@ -1,5 +1,7 @@
 package com.example.realestate.data.repository;
 
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Transformations;
 
@@ -7,6 +9,7 @@ import com.example.realestate.data.db.dao.FavoriteDao;
 import com.example.realestate.data.db.entity.FavoriteEntity;
 import com.example.realestate.domain.mapper.FavoriteMapper;
 import com.example.realestate.domain.model.Favorite;
+import com.example.realestate.domain.service.CallbackUtils;
 
 import java.util.Date;
 import java.util.List;
@@ -17,6 +20,24 @@ public class FavoriteRepository {
 
     public FavoriteRepository(FavoriteDao favoriteDao) {
         this.favoriteDao = favoriteDao;
+    }
+
+
+    public void insertAll(List<Favorite> favorites, RepositoryCallback<Void> callback) {
+        Executors.newSingleThreadExecutor().execute(() -> {
+            try {
+                List<FavoriteEntity> entities = FavoriteMapper.fromDomainList(favorites);
+                favoriteDao.insertAll(entities);
+                callback.onSuccess();
+            } catch (Exception e) {
+                callback.onError(e);
+                Log.e("FavoriteRepository", "Error inserting favorites", e);
+            }
+        });
+    }
+
+    public void insertAll(List<Favorite> favorites) {
+        insertAll(favorites, CallbackUtils.emptyCallback());
     }
 
     public LiveData<List<Favorite>> getFavoritesByEmail(String email) {
