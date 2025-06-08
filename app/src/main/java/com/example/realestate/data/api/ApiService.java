@@ -8,6 +8,6 @@ import retrofit2.Call;
 import retrofit2.http.GET;
 
 public interface ApiService {
-    @GET("de64caab-e146-480e-ad01-14a792488977")
+    @GET("8b40aff2-ee2b-4407-9c9e-a908eadcc7ac")
     Call<JsonResponse> getJson();
 }
