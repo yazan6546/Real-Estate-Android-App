@@ -23,21 +23,14 @@ public class ReservationRepository {
         this.reservationDao = reservationDao;
     }
 
-    // Get reservation by ID with transformed domain model
-    public LiveData<Reservation> getReservationById(int reservationId) {
-        return Transformations.map(reservationDao.getReservationById(reservationId),
-                ReservationMapper::toDomain);
-    } // Get reservations by user with transformed domain models
-
-    public LiveData<List<Reservation>> getReservationsByUserId(String email) {
-        // Property details could be loaded here if needed
-        return Transformations.map(reservationDao.getReservationsByUserId(email),
-                ReservationMapper::toDomainList);
-    } // Get reservations by user with property details included
-
     public LiveData<List<Reservation>> getReservationsWithPropertyByUserId(String email) {
         return Transformations.map(reservationDao.getReservationsWithPropertyByUserId(email),
                 ReservationMapper::toDomainWithPropertyList);
+    }
+
+    public LiveData<List<Reservation>> getReservationWithPropertyByUserIdAndStatus(String email, String status) {
+        return Transformations.map(reservationDao.getReservationsWithPropertyByUserIdAndStatus(email,
+                status), ReservationMapper::toDomainWithPropertyList);
     }
 
     public LiveData<List<Reservation>> getAllReservationsWithProperty() {
