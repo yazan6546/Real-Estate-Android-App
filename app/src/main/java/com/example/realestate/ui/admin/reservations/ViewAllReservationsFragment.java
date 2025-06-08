@@ -5,6 +5,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -33,7 +35,8 @@ public class ViewAllReservationsFragment extends Fragment {
 
     private ViewAllReservationsViewModel viewModel;
     private RecyclerView reservationsRecyclerView;
-    private TextView emptyView;
+    private LinearLayout emptyView;
+    private ProgressBar progressBar;
     private AdminReservationAdapter adapter;
     private TabLayout tabLayout;
 
@@ -45,6 +48,7 @@ public class ViewAllReservationsFragment extends Fragment {
         // Initialize views
         reservationsRecyclerView = root.findViewById(R.id.reservationsRecyclerView);
         emptyView = root.findViewById(R.id.emptyView);
+        progressBar = root.findViewById(R.id.progressBar);
         tabLayout = root.findViewById(R.id.tabLayout);
 
         return root;
@@ -63,6 +67,10 @@ public class ViewAllReservationsFragment extends Fragment {
         setupRecyclerView();
         setupTabLayout();
         observeViewModel();
+
+        // Load all reservations initially with a loading indicator
+        showLoading(true);
+        viewModel.loadAllReservations();
     }
 
     private void setupRecyclerView() {
@@ -75,6 +83,9 @@ public class ViewAllReservationsFragment extends Fragment {
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
+                // Show loading indicator
+                showLoading(true);
+
                 // Filter reservations based on selected tab
                 switch (tab.getPosition()) {
                     case 0: // All
@@ -106,6 +117,9 @@ public class ViewAllReservationsFragment extends Fragment {
 
     private void observeViewModel() {
         viewModel.getReservations().observe(getViewLifecycleOwner(), reservations -> {
+            // Hide loading indicator
+            showLoading(false);
+
             // Group the reservations by user and update adapter
             Map<String, List<Reservation>> userReservations = viewModel.getReservationsByUser(reservations);
             adapter.setUserReservations(userReservations);
@@ -119,9 +133,12 @@ public class ViewAllReservationsFragment extends Fragment {
                 reservationsRecyclerView.setVisibility(View.VISIBLE);
             }
         });
+    }
 
-        // Load all reservations initially
-        viewModel.loadAllReservations();
+    private void showLoading(boolean show) {
+        progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
+        reservationsRecyclerView.setVisibility(show ? View.GONE : View.VISIBLE);
+        emptyView.setVisibility(View.GONE);
     }
 
     /**
@@ -221,7 +238,6 @@ public class ViewAllReservationsFragment extends Fragment {
             UserHeaderViewHolder(@NonNull View itemView) {
                 super(itemView);
                 userEmailTextView = itemView.findViewById(R.id.tvUserEmail);
-                // Find the expand/collapse icon, or create and add it if needed
                 expandIcon = itemView.findViewById(R.id.ivExpandIcon);
 
                 // Set click listener for the entire header
