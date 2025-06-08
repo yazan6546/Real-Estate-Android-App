@@ -10,15 +10,13 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="16dp">
+        android:orientation="vertical">
 
-        <!-- Property Image -->
+        <!-- Property Image - Moved to top and made wider -->
         <ImageView
             android:id="@+id/ivPropertyImage"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_marginEnd="12dp"
+            android:layout_width="match_parent"
+            android:layout_height="160dp"
             android:scaleType="centerCrop"
             android:background="@android:color/darker_gray"
             android:src="@drawable/ic_building" />
@@ -26,7 +24,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="16dp">
 
             <!-- Property Header -->
             <LinearLayout
@@ -66,6 +65,16 @@
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:textColor="@android:color/black"
+                android:layout_marginBottom="4dp" />
+
+            <!-- Property Type - Added below title -->
+            <TextView
+                android:id="@+id/tvPropertyType"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Apartment"
+                android:textSize="14sp"
+                android:textColor="@color/blue_700"
                 android:layout_marginBottom="8dp" />
 
             <!-- Property Description -->
@@ -88,7 +97,6 @@
                 android:layout_marginBottom="8dp">
 
                 <ImageView
-                    android:id="@+id/propertyImageView1"
                     android:layout_width="16dp"
                     android:layout_height="16dp"
                     android:src="@drawable/ic_building"
@@ -106,19 +114,19 @@
 
             </LinearLayout>
 
-            <!-- Reservation Date Range -->
+            <!-- Reservation Date Range - Fixed alignment -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginBottom="8dp">
+                android:layout_marginBottom="8dp"
+                android:gravity="center_vertical">
 
                 <ImageView
                     android:layout_width="16dp"
                     android:layout_height="16dp"
                     android:src="@drawable/ic_calendar"
                     android:layout_marginEnd="8dp"
-                    android:layout_gravity="center_vertical"
                     app:tint="@android:color/darker_gray" />
 
                 <TextView
