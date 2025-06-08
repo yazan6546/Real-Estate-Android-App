@@ -10,6 +10,7 @@ import androidx.room.OnConflictStrategy;
 
 import com.example.realestate.data.db.entity.*;
 import com.example.realestate.data.db.result.GenderCount;
+import com.example.realestate.domain.model.User;
 
 import java.util.List;
 
@@ -19,6 +20,10 @@ public interface UserDao {
 
      @Insert(onConflict = OnConflictStrategy.IGNORE)
      void insertUser(UserEntity user);
+
+
+     @Insert(onConflict = OnConflictStrategy.IGNORE)
+     void insertAll(List<UserEntity> user);
 
      @Update
      void updateUser(UserEntity user);
