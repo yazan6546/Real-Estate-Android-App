@@ -1,4 +1,4 @@
-package com.example.realestate.ui.profile;
+package com.example.realestate.ui.user.profile;
 
 import android.net.Uri;
 
