@@ -51,6 +51,7 @@ public class DeleteCustomersFragment extends Fragment implements CustomerAdapter
                         RealEstate.appContainer.getUserRepository()))
                 .get(DeleteCustomersViewModel.class);
 
+
         // Set up adapter
         customerAdapter = new CustomerAdapter(this);
 
@@ -78,6 +79,7 @@ public class DeleteCustomersFragment extends Fragment implements CustomerAdapter
                 case SUCCESS:
                     Toast.makeText(requireContext(), "Customer deleted successfully", Toast.LENGTH_SHORT).show();
                     progressBar.setVisibility(View.GONE);
+                    viewModel.resetAuthState();
                     break;
                 case ERROR:
                     progressBar.setVisibility(View.GONE);
