@@ -3,6 +3,7 @@ package com.example.realestate.ui.admin.dashboard;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -43,16 +44,32 @@ public class CountryAdapter extends RecyclerView.Adapter<CountryAdapter.CountryV
     static class CountryViewHolder extends RecyclerView.ViewHolder {
         private final TextView countryNameTextView;
         private final TextView countTextView;
+        private final ImageView countryFlagImageView;
 
         CountryViewHolder(@NonNull View itemView) {
             super(itemView);
             countryNameTextView = itemView.findViewById(R.id.countryNameTextView);
             countTextView = itemView.findViewById(R.id.countTextView);
+            countryFlagImageView = itemView.findViewById(R.id.countryFlagImageView);
         }
 
         void bind(CountryStatItem item) {
             countryNameTextView.setText(item.getCountry());
             countTextView.setText(String.valueOf(item.getCount()));
+            // Set country flag image based on the country name
+
+            switch (item.getCountry()) {
+                case "Palestine":
+                    countryFlagImageView.setImageResource(R.drawable.flag_palestine);
+                    break;
+                case "Jordan":
+                    countryFlagImageView.setImageResource(R.drawable.flag_jordan);
+                    break;
+                case "UAE":
+                    countryFlagImageView.setImageResource(R.drawable.flag_uae);
+                    break;
+            }
+
         }
     }
 }
