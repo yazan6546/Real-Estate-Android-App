@@ -21,6 +21,8 @@ public class SharedPrefManager {
                 SHARED_PREF_PRIVATE);
         editor = sharedPreferences.edit();
     }
+
+
     public boolean writeString(String key, String value) {
         editor.putString(key, value);
         return editor.commit();
@@ -53,6 +55,17 @@ public class SharedPrefManager {
         } catch (Exception e) {
             return defaultValue;
         }
+    }
+
+    public String getCurrentUserEmail() {
+        // Retrieve the current user email from SharedPreferences
+        UserSession userSession = this.readObject("user_session", UserSession.class, null);
+
+        if (userSession != null) {
+            return userSession.getEmail();
+        }
+        else
+            return null;
     }
 
     public void clear() {

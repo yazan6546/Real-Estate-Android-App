@@ -103,9 +103,12 @@ public class ProfileManagementFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        SharedPrefManager sharedPrefManager = SharedPrefManager.getInstance(requireContext());
+
         // Initialize ViewModel
         viewModel = new ViewModelProvider(this,
-                new ProfileManagementViewModel.Factory(RealEstate.appContainer.getUserRepository()))
+                new ProfileManagementViewModel.Factory(RealEstate.appContainer.getUserRepository(),
+                        sharedPrefManager))
                 .get(ProfileManagementViewModel.class);
 
         initializeViews(view);

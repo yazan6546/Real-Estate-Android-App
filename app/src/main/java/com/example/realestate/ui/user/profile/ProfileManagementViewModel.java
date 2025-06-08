@@ -14,6 +14,7 @@ import com.example.realestate.domain.exception.ValidationException;
 import com.example.realestate.domain.model.User;
 import com.example.realestate.domain.service.AuthenticationService;
 import com.example.realestate.domain.service.Hashing;
+import com.example.realestate.domain.service.SharedPrefManager;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,7 +28,7 @@ public class ProfileManagementViewModel extends ViewModel {
     }
 
     // LiveData for UI state
-    private final MutableLiveData<User> currentUser = new MutableLiveData<>();
+    private final MutableLiveData<User> currentUser;
     private final MutableLiveData<UpdateState> updateState = new MutableLiveData<>(UpdateState.IDLE);
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
     private final MutableLiveData<String[]> cities = new MutableLiveData<>();
@@ -40,9 +41,11 @@ public class ProfileManagementViewModel extends ViewModel {
     private final Map<String, String[]> countryCityMap = new HashMap<>();
     private final Map<String, String> countryCodeMap = new HashMap<>();
 
-    public ProfileManagementViewModel(UserRepository userRepository) {
+    public ProfileManagementViewModel(UserRepository userRepository, SharedPrefManager sharedPrefManager) {
         this.userRepository = userRepository;
-        initializeCountryData();
+        currentUser = new MutableLiveData<>();
+        String email = sharedPrefManager.getCurrentUserEmail();
+        loadUserProfile(email);
     }
 
     // Public getters for LiveData
@@ -155,14 +158,6 @@ public class ProfileManagementViewModel extends ViewModel {
             return;
         }
 
-        // Validate new password
-        if (!AuthenticationService.validatePassword(newPassword)) {
-            errorMessage.postValue(
-                    "New password must be at least 6 characters with uppercase, lowercase, digit, and special character");
-            updateState.postValue(UpdateState.ERROR);
-            return;
-        }
-
         // Check password confirmation
         if (!newPassword.equals(confirmPassword)) {
             errorMessage.postValue("New passwords do not match");
@@ -180,21 +175,6 @@ public class ProfileManagementViewModel extends ViewModel {
 
             // Hash the new password before storing
             updatedUser.hashAndSetPassword();
-
-            // Update in repository
-            userRepository.updateUser(updatedUser, new RepositoryCallback<>() {
-                @Override
-                public void onSuccess() {
-                    currentUser.postValue(updatedUser);
-                    updateState.postValue(UpdateState.SUCCESS);
-                }
-
-                @Override
-                public void onError(Throwable t) {
-                    errorMessage.postValue("Failed to change password: " + t.getMessage());
-                    updateState.postValue(UpdateState.ERROR);
-                }
-            });
 
         } catch (ValidationException e) {
             errorMessage.postValue(e.getMessage());
@@ -243,9 +223,11 @@ public class ProfileManagementViewModel extends ViewModel {
     // Factory for ViewModel creation
     public static class Factory implements ViewModelProvider.Factory {
         private final UserRepository userRepository;
+        private final SharedPrefManager sharedPrefManager;
 
-        public Factory(UserRepository userRepository) {
+        public Factory(UserRepository userRepository, SharedPrefManager sharedPrefManager) {
             this.userRepository = userRepository;
+            this.sharedPrefManager = sharedPrefManager;
         }
 
         @NonNull
@@ -253,7 +235,7 @@ public class ProfileManagementViewModel extends ViewModel {
         @SuppressWarnings("unchecked")
         public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
             if (modelClass.isAssignableFrom(ProfileManagementViewModel.class)) {
-                return (T) new ProfileManagementViewModel(userRepository);
+                return (T) new ProfileManagementViewModel(userRepository, sharedPrefManager);
             }
             throw new IllegalArgumentException("Unknown ViewModel class: " + modelClass.getName());
         }
