@@ -116,23 +116,23 @@ public class ViewAllReservationsFragment extends Fragment {
     }
 
     private void observeViewModel() {
-        viewModel.getReservations().observe(getViewLifecycleOwner(), reservations -> {
-            // Hide loading indicator
-            showLoading(false);
-
-            // Group the reservations by user and update adapter
-            Map<String, List<Reservation>> userReservations = viewModel.getReservationsByUser(reservations);
-            adapter.setUserReservations(userReservations);
-
-            // Show/hide empty view based on whether there are reservations
-            if (reservations == null || reservations.isEmpty()) {
-                emptyView.setVisibility(View.VISIBLE);
-                reservationsRecyclerView.setVisibility(View.GONE);
-            } else {
-                emptyView.setVisibility(View.GONE);
-                reservationsRecyclerView.setVisibility(View.VISIBLE);
-            }
-        });
+//        viewModel.getReservations().observe(getViewLifecycleOwner(), reservations -> {
+//            // Hide loading indicator
+//            showLoading(false);
+//
+//            // Group the reservations by user and update adapter
+//            Map<String, List<Reservation>> userReservations = viewModel.getReservationsByUser(reservations);
+//            adapter.setUserReservations(userReservations);
+//
+//            // Show/hide empty view based on whether there are reservations
+//            if (reservations == null || reservations.isEmpty()) {
+//                emptyView.setVisibility(View.VISIBLE);
+//                reservationsRecyclerView.setVisibility(View.GONE);
+//            } else {
+//                emptyView.setVisibility(View.GONE);
+//                reservationsRecyclerView.setVisibility(View.VISIBLE);
+//            }
+//        });
     }
 
     private void showLoading(boolean show) {
