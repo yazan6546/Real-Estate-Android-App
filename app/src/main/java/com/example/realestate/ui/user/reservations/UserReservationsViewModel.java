@@ -55,9 +55,7 @@ public class UserReservationsViewModel extends ViewModel {
                             .collect(java.util.stream.Collectors.toList());
                 });
 
-        reservations.addSource(currentFilteredSource, reservationList -> {
-            reservations.setValue(reservationList);
-        });
+        reservations.addSource(currentFilteredSource, reservations::setValue);
     }
 
     private void clearAllSources() {
