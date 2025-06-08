@@ -14,6 +14,7 @@
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_marginEnd="12dp"
+        android:contentDescription="TODO"
         android:src="@drawable/ic_person"
         app:tint="@android:color/darker_gray" />
 
@@ -31,6 +32,7 @@
         android:id="@+id/ivExpandIcon"
         android:layout_width="24dp"
         android:layout_height="24dp"
+        android:contentDescription="TODO"
         android:src="@drawable/ic_expand_more"
         app:tint="@android:color/darker_gray" />
 
