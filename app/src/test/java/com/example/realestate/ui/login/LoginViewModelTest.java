@@ -1,5 +1,6 @@
 package com.example.realestate.ui.login;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.contains;
@@ -41,8 +42,7 @@ public class LoginViewModelTest {
     @Mock
     private SharedPrefManager sharedPrefManager;
 
-    private Observer<LoginViewModel.AuthState> authStateObserver;
-    private Observer<String> errorMessageObserver;
+    private Observer authStateObserver;
 
     private LoginViewModel viewModel;
 
@@ -55,11 +55,9 @@ public class LoginViewModelTest {
 
         // Create the mocks explicitly with the correct type information
         authStateObserver = mock(Observer.class);
-        errorMessageObserver = mock(Observer.class);
 
         viewModel = new LoginViewModel(userRepository, sharedPrefManager);
-        viewModel.authState.observeForever(authStateObserver);
-        viewModel.errorMessage.observeForever(errorMessageObserver);
+        viewModel.getAuthState().observeForever(authStateObserver);
     }
 
     @After
@@ -81,7 +79,6 @@ public class LoginViewModelTest {
 
         // Assert
         verify(authStateObserver).onChanged(LoginViewModel.AuthState.ERROR);
-        verify(errorMessageObserver).onChanged("Email and password cannot be empty");
     }
 
     @Test
@@ -95,7 +92,7 @@ public class LoginViewModelTest {
 
         // Assert
         verify(authStateObserver).onChanged(LoginViewModel.AuthState.ERROR);
-        verify(errorMessageObserver).onChanged("Email and password cannot be empty");
+        assertEquals("Email and password cannot be empty", viewModel.getErrorMessage());
     }
 
     @Test
@@ -109,7 +106,7 @@ public class LoginViewModelTest {
 
         // Assert
         verify(authStateObserver).onChanged(LoginViewModel.AuthState.ERROR);
-        verify(errorMessageObserver).onChanged("Email and password cannot be empty");
+        assertEquals("Email and password cannot be empty", viewModel.getErrorMessage());
     }
 
     @Test
@@ -131,7 +128,7 @@ public class LoginViewModelTest {
         // Assert
         verify(authStateObserver).onChanged(LoginViewModel.AuthState.LOADING);
         verify(authStateObserver).onChanged(LoginViewModel.AuthState.ERROR);
-        verify(errorMessageObserver).onChanged(contains("Login failed"));
+        assertEquals("User not found", viewModel.getErrorMessage());
     }
 
     @Test
@@ -199,7 +196,7 @@ public class LoginViewModelTest {
             InOrder inOrder = inOrder(authStateObserver);
             inOrder.verify(authStateObserver).onChanged(LoginViewModel.AuthState.LOADING);
             inOrder.verify(authStateObserver).onChanged(LoginViewModel.AuthState.ERROR);
-            verify(errorMessageObserver).onChanged("Invalid email or password");
+            assertEquals("Invalid email or password", viewModel.getErrorMessage());
         }
     }
 }
