@@ -27,29 +27,6 @@ public class ViewAllReservationsViewModel extends ViewModel {
 
     public ViewAllReservationsViewModel(ReservationRepository reservationRepository) {
         this.reservationRepository = reservationRepository;
-
-        Date startDate = null;
-        Date endDate = null;
-        try {
-            startDate = new SimpleDateFormat("yyyy-MM-dd", Locale.US).parse("2025-07-01");
-            endDate = new SimpleDateFormat("yyyy-MM-dd", Locale.US).parse("2025-07-04");
-        } catch (ParseException e) {
-            Log.i("ParseException", Objects.requireNonNull(e.getMessage()));
-        }
-        Reservation reservation = new Reservation(1, "yazanaboeloun@gmail.com",101, startDate, endDate, "EXPIRED");
-        reservationRepository.addReservation(reservation, new RepositoryCallback<>() {
-
-            @Override
-            public void onSuccess(Reservation result) {
-                Log.d("Reservation", "Added successfully: " + result);
-                loadAllReservations(); // Reload after adding
-            }
-
-            @Override
-            public void onError(Throwable errorMessage) {
-                Log.e("Reservation", "Error adding reservation: " + errorMessage.getMessage());
-            }
-        });
     }
 
     public LiveData<List<Reservation>> getReservations() {
