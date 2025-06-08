@@ -6,13 +6,13 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.google.android.material.card.MaterialCardView;
 import com.example.realestate.databinding.FragmentContactUsBinding;
 
 public class ContactUsFragment extends Fragment {
@@ -33,9 +33,9 @@ public class ContactUsFragment extends Fragment {
     }
 
     private void setupButtons() {
-        LinearLayout btnCallUs = binding.btnCallUs;
-        LinearLayout btnLocateUs = binding.btnLocateUs;
-        LinearLayout btnEmailUs = binding.btnEmailUs;
+        MaterialCardView btnCallUs = binding.btnCallUs;
+        MaterialCardView btnLocateUs = binding.btnLocateUs;
+        MaterialCardView btnEmailUs = binding.btnEmailUs;
 
         // Call Us Button
         btnCallUs.setOnClickListener(v -> {
