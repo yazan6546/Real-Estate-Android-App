@@ -26,11 +26,11 @@
 <!--        android:label="@string/menu_featured_properties"-->
 <!--        tools:layout="@layout/fragment_featured_properties" />-->
 
-<!--    <fragment-->
-<!--        android:id="@+id/nav_profile_management"-->
-<!--        android:name="com.example.realestate.ui.profile.ProfileManagementFragment"-->
-<!--        android:label="@string/menu_profile_management"-->
-<!--        tools:layout="@layout/fragment_profile_management" />-->
+    <fragment
+        android:id="@+id/nav_profile_management"
+        android:name="com.example.realestate.ui.profile.ProfileManagementFragment"
+        android:label="@string/menu_profile_management"
+        tools:layout="@layout/fragment_profile_management" />
 
     <fragment
         android:id="@+id/nav_contact_us"
