@@ -53,4 +53,12 @@ public class ReservationMapper {
         entity.status = reservation.getStatus();
         return entity;
     }
+
+    public static List<ReservationEntity> fromDomainList(List<Reservation> reservations) {
+        if (reservations == null) return null;
+
+        return reservations.stream()
+                .map(ReservationMapper::fromDomain)
+                .collect(Collectors.toList());
+    }
 }

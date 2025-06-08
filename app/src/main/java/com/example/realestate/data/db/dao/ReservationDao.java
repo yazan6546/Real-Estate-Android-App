@@ -19,6 +19,9 @@ public interface ReservationDao {
     @Insert
     void insertReservation(ReservationEntity reservation);
 
+    @Insert
+    void insertAll(List<ReservationEntity> reservations);
+
     @Query("SELECT * FROM reservations WHERE reservation_id = :reservationId")
     LiveData<ReservationEntity> getReservationById(int reservationId);
 
