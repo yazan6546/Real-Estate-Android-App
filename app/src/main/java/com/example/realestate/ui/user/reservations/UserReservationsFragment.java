@@ -170,6 +170,7 @@ public class UserReservationsFragment extends Fragment {
         static class ReservationViewHolder extends RecyclerView.ViewHolder {
             private final TextView tvPropertyId;
             private final TextView tvPropertyTitle;
+            private final TextView tvPropertyType; // Added property type
             private final TextView tvPropertyDescription;
             private final TextView tvPropertyLocation;
             private final TextView tvReservationStartDateTime;
@@ -181,6 +182,7 @@ public class UserReservationsFragment extends Fragment {
                 super(itemView);
                 tvPropertyId = itemView.findViewById(R.id.tvPropertyId);
                 tvPropertyTitle = itemView.findViewById(R.id.tvPropertyTitle);
+                tvPropertyType = itemView.findViewById(R.id.tvPropertyType); // Added property type
                 tvPropertyDescription = itemView.findViewById(R.id.tvPropertyDescription);
                 tvPropertyLocation = itemView.findViewById(R.id.tvPropertyLocation);
                 tvReservationStartDateTime = itemView.findViewById(R.id.tvReservationStartDate);
@@ -196,10 +198,12 @@ public class UserReservationsFragment extends Fragment {
                 // Property details
                 if (reservation.getProperty() != null) {
                     tvPropertyTitle.setText(reservation.getProperty().getTitle());
+                    tvPropertyType.setText(reservation.getProperty().getType()); // Set property type
                     tvPropertyDescription.setText(reservation.getProperty().getDescription());
                     tvPropertyLocation.setText(reservation.getProperty().getLocation());
                 } else {
                     tvPropertyTitle.setText("--");
+                    tvPropertyType.setText("Unknown Type"); // Default value when property is null
                     tvPropertyDescription.setText(R.string.property_details_not_available);
                     tvPropertyLocation.setText(R.string.location_not_specified);
                 }
