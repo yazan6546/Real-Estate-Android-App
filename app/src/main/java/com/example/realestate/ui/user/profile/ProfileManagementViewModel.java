@@ -12,7 +12,6 @@ import com.example.realestate.data.repository.RepositoryCallback;
 import com.example.realestate.data.repository.UserRepository;
 import com.example.realestate.domain.exception.ValidationException;
 import com.example.realestate.domain.model.User;
-import com.example.realestate.domain.service.AuthenticationService;
 import com.example.realestate.domain.service.Hashing;
 import com.example.realestate.domain.service.SharedPrefManager;
 
@@ -37,9 +36,6 @@ public class ProfileManagementViewModel extends ViewModel {
     // Profile image URI
     private Uri profileImageUri;
 
-    // Country and city data (same as registration)
-    private final Map<String, String[]> countryCityMap = new HashMap<>();
-    private final Map<String, String> countryCodeMap = new HashMap<>();
 
     public ProfileManagementViewModel(UserRepository userRepository, SharedPrefManager sharedPrefManager) {
         this.userRepository = userRepository;
@@ -197,27 +193,6 @@ public class ProfileManagementViewModel extends ViewModel {
         if (code != null) {
             countryCode.postValue(code);
         }
-    }
-
-    private void initializeCountryData() {
-        // Initialize country-city mapping (same as registration)
-        countryCityMap.put("Palestine", new String[] { "Tulkarem", "Nablus", "Ramallah", "Jerusalem", "Gaza", "Hebron",
-                "Bethlehem", "Jenin", "Qalqilya", "Salfit" });
-        countryCityMap.put("Jordan", new String[] { "Amman", "Zarqa", "Irbid", "Russeifa", "Wadi as-Sir", "Aqaba",
-                "Madaba", "As-Salt", "Al-Mafraq", "Jerash" });
-        countryCityMap.put("Lebanon", new String[] { "Beirut", "Tripoli", "Sidon", "Tyre", "Jounieh", "Baalbek",
-                "Byblos", "Zahle", "Aley", "Nabatieh" });
-        countryCityMap.put("Syria", new String[] { "Damascus", "Aleppo", "Homs", "Latakia", "Hama", "Deir ez-Zor",
-                "Raqqa", "Daraa", "Al-Hasakah", "Qamishli" });
-        countryCityMap.put("Egypt", new String[] { "Cairo", "Alexandria", "Giza", "Luxor", "Aswan", "Sharm El Sheikh",
-                "Hurghada", "Port Said", "Suez", "Mansoura" });
-
-        // Initialize country codes
-        countryCodeMap.put("Palestine", "970");
-        countryCodeMap.put("Jordan", "962");
-        countryCodeMap.put("Lebanon", "961");
-        countryCodeMap.put("Syria", "963");
-        countryCodeMap.put("Egypt", "20");
     }
 
     // Factory for ViewModel creation
