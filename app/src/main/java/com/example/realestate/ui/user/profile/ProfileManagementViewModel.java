@@ -1,4 +1,4 @@
-package com.example.realestate.ui.profile;
+package com.example.realestate.ui.user.profile;
 
 import android.net.Uri;
 
@@ -73,7 +73,7 @@ public class ProfileManagementViewModel extends ViewModel {
     public void loadUserProfile(String email) {
         updateState.postValue(UpdateState.LOADING);
 
-        userRepository.getUserByEmail(email, new RepositoryCallback<User>() {
+        userRepository.getUserByEmail(email, new RepositoryCallback<>() {
             @Override
             public void onSuccess(User user) {
                 currentUser.postValue(user);
@@ -118,7 +118,7 @@ public class ProfileManagementViewModel extends ViewModel {
             }
 
             // Update in repository
-            userRepository.updateUser(updatedUser, new RepositoryCallback<User>() {
+            userRepository.updateUser(updatedUser, new RepositoryCallback<>() {
                 @Override
                 public void onSuccess() {
                     currentUser.postValue(updatedUser);
@@ -182,7 +182,7 @@ public class ProfileManagementViewModel extends ViewModel {
             updatedUser.hashAndSetPassword();
 
             // Update in repository
-            userRepository.updateUser(updatedUser, new RepositoryCallback<User>() {
+            userRepository.updateUser(updatedUser, new RepositoryCallback<>() {
                 @Override
                 public void onSuccess() {
                     currentUser.postValue(updatedUser);

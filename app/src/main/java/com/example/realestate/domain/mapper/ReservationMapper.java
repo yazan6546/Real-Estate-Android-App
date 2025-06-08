@@ -2,6 +2,7 @@ package com.example.realestate.domain.mapper;
 
 import com.example.realestate.data.db.entity.ReservationEntity;
 import com.example.realestate.data.db.entity.PropertyEntity;
+import com.example.realestate.data.db.entity.ReservationWithPropertyEntity;
 import com.example.realestate.domain.model.Reservation;
 import com.example.realestate.domain.model.Property;
 import java.util.List;
@@ -59,6 +60,32 @@ public class ReservationMapper {
 
         return reservations.stream()
                 .map(ReservationMapper::fromDomain)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Converts a ReservationWithPropertyEntity to a Reservation domain model
+     * This handles the case where property information is included with the reservation
+     */
+    public static Reservation toDomainWithProperty(ReservationWithPropertyEntity entity) {
+        if (entity == null) return null;
+
+        Reservation reservation = toDomain(entity.reservation);
+        if (entity.property != null) {
+            Property property = PropertyMapper.toDomain(entity.property);
+            reservation.setProperty(property);
+        }
+        return reservation;
+    }
+
+    /**
+     * Converts a list of ReservationWithPropertyEntity objects to a list of Reservation domain models
+     */
+    public static List<Reservation> toDomainWithPropertyList(List<ReservationWithPropertyEntity> entities) {
+        if (entities == null) return null;
+
+        return entities.stream()
+                .map(ReservationMapper::toDomainWithProperty)
                 .collect(Collectors.toList());
     }
 }

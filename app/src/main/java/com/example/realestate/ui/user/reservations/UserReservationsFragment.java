@@ -4,10 +4,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,18 +14,11 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.example.realestate.R;
 import com.example.realestate.RealEstate;
-import com.example.realestate.domain.model.Reservation;
 import com.example.realestate.domain.service.SharedPrefManager;
 import com.example.realestate.domain.service.UserSession;
 import com.google.android.material.tabs.TabLayout;
-
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
 
 public class UserReservationsFragment extends Fragment {
     private UserReservationsViewModel viewModel;
@@ -90,13 +81,13 @@ public class UserReservationsFragment extends Fragment {
                         viewModel.loadUserReservations(currentUserEmail);
                         break;
                     case 1: // Pending
-                        viewModel.loadUserReservationsByStatus(currentUserEmail, "pending");
+                        viewModel.loadUserReservationsByStatus(currentUserEmail, "Pending");
                         break;
                     case 2: // Confirmed
-                        viewModel.loadUserReservationsByStatus(currentUserEmail, "confirmed");
+                        viewModel.loadUserReservationsByStatus(currentUserEmail, "Confirmed");
                         break;
                     case 3: // Cancelled
-                        viewModel.loadUserReservationsByStatus(currentUserEmail, "cancelled");
+                        viewModel.loadUserReservationsByStatus(currentUserEmail, "Cancelled");
                         break;
                 }
             }
@@ -135,119 +126,5 @@ public class UserReservationsFragment extends Fragment {
         SharedPrefManager sharedPrefManager = SharedPrefManager.getInstance(requireContext());
         UserSession userSession = sharedPrefManager.readObject("user_session", UserSession.class, null);
         return userSession != null ? userSession.getEmail() : null;
-    }
-
-    private static class UserReservationAdapter
-            extends RecyclerView.Adapter<UserReservationAdapter.ReservationViewHolder> {
-        private List<Reservation> reservations = new ArrayList<>();
-        private final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("MMM dd, yyyy 'at' h:mm a",
-                Locale.getDefault());
-
-        public void setReservations(List<Reservation> reservations) {
-            this.reservations = reservations;
-            notifyDataSetChanged();
-        }
-
-        @NonNull
-        @Override
-        public ReservationViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_user_reservation, parent, false);
-            return new ReservationViewHolder(view);
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull ReservationViewHolder holder, int position) {
-            Reservation reservation = reservations.get(position);
-            holder.bind(reservation, dateTimeFormat);
-        }
-
-        @Override
-        public int getItemCount() {
-            return reservations.size();
-        }
-
-        static class ReservationViewHolder extends RecyclerView.ViewHolder {
-            private final TextView tvPropertyId;
-            private final TextView tvPropertyTitle;
-            private final TextView tvPropertyDescription;
-            private final TextView tvPropertyLocation;
-            private final TextView tvReservationStartDateTime;
-            private final TextView tvReservationEndDateTime;
-            private final TextView tvReservationStatus;
-            private final ImageView imageView;
-
-            public ReservationViewHolder(@NonNull View itemView) {
-                super(itemView);
-                tvPropertyId = itemView.findViewById(R.id.tvPropertyId);
-                tvPropertyTitle = itemView.findViewById(R.id.tvPropertyTitle);
-                tvPropertyDescription = itemView.findViewById(R.id.tvPropertyDescription);
-                tvPropertyLocation = itemView.findViewById(R.id.tvPropertyLocation);
-                tvReservationStartDateTime = itemView.findViewById(R.id.tvReservationStartDate);
-                tvReservationEndDateTime = itemView.findViewById(R.id.tvReservationEndDate);
-                tvReservationStatus = itemView.findViewById(R.id.tvReservationStatus);
-                imageView = itemView.findViewById(R.id.ivPropertyImage);
-            }
-
-            public void bind(Reservation reservation, SimpleDateFormat dateTimeFormat) {
-                // Property ID
-                tvPropertyId.setText("Property ID: #" + reservation.getPropertyId());
-
-                // Property details
-                if (reservation.getProperty() != null) {
-                    tvPropertyTitle.setText(reservation.getProperty().getTitle());
-                    tvPropertyDescription.setText(reservation.getProperty().getDescription());
-                    tvPropertyLocation.setText(reservation.getProperty().getLocation());
-                } else {
-                    tvPropertyTitle.setText("--");
-                    tvPropertyDescription.setText(R.string.property_details_not_available);
-                    tvPropertyLocation.setText(R.string.location_not_specified);
-                }
-
-                // Reservation date and time
-                String startdateTime = dateTimeFormat.format(reservation.getStartDate());
-                String enddateTime = dateTimeFormat.format(reservation.getEndDate());
-
-                tvReservationStartDateTime.setText(startdateTime);
-                tvReservationEndDateTime.setText(enddateTime);
-
-                // Load property image if available
-                if (reservation.getProperty() != null && reservation.getProperty().getImage() != null) {
-
-                    Glide.with(itemView.getContext())
-                            .load(reservation.getProperty().getImage())
-                            .placeholder(R.drawable.ic_building)
-                            .error(R.drawable.ic_building)
-                            .into(imageView);
-                }
-                else {
-                    imageView.setImageResource(R.drawable.ic_building);
-                }
-
-                // Reservation status
-                tvReservationStatus.setText(reservation.getStatus().toUpperCase());
-
-                // Set status color based on reservation status
-                int color;
-                switch (reservation.getStatus().toLowerCase()) {
-                    case "confirmed":
-                        color = itemView.getResources().getColor(android.R.color.holo_green_dark);
-                        break;
-                    case "pending":
-                        color = itemView.getResources().getColor(android.R.color.holo_blue_dark);
-                        break;
-                    case "cancelled":
-                        color = itemView.getResources().getColor(android.R.color.holo_red_dark);
-                        break;
-                    case "completed":
-                        color = itemView.getResources().getColor(android.R.color.darker_gray);
-                        break;
-                    default:
-                        color = itemView.getResources().getColor(android.R.color.darker_gray);
-                        break;
-                }
-                tvReservationStatus.setTextColor(color);
-            }
-        }
     }
 }

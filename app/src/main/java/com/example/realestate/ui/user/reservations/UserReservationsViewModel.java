@@ -3,7 +3,6 @@ package com.example.realestate.ui.user.reservations;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
-import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -38,26 +37,9 @@ public class UserReservationsViewModel extends ViewModel {
     }
 
     public void loadUserReservationsByStatus(String userEmail, String status) {
-        // Clear all previous sources to avoid duplicates
         clearAllSources();
-
-        // First get all user reservations with property details, then filter by status
-        currentSource = reservationRepository.getReservationsWithPropertyByUserId(userEmail);
-
-        // Transform to filter by status
-        currentFilteredSource = Transformations.map(
-                currentSource,
-                reservationList -> {
-                    if (reservationList == null)
-                        return null;
-                    return reservationList.stream()
-                            .filter(reservation -> status.equalsIgnoreCase(reservation.getStatus()))
-                            .collect(java.util.stream.Collectors.toList());
-                });
-
-        reservations.addSource(currentFilteredSource, reservationList -> {
-            reservations.setValue(reservationList);
-        });
+        currentFilteredSource = reservationRepository.getReservationWithPropertyByUserIdAndStatus(userEmail, status);
+        reservations.addSource(currentFilteredSource, reservations::setValue);
     }
 
     private void clearAllSources() {
