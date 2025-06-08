@@ -10,108 +10,141 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:orientation="horizontal"
         android:padding="16dp">
 
-        <!-- Property Header -->
+        <!-- Property Image -->
+        <ImageView
+            android:id="@+id/ivPropertyImage"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginEnd="12dp"
+            android:scaleType="centerCrop"
+            android:background="@android:color/darker_gray"
+            android:src="@drawable/ic_building" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="8dp">
+            android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/tvPropertyId"
-                android:layout_width="0dp"
+            <!-- Property Header -->
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Property ID: #12345"
-                android:textSize="12sp"
-                android:textColor="@android:color/darker_gray" />
+                android:orientation="horizontal"
+                android:layout_marginBottom="8dp">
 
+                <TextView
+                    android:id="@+id/tvPropertyId"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Property ID: #12345"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/darker_gray" />
+
+                <TextView
+                    android:id="@+id/tvReservationStatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Confirmed"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:textColor="@android:color/holo_green_dark"
+                    android:paddingHorizontal="8dp"
+                    android:paddingVertical="4dp" />
+
+            </LinearLayout>
+
+            <!-- Property Title -->
             <TextView
-                android:id="@+id/tvReservationStatus"
-                android:layout_width="wrap_content"
+                android:id="@+id/tvPropertyTitle"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Confirmed"
-                android:textSize="12sp"
+                android:text="Modern Apartment in Downtown"
+                android:textSize="18sp"
                 android:textStyle="bold"
-                android:textColor="@android:color/holo_green_dark"
-                android:paddingHorizontal="8dp"
-                android:paddingVertical="4dp" />
+                android:textColor="@android:color/black"
+                android:layout_marginBottom="8dp" />
 
-        </LinearLayout>
-
-        <!-- Property Title -->
-        <TextView
-            android:id="@+id/tvPropertyTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Modern Apartment in Downtown"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:textColor="@android:color/black"
-            android:layout_marginBottom="8dp" />
-
-        <!-- Property Description -->
-        <TextView
-            android:id="@+id/tvPropertyDescription"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Beautiful 2-bedroom apartment with modern amenities, fully furnished, and great city views."
-            android:textSize="14sp"
-            android:textColor="@android:color/darker_gray"
-            android:layout_marginBottom="12dp"
-            android:maxLines="3"
-            android:ellipsize="end" />
-
-        <!-- Location -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="8dp">
-
-            <ImageView
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:src="@drawable/ic_building"
-                android:layout_marginEnd="8dp"
-                android:layout_gravity="center_vertical"
-                app:tint="@android:color/darker_gray" />
-
+            <!-- Property Description -->
             <TextView
-                android:id="@+id/tvPropertyLocation"
+                android:id="@+id/tvPropertyDescription"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Downtown, City Center"
+                android:text="Beautiful 2-bedroom apartment with modern amenities, fully furnished, and great city views."
                 android:textSize="14sp"
-                android:textColor="@android:color/darker_gray" />
+                android:textColor="@android:color/darker_gray"
+                android:layout_marginBottom="12dp"
+                android:maxLines="2"
+                android:ellipsize="end" />
 
-        </LinearLayout>
-
-        <!-- Reservation Date and Time -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="8dp">
-
-            <ImageView
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:src="@drawable/ic_calendar"
-                android:layout_marginEnd="8dp"
-                android:layout_gravity="center_vertical"
-                app:tint="@android:color/darker_gray" />
-
-            <TextView
-                android:id="@+id/tvReservationDateTime"
+            <!-- Location -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="June 15, 2024 at 2:30 PM"
-                android:textSize="14sp"
-                android:textColor="@android:color/darker_gray" />
+                android:orientation="horizontal"
+                android:layout_marginBottom="8dp">
+
+                <ImageView
+                    android:id="@+id/propertyImageView1"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/ic_building"
+                    android:layout_marginEnd="8dp"
+                    android:layout_gravity="center_vertical"
+                    app:tint="@android:color/darker_gray" />
+
+                <TextView
+                    android:id="@+id/tvPropertyLocation"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Downtown, City Center"
+                    android:textSize="14sp"
+                    android:textColor="@android:color/darker_gray" />
+
+            </LinearLayout>
+
+            <!-- Reservation Date Range -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="8dp">
+
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/ic_calendar"
+                    android:layout_marginEnd="8dp"
+                    android:layout_gravity="center_vertical"
+                    app:tint="@android:color/darker_gray" />
+
+                <TextView
+                    android:id="@+id/tvReservationStartDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="June 15, 2024"
+                    android:textSize="14sp"
+                    android:textColor="@android:color/darker_gray" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" — "
+                    android:textSize="14sp"
+                    android:textColor="@android:color/darker_gray" />
+
+                <TextView
+                    android:id="@+id/tvReservationEndDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="June 22, 2024"
+                    android:textSize="14sp"
+                    android:textColor="@android:color/darker_gray" />
+
+            </LinearLayout>
 
         </LinearLayout>
 

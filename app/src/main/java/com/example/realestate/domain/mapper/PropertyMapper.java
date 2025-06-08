@@ -57,6 +57,8 @@ public class PropertyMapper {
         property.setBedrooms(entity.bedrooms);
         property.setBathrooms(entity.bathrooms);
         property.setArea(entity.area);
+        property.setFeatured(entity.isFeatured);
+        property.setDiscount(entity.discount);
         return property;
     }
 
@@ -82,6 +84,8 @@ public class PropertyMapper {
         entity.bedrooms = property.getBedrooms();
         entity.bathrooms = property.getBathrooms();
         entity.area = property.getArea();
+        entity.isFeatured = property.isFeatured();
+        entity.discount = property.getDiscount();
         return entity;
     }
 }

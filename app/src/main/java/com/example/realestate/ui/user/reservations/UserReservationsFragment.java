@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -15,6 +16,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.realestate.R;
 import com.example.realestate.RealEstate;
 import com.example.realestate.domain.model.Reservation;
@@ -170,8 +172,10 @@ public class UserReservationsFragment extends Fragment {
             private final TextView tvPropertyTitle;
             private final TextView tvPropertyDescription;
             private final TextView tvPropertyLocation;
-            private final TextView tvReservationDateTime;
+            private final TextView tvReservationStartDateTime;
+            private final TextView tvReservationEndDateTime;
             private final TextView tvReservationStatus;
+            private final ImageView imageView;
 
             public ReservationViewHolder(@NonNull View itemView) {
                 super(itemView);
@@ -179,8 +183,10 @@ public class UserReservationsFragment extends Fragment {
                 tvPropertyTitle = itemView.findViewById(R.id.tvPropertyTitle);
                 tvPropertyDescription = itemView.findViewById(R.id.tvPropertyDescription);
                 tvPropertyLocation = itemView.findViewById(R.id.tvPropertyLocation);
-                tvReservationDateTime = itemView.findViewById(R.id.tvReservationDateTime);
+                tvReservationStartDateTime = itemView.findViewById(R.id.tvReservationStartDate);
+                tvReservationEndDateTime = itemView.findViewById(R.id.tvReservationEndDate);
                 tvReservationStatus = itemView.findViewById(R.id.tvReservationStatus);
+                imageView = itemView.findViewById(R.id.ivPropertyImage);
             }
 
             public void bind(Reservation reservation, SimpleDateFormat dateTimeFormat) {
@@ -194,13 +200,29 @@ public class UserReservationsFragment extends Fragment {
                     tvPropertyLocation.setText(reservation.getProperty().getLocation());
                 } else {
                     tvPropertyTitle.setText("--");
-                    tvPropertyDescription.setText("Property details not available");
-                    tvPropertyLocation.setText("Location not specified");
+                    tvPropertyDescription.setText(R.string.property_details_not_available);
+                    tvPropertyLocation.setText(R.string.location_not_specified);
                 }
 
                 // Reservation date and time
-                String dateTime = dateTimeFormat.format(reservation.getStartDate());
-                tvReservationDateTime.setText(dateTime);
+                String startdateTime = dateTimeFormat.format(reservation.getStartDate());
+                String enddateTime = dateTimeFormat.format(reservation.getEndDate());
+
+                tvReservationStartDateTime.setText(startdateTime);
+                tvReservationEndDateTime.setText(enddateTime);
+
+                // Load property image if available
+                if (reservation.getProperty() != null && reservation.getProperty().getImage() != null) {
+
+                    Glide.with(itemView.getContext())
+                            .load(reservation.getProperty().getImage())
+                            .placeholder(R.drawable.ic_building)
+                            .error(R.drawable.ic_building)
+                            .into(imageView);
+                }
+                else {
+                    imageView.setImageResource(R.drawable.ic_building);
+                }
 
                 // Reservation status
                 tvReservationStatus.setText(reservation.getStatus().toUpperCase());

@@ -12,6 +12,7 @@ public class Reservation {
 
     // Optional reference to related property
     private Property property;
+    private User user;
 
     public Reservation() {
         // Default constructor
