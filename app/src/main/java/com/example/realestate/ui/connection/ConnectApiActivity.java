@@ -24,7 +24,10 @@ public class ConnectApiActivity extends AppCompatActivity {
         setContentView(R.layout.activity_connect_api);
 
         ConnectApiViewModel.Factory factory = new ConnectApiViewModel.Factory(
-                RealEstate.appContainer.getPropertyRepository()
+                RealEstate.appContainer.getPropertyRepository(),
+                RealEstate.appContainer.getReservationRepository(),
+                RealEstate.appContainer.getFavoriteRepository(),
+                RealEstate.appContainer.getUserRepository()
         );
 
         // Create ViewModel using the factory
@@ -33,7 +36,10 @@ public class ConnectApiActivity extends AppCompatActivity {
         Button connectButton = findViewById(R.id.connectButton);
         ProgressBar progressBar = findViewById(R.id.progressBar);
 
-        connectButton.setOnClickListener(v -> viewModel.connect());
+        connectButton.setOnClickListener(v -> {
+            viewModel.connect();
+            viewModel.load_database();
+        });
 
         viewModel.connectionState.observe(this, state -> {
             switch (state) {
