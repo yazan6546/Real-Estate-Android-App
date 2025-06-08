@@ -118,7 +118,7 @@ public class ProfileManagementViewModel extends ViewModel {
             }
 
             // Update in repository
-            userRepository.updateUser(updatedUser, new RepositoryCallback<User>() {
+            userRepository.updateUser(updatedUser, new RepositoryCallback<>() {
                 @Override
                 public void onSuccess() {
                     currentUser.postValue(updatedUser);
@@ -182,7 +182,7 @@ public class ProfileManagementViewModel extends ViewModel {
             updatedUser.hashAndSetPassword();
 
             // Update in repository
-            userRepository.updateUser(updatedUser, new RepositoryCallback<User>() {
+            userRepository.updateUser(updatedUser, new RepositoryCallback<>() {
                 @Override
                 public void onSuccess() {
                     currentUser.postValue(updatedUser);
