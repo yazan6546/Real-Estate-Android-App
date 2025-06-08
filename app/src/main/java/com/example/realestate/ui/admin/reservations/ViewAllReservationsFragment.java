@@ -296,13 +296,15 @@ public class ViewAllReservationsFragment extends Fragment {
                     tvPropertyLocation.setText(reservation.getProperty().getLocation());
 
                     // Load property image if available
-                    if (reservation.getProperty().getImageUrl() != null && !reservation.getProperty().getImageUrl().isEmpty()) {
+                    if (reservation.getProperty() != null && reservation.getProperty().getImage() != null) {
+
                         Glide.with(itemView.getContext())
-                                .load(reservation.getProperty().getImageUrl())
-                                .centerCrop()
+                                .load(reservation.getProperty().getImage())
                                 .placeholder(R.drawable.ic_building)
+                                .error(R.drawable.ic_building)
                                 .into(ivPropertyImage);
-                    } else {
+                    }
+                    else {
                         ivPropertyImage.setImageResource(R.drawable.ic_building);
                     }
                 } else {

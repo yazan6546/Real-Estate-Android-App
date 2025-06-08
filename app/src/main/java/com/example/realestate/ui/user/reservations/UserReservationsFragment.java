@@ -220,6 +220,9 @@ public class UserReservationsFragment extends Fragment {
                             .error(R.drawable.ic_building)
                             .into(imageView);
                 }
+                else {
+                    imageView.setImageResource(R.drawable.ic_building);
+                }
 
                 // Reservation status
                 tvReservationStatus.setText(reservation.getStatus().toUpperCase());

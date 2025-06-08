@@ -38,9 +38,7 @@ public class ViewAllReservationsViewModel extends ViewModel {
         currentSource = reservationRepository.getAllReservationsWithProperty();
 
         // Transform the LiveData to update our local MutableLiveData
-        reservations.addSource(currentSource, reservationList -> {
-            reservations.setValue(reservationList);
-        });
+        reservations.addSource(currentSource, reservations::setValue);
     }
 
     public void loadReservationsByStatus(String status) {
