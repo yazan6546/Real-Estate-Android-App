@@ -12,6 +12,7 @@ import com.example.realestate.data.repository.RepositoryCallback;
 import com.example.realestate.data.repository.UserRepository;
 import com.example.realestate.domain.exception.ValidationException;
 import com.example.realestate.domain.model.User;
+import com.example.realestate.domain.service.CountryService;
 import com.example.realestate.domain.service.Hashing;
 import com.example.realestate.domain.service.SharedPrefManager;
 
@@ -180,16 +181,16 @@ public class ProfileManagementViewModel extends ViewModel {
 
     // Country and city handling
     public String[] getCountries() {
-        return countryCityMap.keySet().toArray(new String[0]);
+        return CountryService.countriesWithCities.keySet().toArray(new String[0]);
     }
 
     public void onCountrySelected(String country) {
-        String[] countryCities = countryCityMap.get(country);
+        String[] countryCities = CountryService.countriesWithCities.get(country);
         if (countryCities != null) {
             cities.postValue(countryCities);
         }
 
-        String code = countryCodeMap.get(country);
+        String code = CountryService.countryCodeMap.get(country);
         if (code != null) {
             countryCode.postValue(code);
         }
