@@ -45,5 +45,7 @@
     <string name="account">Account</string>
     <string name="logout">Logout</string>
     <string name="add_admin_text">Add New Administrator</string>
+    <string name="property_details_not_available">Property details not available</string>
+    <string name="location_not_specified">Location not specified</string>
 </resources>
 

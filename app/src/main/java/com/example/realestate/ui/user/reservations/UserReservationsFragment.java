@@ -186,7 +186,7 @@ public class UserReservationsFragment extends Fragment {
                 tvReservationStartDateTime = itemView.findViewById(R.id.tvReservationStartDate);
                 tvReservationEndDateTime = itemView.findViewById(R.id.tvReservationEndDate);
                 tvReservationStatus = itemView.findViewById(R.id.tvReservationStatus);
-                imageView = itemView.findViewById(R.id.propertyImageView1);
+                imageView = itemView.findViewById(R.id.ivPropertyImage);
             }
 
             public void bind(Reservation reservation, SimpleDateFormat dateTimeFormat) {
@@ -200,8 +200,8 @@ public class UserReservationsFragment extends Fragment {
                     tvPropertyLocation.setText(reservation.getProperty().getLocation());
                 } else {
                     tvPropertyTitle.setText("--");
-                    tvPropertyDescription.setText("Property details not available");
-                    tvPropertyLocation.setText("Location not specified");
+                    tvPropertyDescription.setText(R.string.property_details_not_available);
+                    tvPropertyLocation.setText(R.string.location_not_specified);
                 }
 
                 // Reservation date and time
