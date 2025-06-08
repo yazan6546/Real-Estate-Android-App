@@ -35,7 +35,7 @@ public class ViewAllReservationsViewModel extends ViewModel {
         clearAllSources();
 
         // Get all reservations with property details
-        currentSource = reservationRepository.getAllReservationsWithProperty();
+//        currentSource = reservationRepository.getAllReservationsWithProperty();
 
         // Transform the LiveData to update our local MutableLiveData
         reservations.addSource(currentSource, reservations::setValue);
@@ -46,7 +46,7 @@ public class ViewAllReservationsViewModel extends ViewModel {
         clearAllSources();
 
         // First get all reservations with property details, then filter by status
-        currentSource = reservationRepository.getAllReservationsWithProperty();
+//        currentSource = reservationRepository.getAllReservationsWithProperty();
 
         // Transform to filter by status
         currentFilteredSource = Transformations.map(
@@ -59,9 +59,7 @@ public class ViewAllReservationsViewModel extends ViewModel {
                             .collect(Collectors.toList());
                 });
 
-        reservations.addSource(currentFilteredSource, reservationList -> {
-            reservations.setValue(reservationList);
-        });
+        reservations.addSource(currentFilteredSource, reservations::setValue);
     }
 
     /**
