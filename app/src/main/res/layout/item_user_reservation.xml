@@ -78,7 +78,7 @@
                 android:src="@drawable/ic_building"
                 android:layout_marginEnd="8dp"
                 android:layout_gravity="center_vertical"
-                android:tint="@android:color/darker_gray" />
+                app:tint="@android:color/darker_gray" />
 
             <TextView
                 android:id="@+id/tvPropertyLocation"
@@ -103,7 +103,7 @@
                 android:src="@drawable/ic_calendar"
                 android:layout_marginEnd="8dp"
                 android:layout_gravity="center_vertical"
-                android:tint="@android:color/darker_gray" />
+                app:tint="@android:color/darker_gray" />
 
             <TextView
                 android:id="@+id/tvReservationDateTime"
