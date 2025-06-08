@@ -1,21 +1,16 @@
 package com.example.realestate.data.repository;
 
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.Transformations;
 
 import com.example.realestate.data.db.dao.PropertyDao;
 import com.example.realestate.data.db.dao.ReservationDao;
-import com.example.realestate.data.db.entity.PropertyEntity;
 import com.example.realestate.data.db.entity.ReservationEntity;
 import com.example.realestate.data.db.result.CountryCount;
-import com.example.realestate.domain.mapper.PropertyMapper;
 import com.example.realestate.domain.mapper.ReservationMapper;
-import com.example.realestate.domain.model.Property;
 import com.example.realestate.domain.model.Reservation;
 import com.example.realestate.domain.service.CallbackUtils;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -23,62 +18,24 @@ import java.util.concurrent.Executors;
 public class ReservationRepository {
 
     private final ReservationDao reservationDao;
-    private final PropertyDao propertyDao;
 
     public ReservationRepository(ReservationDao reservationDao, PropertyDao propertyDao) {
         this.reservationDao = reservationDao;
-        this.propertyDao = propertyDao;
     }
 
-    // Get reservation by ID with transformed domain model
-    public LiveData<Reservation> getReservationById(int reservationId) {
-        return Transformations.map(reservationDao.getReservationById(reservationId),
-                ReservationMapper::toDomain);
-    } // Get reservations by user with transformed domain models
-
-    public LiveData<List<Reservation>> getReservationsByUserId(String email) {
-        // Property details could be loaded here if needed
-        return Transformations.map(reservationDao.getReservationsByUserId(email),
-                ReservationMapper::toDomainList);
-    } // Get reservations by user with property details included
-
     public LiveData<List<Reservation>> getReservationsWithPropertyByUserId(String email) {
-        return Transformations.switchMap(
-                reservationDao.getReservationsByUserId(email),
-                reservationEntities -> {
-                    MediatorLiveData<List<Reservation>> result = new MediatorLiveData<>();
+        return Transformations.map(reservationDao.getReservationsWithPropertyByUserId(email),
+                ReservationMapper::toDomainWithPropertyList);
+    }
 
-                    if (reservationEntities == null || reservationEntities.isEmpty()) {
-                        result.setValue(ReservationMapper.toDomainList(reservationEntities));
-                        return result;
-                    }
+    public LiveData<List<Reservation>> getReservationWithPropertyByUserIdAndStatus(String email, String status) {
+        return Transformations.map(reservationDao.getReservationsWithPropertyByUserIdAndStatus(email,
+                status), ReservationMapper::toDomainWithPropertyList);
+    }
 
-                    // Use a background thread to fetch property details
-                    Executors.newSingleThreadExecutor().execute(() -> {
-                        try {
-                            List<Reservation> reservationsWithProperties = new ArrayList<>();
-
-                            for (ReservationEntity reservationEntity : reservationEntities) {
-                                // Get property synchronously (this runs in background thread)
-                                PropertyEntity propertyEntity = propertyDao
-                                        .getPropertyByIdSync(reservationEntity.property_id);
-
-                                // Convert to domain model with property details
-                                Reservation reservation = ReservationMapper.toDomainWithProperty(reservationEntity,
-                                        propertyEntity);
-                                reservationsWithProperties.add(reservation);
-                            }
-
-                            // Post result to main thread
-                            result.postValue(reservationsWithProperties);
-                        } catch (Exception e) {
-                            // Fallback to reservations without property details
-                            result.postValue(ReservationMapper.toDomainList(reservationEntities));
-                        }
-                    });
-
-                    return result;
-                });
+    public LiveData<List<Reservation>> getAllReservationsWithProperty() {
+        return Transformations.map(reservationDao.getAllReservationsWithProperty(),
+                ReservationMapper::toDomainWithPropertyList);
     }
 
     // Get reservations by property ID
