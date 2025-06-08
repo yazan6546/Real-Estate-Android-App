@@ -80,7 +80,7 @@ public class DatabaseSeeder {
                 "Palestine",       // country
                 "Ramallah",            // city
                 "MALE",            // gender
-                true               // isAdmin
+                false               // isAdmin
         );
         users.add(admin);
 
@@ -163,71 +163,74 @@ public class DatabaseSeeder {
         );
         users.add(customer6);
 
+
+
+
         return users;
     }
 
     private List<Reservation> createInitialReservations() {
         List<Reservation> reservations = new ArrayList<>();
 
-        // John Smith's reservations
-        reservations.add(createReservation("john.smith@example.com", 101, 1751317200000L, 1751749200000L, "Confirmed"));
-        reservations.add(createReservation("john.smith@example.com", 106, 1753908000000L, 1754340000000L, "Pending"));
-        reservations.add(createReservation("john.smith@example.com", 112, 1757602800000L, 1759071600000L, "Confirmed"));
-        reservations.add(createReservation("john.smith@example.com", 104, 1759589600000L, 1760458800000L, "Cancelled"));
-        reservations.add(createReservation("john.smith@example.com", 109, 1761196800000L, 1762060800000L, "Pending"));
-        reservations.add(createReservation("john.smith@example.com", 115, 1764993600000L, 1765943600000L, "Confirmed"));
-        reservations.add(createReservation("john.smith@example.com", 118, 1767290400000L, 1768240400000L, "Pending"));
-        reservations.add(createReservation("john.smith@example.com", 101, 1770055200000L, 1770487200000L, "Confirmed"));
-        reservations.add(createReservation("john.smith@example.com", 106, 1772074800000L, 1772919600000L, "Pending"));
-        reservations.add(createReservation("john.smith@example.com", 112, 1776037200000L, 1777506000000L, "Confirmed"));
+        // Yazan's reservations (formerly admin.user's)
+        reservations.add(createReservation("yazan@example.com", 101, 1751317200000L, 1751749200000L, "Confirmed"));
+        reservations.add(createReservation("yazan@example.com", 106, 1753908000000L, 1754340000000L, "Pending"));
+        reservations.add(createReservation("yazan@example.com", 112, 1757602800000L, 1759071600000L, "Confirmed"));
+        reservations.add(createReservation("yazan@example.com", 104, 1759589600000L, 1760458800000L, "Cancelled"));
+        reservations.add(createReservation("yazan@example.com", 109, 1761196800000L, 1762060800000L, "Pending"));
+        reservations.add(createReservation("yazan@example.com", 115, 1764993600000L, 1765943600000L, "Confirmed"));
+        reservations.add(createReservation("yazan@example.com", 118, 1767290400000L, 1768240400000L, "Pending"));
+        reservations.add(createReservation("yazan@example.com", 101, 1770055200000L, 1770487200000L, "Confirmed"));
+        reservations.add(createReservation("yazan@example.com", 106, 1772074800000L, 1772919600000L, "Pending"));
+        reservations.add(createReservation("yazan@example.com", 112, 1776037200000L, 1777506000000L, "Confirmed"));
 
-        // Sara Ahmad's reservations
-        reservations.add(createReservation("sara.ahmad@example.com", 102, 1751749200000L, 1752613200000L, "Confirmed"));
-        reservations.add(createReservation("sara.ahmad@example.com", 107, 1754340000000L, 1755204000000L, "Pending"));
-        reservations.add(createReservation("sara.ahmad@example.com", 110, 1756684800000L, 1757548800000L, "Confirmed"));
-        reservations.add(createReservation("sara.ahmad@example.com", 114, 1759157600000L, 1760021600000L, "Completed"));
-        reservations.add(createReservation("sara.ahmad@example.com", 116, 1762060800000L, 1762924800000L, "Cancelled"));
-        reservations.add(createReservation("sara.ahmad@example.com", 119, 1763788800000L, 1764652800000L, "Confirmed"));
-        reservations.add(createReservation("sara.ahmad@example.com", 102, 1768154400000L, 1769018400000L, "Pending"));
-        reservations.add(createReservation("sara.ahmad@example.com", 107, 1770487200000L, 1771351200000L, "Confirmed"));
-        reservations.add(createReservation("sara.ahmad@example.com", 110, 1772919600000L, 1773783600000L, "Pending"));
-        reservations.add(createReservation("sara.ahmad@example.com", 114, 1775299200000L, 1776163200000L, "Confirmed"));
+        // Ahmad's reservations
+        reservations.add(createReservation("ahmad@example.com", 102, 1751749200000L, 1752613200000L, "Confirmed"));
+        reservations.add(createReservation("ahmad@example.com", 107, 1754340000000L, 1755204000000L, "Pending"));
+        reservations.add(createReservation("ahmad@example.com", 110, 1756684800000L, 1757548800000L, "Confirmed"));
+        reservations.add(createReservation("ahmad@example.com", 114, 1759157600000L, 1760021600000L, "Completed"));
+        reservations.add(createReservation("ahmad@example.com", 116, 1762060800000L, 1762924800000L, "Cancelled"));
+        reservations.add(createReservation("ahmad@example.com", 119, 1763788800000L, 1764652800000L, "Confirmed"));
+        reservations.add(createReservation("ahmad@example.com", 102, 1768154400000L, 1769018400000L, "Pending"));
+        reservations.add(createReservation("ahmad@example.com", 107, 1770487200000L, 1771351200000L, "Confirmed"));
+        reservations.add(createReservation("ahmad@example.com", 110, 1772919600000L, 1773783600000L, "Pending"));
+        reservations.add(createReservation("ahmad@example.com", 114, 1775299200000L, 1776163200000L, "Confirmed"));
 
-        // Mohamed Ali's reservations
-        reservations.add(createReservation("mohamed.ali@example.com", 103, 1751299200000L, 1751904000000L, "Confirmed"));
-        reservations.add(createReservation("mohamed.ali@example.com", 108, 1754340000000L, 1754944800000L, "Pending"));
-        reservations.add(createReservation("mohamed.ali@example.com", 111, 1757602800000L, 1758207600000L, "Confirmed"));
-        reservations.add(createReservation("mohamed.ali@example.com", 113, 1760458800000L, 1761063600000L, "Cancelled"));
-        reservations.add(createReservation("mohamed.ali@example.com", 117, 1763788800000L, 1764393600000L, "Confirmed"));
-        reservations.add(createReservation("mohamed.ali@example.com", 120, 1766685600000L, 1767290400000L, "Pending"));
-        reservations.add(createReservation("mohamed.ali@example.com", 103, 1769450400000L, 1770055200000L, "Confirmed"));
-        reservations.add(createReservation("mohamed.ali@example.com", 108, 1772919600000L, 1773524400000L, "Pending"));
-        reservations.add(createReservation("mohamed.ali@example.com", 111, 1776037200000L, 1776642000000L, "Confirmed"));
-        reservations.add(createReservation("mohamed.ali@example.com", 117, 1778629200000L, 1779234000000L, "Pending"));
+        // Sara's reservations
+        reservations.add(createReservation("sara@example.com", 103, 1751299200000L, 1751904000000L, "Confirmed"));
+        reservations.add(createReservation("sara@example.com", 108, 1754340000000L, 1754944800000L, "Pending"));
+        reservations.add(createReservation("sara@example.com", 111, 1757602800000L, 1758207600000L, "Confirmed"));
+        reservations.add(createReservation("sara@example.com", 113, 1760458800000L, 1761063600000L, "Cancelled"));
+        reservations.add(createReservation("sara@example.com", 117, 1763788800000L, 1764393600000L, "Confirmed"));
+        reservations.add(createReservation("sara@example.com", 120, 1766685600000L, 1767290400000L, "Pending"));
+        reservations.add(createReservation("sara@example.com", 103, 1769450400000L, 1770055200000L, "Confirmed"));
+        reservations.add(createReservation("sara@example.com", 108, 1772919600000L, 1773524400000L, "Pending"));
+        reservations.add(createReservation("sara@example.com", 111, 1776037200000L, 1776642000000L, "Confirmed"));
+        reservations.add(createReservation("sara@example.com", 117, 1778629200000L, 1779234000000L, "Pending"));
 
-        // Layla Hassan's reservations
-        reservations.add(createReservation("layla.hassan@example.com", 104, 1751317200000L, 1751749200000L, "Confirmed"));
-        reservations.add(createReservation("layla.hassan@example.com", 109, 1753908000000L, 1754340000000L, "Pending"));
-        reservations.add(createReservation("layla.hassan@example.com", 115, 1757602800000L, 1759071600000L, "Confirmed"));
-        reservations.add(createReservation("layla.hassan@example.com", 118, 1760458800000L, 1760926800000L, "Completed"));
-        reservations.add(createReservation("layla.hassan@example.com", 101, 1762060800000L, 1762492800000L, "Cancelled"));
-        reservations.add(createReservation("layla.hassan@example.com", 106, 1764993600000L, 1765947600000L, "Confirmed"));
-        reservations.add(createReservation("layla.hassan@example.com", 112, 1768154400000L, 1769018400000L, "Pending"));
-        reservations.add(createReservation("layla.hassan@example.com", 104, 1770487200000L, 1770919200000L, "Confirmed"));
-        reservations.add(createReservation("layla.hassan@example.com", 109, 1772919600000L, 1773351600000L, "Pending"));
-        reservations.add(createReservation("layla.hassan@example.com", 115, 1775299200000L, 1776163200000L, "Confirmed"));
+        // Omar's reservations
+        reservations.add(createReservation("omar@example.com", 104, 1751317200000L, 1751749200000L, "Confirmed"));
+        reservations.add(createReservation("omar@example.com", 109, 1753908000000L, 1754340000000L, "Pending"));
+        reservations.add(createReservation("omar@example.com", 115, 1757602800000L, 1759071600000L, "Confirmed"));
+        reservations.add(createReservation("omar@example.com", 118, 1760458800000L, 1760926800000L, "Completed"));
+        reservations.add(createReservation("omar@example.com", 101, 1762060800000L, 1762492800000L, "Cancelled"));
+        reservations.add(createReservation("omar@example.com", 106, 1764993600000L, 1765947600000L, "Confirmed"));
+        reservations.add(createReservation("omar@example.com", 112, 1768154400000L, 1769018400000L, "Pending"));
+        reservations.add(createReservation("omar@example.com", 104, 1770487200000L, 1770919200000L, "Confirmed"));
+        reservations.add(createReservation("omar@example.com", 109, 1772919600000L, 1773351600000L, "Pending"));
+        reservations.add(createReservation("omar@example.com", 115, 1775299200000L, 1776163200000L, "Confirmed"));
 
-        // Omar Khalid's reservations
-        reservations.add(createReservation("omar.khalid@example.com", 105, 1751317200000L, 1752613200000L, "Confirmed"));
-        reservations.add(createReservation("omar.khalid@example.com", 110, 1756684800000L, 1757548800000L, "Pending"));
-        reservations.add(createReservation("omar.khalid@example.com", 114, 1759157600000L, 1760021600000L, "Confirmed"));
-        reservations.add(createReservation("omar.khalid@example.com", 116, 1762060800000L, 1762924800000L, "Cancelled"));
-        reservations.add(createReservation("omar.khalid@example.com", 119, 1764993600000L, 1765947600000L, "Confirmed"));
-        reservations.add(createReservation("omar.khalid@example.com", 102, 1768154400000L, 1769018400000L, "Pending"));
-        reservations.add(createReservation("omar.khalid@example.com", 107, 1770487200000L, 1771351200000L, "Confirmed"));
-        reservations.add(createReservation("omar.khalid@example.com", 105, 1772919600000L, 1773351600000L, "Pending"));
-        reservations.add(createReservation("omar.khalid@example.com", 110, 1775299200000L, 1776163200000L, "Confirmed"));
-        reservations.add(createReservation("omar.khalid@example.com", 114, 1777602000000L, 1778246400000L, "Pending"));
+        // Lina's reservations
+        reservations.add(createReservation("lina@example.com", 105, 1751317200000L, 1752613200000L, "Confirmed"));
+        reservations.add(createReservation("lina@example.com", 110, 1756684800000L, 1757548800000L, "Pending"));
+        reservations.add(createReservation("lina@example.com", 114, 1759157600000L, 1760021600000L, "Confirmed"));
+        reservations.add(createReservation("lina@example.com", 116, 1762060800000L, 1762924800000L, "Cancelled"));
+        reservations.add(createReservation("lina@example.com", 119, 1764993600000L, 1765947600000L, "Confirmed"));
+        reservations.add(createReservation("lina@example.com", 102, 1768154400000L, 1769018400000L, "Pending"));
+        reservations.add(createReservation("lina@example.com", 107, 1770487200000L, 1771351200000L, "Confirmed"));
+        reservations.add(createReservation("lina@example.com", 105, 1772919600000L, 1773351600000L, "Pending"));
+        reservations.add(createReservation("lina@example.com", 110, 1775299200000L, 1776163200000L, "Confirmed"));
+        reservations.add(createReservation("lina@example.com", 114, 1777602000000L, 1778246400000L, "Pending"));
 
         return reservations;
     }
@@ -239,30 +242,30 @@ public class DatabaseSeeder {
         List<Favorite> favorites = new ArrayList<>();
 
         // Add some sample favorites for each user
-        // John Smith's favorites
-        favorites.add(createFavorite("john.smith@example.com", 101, new Date(1750000000000L)));
-        favorites.add(createFavorite("john.smith@example.com", 105, new Date(1750100000000L)));
-        favorites.add(createFavorite("john.smith@example.com", 112, new Date(1750200000000L)));
+        // Yazan's favorites
+        favorites.add(createFavorite("yazan@example.com", 101, new Date(1750000000000L)));
+        favorites.add(createFavorite("yazan@example.com", 105, new Date(1750100000000L)));
+        favorites.add(createFavorite("yazan@example.com", 112, new Date(1750200000000L)));
 
-        // Sara Ahmad's favorites
-        favorites.add(createFavorite("sara.ahmad@example.com", 102, new Date(1750010000000L)));
-        favorites.add(createFavorite("sara.ahmad@example.com", 110, new Date(1750110000000L)));
-        favorites.add(createFavorite("sara.ahmad@example.com", 116, new Date(1750210000000L)));
+        // Ahmad's favorites
+        favorites.add(createFavorite("ahmad@example.com", 102, new Date(1750010000000L)));
+        favorites.add(createFavorite("ahmad@example.com", 110, new Date(1750110000000L)));
+        favorites.add(createFavorite("ahmad@example.com", 116, new Date(1750210000000L)));
 
-        // Mohamed Ali's favorites
-        favorites.add(createFavorite("mohamed.ali@example.com", 103, new Date(1750020000000L)));
-        favorites.add(createFavorite("mohamed.ali@example.com", 108, new Date(1750120000000L)));
-        favorites.add(createFavorite("mohamed.ali@example.com", 113, new Date(1750220000000L)));
+        // Sara's favorites
+        favorites.add(createFavorite("sara@example.com", 103, new Date(1750020000000L)));
+        favorites.add(createFavorite("sara@example.com", 108, new Date(1750120000000L)));
+        favorites.add(createFavorite("sara@example.com", 113, new Date(1750220000000L)));
 
-        // Layla Hassan's favorites
-        favorites.add(createFavorite("layla.hassan@example.com", 104, new Date(1750030000000L)));
-        favorites.add(createFavorite("layla.hassan@example.com", 109, new Date(1750130000000L)));
-        favorites.add(createFavorite("layla.hassan@example.com", 115, new Date(1750230000000L)));
+        // Omar's favorites
+        favorites.add(createFavorite("omar@example.com", 104, new Date(1750030000000L)));
+        favorites.add(createFavorite("omar@example.com", 109, new Date(1750130000000L)));
+        favorites.add(createFavorite("omar@example.com", 115, new Date(1750230000000L)));
 
-        // Omar Khalid's favorites
-        favorites.add(createFavorite("omar.khalid@example.com", 105, new Date(1750040000000L)));
-        favorites.add(createFavorite("omar.khalid@example.com", 107, new Date(1750140000000L)));
-        favorites.add(createFavorite("omar.khalid@example.com", 119, new Date(1750240000000L)));
+        // Lina's favorites
+        favorites.add(createFavorite("lina@example.com", 105, new Date(1750040000000L)));
+        favorites.add(createFavorite("lina@example.com", 107, new Date(1750140000000L)));
+        favorites.add(createFavorite("lina@example.com", 119, new Date(1750240000000L)));
 
         return favorites;
     }
