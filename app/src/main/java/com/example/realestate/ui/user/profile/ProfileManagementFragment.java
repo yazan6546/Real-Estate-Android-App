@@ -41,6 +41,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class ProfileManagementFragment extends Fragment {
 
@@ -136,6 +137,15 @@ public class ProfileManagementFragment extends Fragment {
     private void initializeViews(View view) {
         // Profile Information
         profileImageView = view.findViewById(R.id.profileImageView);
+
+        File imageFile = new File(requireContext().getFilesDir(),
+                Objects.requireNonNull(viewModel.getCurrentUser().getValue()).getProfileImage());
+
+        Glide.with(requireContext())
+                .load(imageFile.exists() ? imageFile : R.drawable.ic_person)
+                .placeholder(R.drawable.ic_person)
+                .into(profileImageView);
+
         changeProfileImageButton = view.findViewById(R.id.changeProfileImageButton);
         firstNameInput = view.findViewById(R.id.firstNameInput);
         lastNameInput = view.findViewById(R.id.lastNameInput);
