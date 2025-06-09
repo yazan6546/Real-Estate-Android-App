@@ -19,6 +19,7 @@ import com.example.realestate.domain.model.User;
 import com.example.realestate.domain.service.CountryService;
 import com.example.realestate.domain.service.Hashing;
 import com.example.realestate.domain.service.SharedPrefManager;
+import com.example.realestate.domain.service.UserSession;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -121,7 +122,7 @@ public class ProfileManagementViewModel extends AndroidViewModel {
                 @Override
                 public void onSuccess() {
                     updateState.postValue(UpdateState.SUCCESS);
-                    profileImageUri = null; // Reset after successful update
+                    sharedPrefManager.saveUserSession(updatedUser);
                 }
 
                 @Override

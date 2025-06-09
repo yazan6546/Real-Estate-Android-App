@@ -17,7 +17,7 @@ public class UserSession {
         this.firstName = firstName;
         this.lastName = lastName;
         this.isAdmin = isAdmin;
-        this.profileImage = profileImage; // Default value
+        this.profileImage = profileImage;
         this.rememberMe = false; // Default value
     }
 

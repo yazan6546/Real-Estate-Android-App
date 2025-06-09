@@ -1,4 +1,5 @@
 package com.example.realestate.domain.service;
+import com.example.realestate.domain.model.User;
 import com.google.gson.Gson;
 
 import android.content.Context;
@@ -64,4 +65,30 @@ public class SharedPrefManager {
         editor.commit();
     }
 
+    /**
+     * Saves a new UserSession from a User object, clearing the previous session first.
+     * @param user The User object containing updated information
+     * @return true if the session was successfully saved, false otherwise
+     */
+    public boolean saveUserSession(User user) {
+        try {
+            // Clear existing user session
+            clear();
+
+            // Create new UserSession from User object
+            UserSession userSession = new UserSession(
+                    user.getEmail(),
+                    user.getFirstName(),
+                    user.getLastName(),
+                    user.getProfileImage(),
+                    user.isAdmin()
+            );
+
+            // Write the new UserSession object
+            return writeObject("user_session", userSession);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }
