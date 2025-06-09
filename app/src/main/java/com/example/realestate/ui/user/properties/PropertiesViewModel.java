@@ -33,7 +33,6 @@ public class PropertiesViewModel extends ViewModel {
     private final MutableLiveData<String> selectedLocation = new MutableLiveData<>("All");
     private final MutableLiveData<Double> minPrice = new MutableLiveData<>(0.0);
     private final MutableLiveData<Double> maxPrice = new MutableLiveData<>(Double.MAX_VALUE); // UI state
-    private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
     private final MutableLiveData<String> successMessage = new MutableLiveData<>();
 
@@ -150,10 +149,6 @@ public class PropertiesViewModel extends ViewModel {
         return Transformations.map(filteredProperties, list -> list != null ? list.size() : 0);
     }
 
-    public LiveData<Boolean> getIsLoading() {
-        return isLoading;
-    }
-
     public LiveData<String> getErrorMessage() {
         return errorMessage;
     }
@@ -195,7 +190,6 @@ public class PropertiesViewModel extends ViewModel {
             @Override
             public void onSuccess(Boolean isAlreadyFavorite) {
                 if (isAlreadyFavorite) {
-                    isLoading.postValue(false);
                     errorMessage.postValue("Property is already in favorites");
                     return;
                 }
@@ -205,13 +199,11 @@ public class PropertiesViewModel extends ViewModel {
                 favoriteRepository.addFavorite(favorite, new RepositoryCallback<Favorite>() {
                     @Override
                     public void onSuccess(Favorite result) {
-                        isLoading.postValue(false);
                         successMessage.postValue("Added to favorites successfully");
                     }
 
                     @Override
                     public void onError(Throwable t) {
-                        isLoading.postValue(false);
                         errorMessage.postValue("Failed to add to favorites: " + t.getMessage());
                     }
                 });
@@ -219,7 +211,6 @@ public class PropertiesViewModel extends ViewModel {
 
             @Override
             public void onError(Throwable t) {
-                isLoading.postValue(false);
                 errorMessage.postValue("Failed to check favorite status: " + t.getMessage());
             }
         });
@@ -230,13 +221,11 @@ public class PropertiesViewModel extends ViewModel {
         favoriteRepository.deleteFavorite(favorite, new RepositoryCallback<Favorite>() {
             @Override
             public void onSuccess(Favorite result) {
-                isLoading.postValue(false);
                 successMessage.postValue("Removed from favorites successfully");
             }
 
             @Override
             public void onError(Throwable t) {
-                isLoading.postValue(false);
                 errorMessage.postValue("Failed to remove from favorites: " + t.getMessage());
             }
         });

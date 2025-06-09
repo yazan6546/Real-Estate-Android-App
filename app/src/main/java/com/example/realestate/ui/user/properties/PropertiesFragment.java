@@ -204,7 +204,6 @@ public class PropertiesFragment extends Fragment implements PropertyAdapter.OnPr
         viewModel.getSuccessMessage().observe(getViewLifecycleOwner(), successMessage -> {
             if (successMessage != null && !successMessage.isEmpty()) {
                 Toast.makeText(requireContext(), successMessage, Toast.LENGTH_SHORT).show();
-                // Refresh the entire adapter to update favorite statuses
                 adapter.notifyDataSetChanged();
             }
         });
