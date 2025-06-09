@@ -127,8 +127,7 @@ public class PropertiesViewModel extends ViewModel {
                         .collect(Collectors.toList()));
                 propertyTypes.setValue(types);
 
-                // Extract unique locations (simplified - you might want more sophisticated
-                // location handling)
+                // Extract unique locations
                 List<String> locs = new ArrayList<>();
                 locs.add("All");
                 locs.addAll(properties.stream()
@@ -190,17 +189,7 @@ public class PropertiesViewModel extends ViewModel {
         maxPrice.setValue(max);
     }
 
-    public void clearFilters() {
-        searchQuery.setValue("");
-        selectedPropertyType.setValue("All");
-        selectedLocation.setValue("All");
-        minPrice.setValue(0.0);
-        maxPrice.setValue(Double.MAX_VALUE);
-    } // Property actions
-
     public void addToFavorites(Property property, String userEmail) {
-        isLoading.setValue(true);
-
         // First check if the property is already in favorites
         favoriteRepository.isFavorite(userEmail, property.getPropertyId(), new RepositoryCallback<Boolean>() {
             @Override
@@ -237,8 +226,6 @@ public class PropertiesViewModel extends ViewModel {
     }
 
     public void removeFromFavorites(Property property, String userEmail) {
-        isLoading.setValue(true);
-
         Favorite favorite = new Favorite(userEmail, property.getPropertyId());
         favoriteRepository.deleteFavorite(favorite, new RepositoryCallback<Favorite>() {
             @Override

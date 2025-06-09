@@ -32,8 +32,6 @@ public class PropertyAdapter extends RecyclerView.Adapter<PropertyAdapter.Proper
 
         void onReserveClick(Property property);
 
-        void onPropertyClick(Property property);
-
         void checkFavoriteStatus(Property property, FavoriteStatusCallback callback);
     }
 
@@ -52,15 +50,6 @@ public class PropertyAdapter extends RecyclerView.Adapter<PropertyAdapter.Proper
     public void setProperties(List<Property> properties) {
         this.properties = properties != null ? properties : new ArrayList<>();
         notifyDataSetChanged();
-    }
-
-    public void refreshFavoriteStatus(int propertyId) {
-        for (int i = 0; i < properties.size(); i++) {
-            if (properties.get(i).getPropertyId() == propertyId) {
-                notifyItemChanged(i);
-                break;
-            }
-        }
     }
 
     @NonNull
@@ -193,22 +182,21 @@ public class PropertyAdapter extends RecyclerView.Adapter<PropertyAdapter.Proper
         private void updateFavoriteButtonState() {
             btnAddToFavorites.setEnabled(true);
             if (isCurrentlyFavorite) {
-                btnAddToFavorites.setText("Remove from Favorites");
-                btnAddToFavorites.setBackgroundTintList(context.getColorStateList(android.R.color.holo_red_light));
+                btnAddToFavorites.setText("Unfavorite");
+                btnAddToFavorites.setBackgroundTintList(context.getColorStateList(android.R.color.holo_red_dark));
             } else {
-                btnAddToFavorites.setText("Add to Favorites");
-                btnAddToFavorites.setBackgroundTintList(context.getColorStateList(android.R.color.holo_blue_light));
+                btnAddToFavorites.setText("Favorite");
             }
         }
 
         private void setupPricing(Property property) {
             NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(Locale.US);
-            double price = property.getPrice();
+            double originalPrice = property.getPrice();
             double discount = property.getDiscount();
 
             if (discount > 0) {
                 // Show discount information
-                double originalPrice = price / (1 - discount / 100);
+                double priceAfterDiscount = originalPrice - (originalPrice * (discount / 100));
                 double discountAmount = discount;
 
                 // Show discount badge
@@ -224,14 +212,14 @@ public class PropertyAdapter extends RecyclerView.Adapter<PropertyAdapter.Proper
                 tvOriginalPrice.setVisibility(View.VISIBLE);
 
                 // Show discounted price
-                tvPropertyPrice.setText(currencyFormat.format(price) + "/month");
+                tvPropertyPrice.setText(currencyFormat.format(priceAfterDiscount) + "/month");
             } else {
                 // No discount - show regular price
                 tvDiscountBadge.setVisibility(View.GONE);
                 tvDiscountText.setVisibility(View.GONE);
                 tvOriginalPrice.setVisibility(View.GONE);
 
-                tvPropertyPrice.setText(currencyFormat.format(price) + "/month");
+                tvPropertyPrice.setText(currencyFormat.format(originalPrice) + "/month");
             }
         }
     }

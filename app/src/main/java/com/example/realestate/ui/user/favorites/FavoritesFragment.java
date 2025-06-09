@@ -118,14 +118,6 @@ public class FavoritesFragment extends Fragment implements PropertyAdapter.OnPro
     }
 
     @Override
-    public void onPropertyClick(Property property) {
-        // Navigate to property detail
-        Bundle args = new Bundle();
-        args.putSerializable("property", property);
-        Navigation.findNavController(requireView()).navigate(R.id.action_nav_favorites_to_propertyDetailFragment, args);
-    }
-
-    @Override
     public void onFavoriteClick(Property property, boolean isCurrentlyFavorite) {
         // In favorites screen, we always remove from favorites regardless of current
         // status
