@@ -142,46 +142,34 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             emailTextView.setText(userSession.getEmail());
 
             // Load profile image from stored user data
-            loadProfileImageForUser(userSession.getEmail(), profileImageView);
+            loadProfileImageForUser(userSession.getProfileImage(), profileImageView);
         }
     }
 
-    private void loadProfileImageForUser(String email, ImageView profileImageView) {
-        // Get the user repository and load the current user's profile image
-        RealEstate.appContainer.getUserRepository().getUserByEmail(email, new RepositoryCallback<>() {
-            @Override
-            public void onSuccess(User user) {
-                if (user != null && user.getProfileImage() != null && !user.getProfileImage().isEmpty()) {
-                    try {
-                        // Use Glide to load the profile image from internal storage
-                        File imageFile = new File(getFilesDir(), user.getProfileImage());
-                        if (imageFile.exists()) {
-                            Glide.with(DashboardActivity.this)
-                                .load(imageFile)
-                                .placeholder(R.drawable.ic_person)
-                                .error(R.drawable.ic_person)
-                                .circleCrop()  // Optional: makes the image circular
-                                .into(profileImageView);
-                        } else {
-                            // Use default placeholder if file doesn't exist
-                            profileImageView.setImageResource(R.drawable.ic_person);
-                        }
-                    } catch (Exception e) {
-                        // If loading fails, use default placeholder
-                        profileImageView.setImageResource(R.drawable.ic_person);
-                    }
-                } else {
-                    // Use default placeholder if no profile image is set
-                    profileImageView.setImageResource(R.drawable.ic_person);
-                }
-            }
+    private void loadProfileImageForUser(String image, ImageView profileImageView) {
+        // Use Glide to load the profile image from internal storage
 
-            @Override
-            public void onError(Throwable t) {
-                // Use default placeholder if user loading fails
-                profileImageView.setImageResource(R.drawable.ic_person);
-            }
-        });
+        if (image == null || image.isEmpty()) {
+            // If no image is set, use a default placeholder
+            profileImageView.setImageResource(R.drawable.ic_person);
+            return;
+        }
+
+        File imageFile = new File(getFilesDir(), image);
+
+        if (!imageFile.exists()) {
+            // If the file doesn't exist, set a placeholder image
+            profileImageView.setImageResource(R.drawable.ic_person);
+            return;
+        }
+        if (imageFile.exists()) {
+            Glide.with(DashboardActivity.this)
+                    .load(imageFile)
+                    .placeholder(R.drawable.ic_person)
+                    .error(R.drawable.ic_person)
+                    .circleCrop()  // Optional: makes the image circular
+                    .into(profileImageView);
+        }
     }
 
     @Override
