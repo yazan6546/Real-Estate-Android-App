@@ -20,14 +20,15 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.realestate.R;
+import com.example.realestate.RealEstate;
 import com.example.realestate.databinding.FragmentHomeBinding;
 import com.google.android.material.card.MaterialCardView;
 
 import java.util.Calendar;
 
 public class HomeFragment extends Fragment {
-
     private FragmentHomeBinding binding;
+    private HomeViewModel homeViewModel;
     private Handler handler;
     private Runnable welcomeMessageRunnable;
     private String[] welcomeMessages = {
@@ -41,7 +42,12 @@ public class HomeFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
             ViewGroup container, Bundle savedInstanceState) {
-        HomeViewModel homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
+        // Create ViewModel with repository dependencies
+        homeViewModel = new ViewModelProvider(this,
+                new HomeViewModel.Factory(
+                        RealEstate.appContainer.getUserRepository(),
+                        RealEstate.appContainer.getPropertyRepository()))
+                .get(HomeViewModel.class);
 
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
@@ -71,11 +77,11 @@ public class HomeFragment extends Fragment {
 
         String greeting;
         if (hour < 12) {
-            greeting = "Good Morning! Welcome to Dream Estate";
+            greeting = "Good Morning!\nWelcome to Real Estate";
         } else if (hour < 17) {
-            greeting = "Good Afternoon! Welcome to Dream Estate";
+            greeting = "Good Afternoon!\nWelcome to Real Estate";
         } else {
-            greeting = "Good Evening! Welcome to Dream Estate";
+            greeting = "Good Evening!\nWelcome to Real Estate";
         }
 
         welcomeTitle.setText(greeting);
@@ -103,39 +109,6 @@ public class HomeFragment extends Fragment {
         handler.postDelayed(() -> {
             statsCard.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.slide_up));
         }, 900);
-
-        // Animate contact card with delay
-        MaterialCardView contactCard = binding.getRoot().findViewById(R.id.contactCard);
-        handler.postDelayed(() -> {
-            contactCard.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.scale_in));
-        }, 1200);
-
-        // Animate welcome icon with continuous rotation
-        ImageView welcomeIcon = binding.getRoot().findViewById(R.id.welcomeIcon);
-        handler.postDelayed(() -> {
-            startIconAnimation(welcomeIcon);
-        }, 1500);
-    }
-
-    private void startIconAnimation(ImageView icon) {
-        ObjectAnimator rotateAnimator = ObjectAnimator.ofFloat(icon, "rotation", 0f, 360f);
-        rotateAnimator.setDuration(3000);
-        rotateAnimator.setRepeatCount(ObjectAnimator.INFINITE);
-        rotateAnimator.setRepeatMode(ObjectAnimator.RESTART);
-
-        ObjectAnimator scaleXAnimator = ObjectAnimator.ofFloat(icon, "scaleX", 1f, 1.1f, 1f);
-        ObjectAnimator scaleYAnimator = ObjectAnimator.ofFloat(icon, "scaleY", 1f, 1.1f, 1f);
-        scaleXAnimator.setDuration(2000);
-        scaleYAnimator.setDuration(2000);
-        scaleXAnimator.setRepeatCount(ObjectAnimator.INFINITE);
-        scaleYAnimator.setRepeatCount(ObjectAnimator.INFINITE);
-
-        AnimatorSet animatorSet = new AnimatorSet();
-        animatorSet.playTogether(scaleXAnimator, scaleYAnimator);
-        animatorSet.start();
-
-        // Start rotation after scale animation
-        handler.postDelayed(rotateAnimator::start, 1000);
     }
 
     private void startDynamicWelcomeMessages() {
@@ -160,7 +133,7 @@ public class HomeFragment extends Fragment {
                 }, 500);
 
                 // Schedule next message change
-                handler.postDelayed(this, 4000);
+                handler.postDelayed(this, 3000);
             }
         };
 
@@ -169,11 +142,31 @@ public class HomeFragment extends Fragment {
     }
 
     private void addCounterAnimations() {
-        // Add counter animations to statistics
+        // Observe data from ViewModel and start animations when data is available
+        homeViewModel.getUserCount().observe(getViewLifecycleOwner(), userCount -> {
+            if (userCount != null) {
+                handler.postDelayed(() -> {
+                    // user count (clients)
+                    int startValue = Math.max(0, userCount - 20);
+                    animateCounter(binding.getRoot().findViewById(R.id.stat1),
+                            userCount + "", startValue, userCount);
+                }, 1500);
+            }
+        });
+
+        homeViewModel.getPropertyCount().observe(getViewLifecycleOwner(), propertyCount -> {
+            if (propertyCount != null) {
+                handler.postDelayed(() -> {
+                    // property count
+                    int startValue = Math.max(0, propertyCount - 20);
+                    animateCounter(binding.getRoot().findViewById(R.id.stat2),
+                            propertyCount + "", startValue, propertyCount);
+                }, 1500);
+            }
+        });
+
         handler.postDelayed(() -> {
-            animateCounter(binding.getRoot().findViewById(R.id.stat1), "10,000+", 8000, 10000);
-            animateCounter(binding.getRoot().findViewById(R.id.stat2), "500+", 400, 500);
-            animateCounter(binding.getRoot().findViewById(R.id.stat3), "17", 15, 17);
+            animateCounter(binding.getRoot().findViewById(R.id.stat3), "15", 10, 15);
         }, 1500);
     }
 

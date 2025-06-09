@@ -29,16 +29,6 @@
                 android:orientation="vertical"
                 android:padding="24dp">
 
-                <ImageView
-                    android:id="@+id/welcomeIcon"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:layout_gravity="center"
-                    android:layout_marginBottom="16dp"
-                    android:src="@drawable/ic_home"
-                    android:tint="@color/primary_blue"
-                    android:contentDescription="Home Icon" />
-
                 <TextView
                     android:id="@+id/welcomeTitle"
                     android:layout_width="match_parent"
@@ -111,10 +101,10 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="About Dream Estate"
+                        android:text="About Real Estate"
+                        android:textColor="@color/text_primary"
                         android:textSize="22sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/text_primary" />
+                        android:textStyle="bold" />
 
                 </LinearLayout>
 
@@ -122,20 +112,11 @@
                     android:id="@+id/aboutUsDescription"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Dream Estate is your trusted partner in finding the perfect property. With over 15 years of experience in the real estate market, we have helped thousands of families find their dream homes and investors discover profitable opportunities."
-                    android:textSize="16sp"
-                    android:textColor="@color/text_primary"
+                    android:layout_marginBottom="16dp"
                     android:lineSpacingExtra="4dp"
-                    android:layout_marginBottom="16dp" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Our mission is to make property buying, selling, and renting a seamless and enjoyable experience for everyone."
-                    android:textSize="16sp"
-                    android:textColor="@color/text_secondary"
-                    android:textStyle="italic"
-                    android:lineSpacingExtra="4dp" />
+                    android:text="Real Estate is your trusted partner in finding the perfect property. With over 15 years of experience in the real estate market, we have helped thousands of families find their dream homes and investors discover profitable opportunities."
+                    android:textColor="@color/text_primary"
+                    android:textSize="16sp" />
 
             </LinearLayout>
 
@@ -221,9 +202,9 @@
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="Dream Estate was established with a vision to revolutionize the real estate industry in Jordan and the Middle East."
-                                android:textSize="14sp"
-                                android:textColor="@color/text_primary" />
+                                android:text="Real Estate was established with a vision to revolutionize the real estate industry in Palestine and the Middle East."
+                                android:textColor="@color/text_primary"
+                                android:textSize="14sp" />
 
                         </LinearLayout>
 
@@ -260,9 +241,9 @@
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="Expanded operations to UAE and Palestine, helping over 5,000 families find their perfect homes."
-                                android:textSize="14sp"
-                                android:textColor="@color/text_primary" />
+                                android:text="Expanded operations to UAE and Jordan, helping over 5,000 families find their perfect homes."
+                                android:textColor="@color/text_primary"
+                                android:textSize="14sp" />
 
                         </LinearLayout>
 
@@ -357,19 +338,19 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="10,000+"
-                            android:textSize="24sp"
-                            android:textStyle="bold"
+                            android:layout_marginBottom="4dp"
+                            android:text="+0"
                             android:textColor="@color/primary_blue"
-                            android:layout_marginBottom="4dp" />
+                            android:textSize="24sp"
+                            android:textStyle="bold" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Happy Clients"
-                            android:textSize="12sp"
+                            android:text="Clients"
+                            android:textAlignment="center"
                             android:textColor="@color/text_secondary"
-                            android:textAlignment="center" />
+                            android:textSize="12sp" />
 
                     </LinearLayout>
 
@@ -386,11 +367,11 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="500+"
-                            android:textSize="24sp"
-                            android:textStyle="bold"
+                            android:layout_marginBottom="4dp"
+                            android:text="+0"
                             android:textColor="@color/accent_green"
-                            android:layout_marginBottom="4dp" />
+                            android:textSize="24sp"
+                            android:textStyle="bold" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -415,11 +396,11 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="17"
-                            android:textSize="24sp"
-                            android:textStyle="bold"
+                            android:layout_marginBottom="4dp"
+                            android:text="0"
                             android:textColor="@color/accent_orange"
-                            android:layout_marginBottom="4dp" />
+                            android:textSize="24sp"
+                            android:textStyle="bold" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -438,42 +419,6 @@
         </com.google.android.material.card.MaterialCardView>
 
         <!-- Contact Information -->
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/contactCard"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="8dp"
-            app:cardBackgroundColor="@color/primary_blue">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="24dp">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Ready to Find Your Dream Home?"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/white"
-                    android:textAlignment="center"
-                    android:layout_marginBottom="12dp" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Contact us today and let our expert team help you find the perfect property that matches your needs and budget."
-                    android:textSize="14sp"
-                    android:textColor="@color/white"
-                    android:textAlignment="center"
-                    android:alpha="0.9" />
-
-            </LinearLayout>
-
-        </com.google.android.material.card.MaterialCardView>
 
     </LinearLayout>
 
