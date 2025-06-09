@@ -4,6 +4,8 @@ import com.google.gson.Gson;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
+
 public class SharedPrefManager {
     private static final String SHARED_PREF_NAME = "My Shared Preference";
     private static final int SHARED_PREF_PRIVATE = Context.MODE_PRIVATE;
@@ -67,10 +69,10 @@ public class SharedPrefManager {
 
     /**
      * Saves a new UserSession from a User object, clearing the previous session first.
+     *
      * @param user The User object containing updated information
-     * @return true if the session was successfully saved, false otherwise
      */
-    public boolean saveUserSession(User user) {
+    public void saveUserSession(User user) {
         try {
             // Clear existing user session
             clear();
@@ -85,10 +87,9 @@ public class SharedPrefManager {
             );
 
             // Write the new UserSession object
-            return writeObject("user_session", userSession);
+            writeObject("user_session", userSession);
         } catch (Exception e) {
-            e.printStackTrace();
-            return false;
+            Log.e("SharedPrefManager", "Error saving user session: " + e.getMessage());
         }
     }
 }

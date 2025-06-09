@@ -1,7 +1,6 @@
 package com.example.realestate;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,9 +18,6 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.bumptech.glide.Glide;
-import com.example.realestate.RealEstate;
-import com.example.realestate.data.repository.RepositoryCallback;
-import com.example.realestate.domain.model.User;
 import com.example.realestate.domain.service.SharedPrefManager;
 import com.example.realestate.domain.service.UserSession;
 import com.example.realestate.ui.login.LoginActivity;
