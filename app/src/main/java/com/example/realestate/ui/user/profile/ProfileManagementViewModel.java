@@ -29,13 +29,14 @@ import java.io.OutputStream;
 public class ProfileManagementViewModel extends AndroidViewModel {
 
     private final UserRepository userRepository;
+    private final SharedPrefManager sharedPrefManager;
 
     public enum UpdateState {
         IDLE, LOADING, SUCCESS, ERROR
     }
 
     // LiveData for UI state
-    private final LiveData<User> currentUser;
+    private LiveData<User> currentUser;
     private final MutableLiveData<UpdateState> updateState = new MutableLiveData<>(UpdateState.IDLE);
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
     private final MutableLiveData<String[]> cities = new MutableLiveData<>();
@@ -48,12 +49,22 @@ public class ProfileManagementViewModel extends AndroidViewModel {
     public ProfileManagementViewModel(Application application, UserRepository userRepository, SharedPrefManager sharedPrefManager) {
         super(application);
         this.userRepository = userRepository;
-        String userEmail = sharedPrefManager.getCurrentUserEmail();
-        currentUser = userRepository.getUserByEmailLive(userEmail);
+        this.sharedPrefManager = sharedPrefManager;
     }
 
     // Public getters for LiveData
     public LiveData<User> getCurrentUser() {
+
+        if (currentUser == null && sharedPrefManager.getCurrentUserEmail() == null) {
+            errorMessage.postValue("No user is currently logged in");
+            updateState.postValue(UpdateState.ERROR);
+            return null;
+        }
+
+        if (currentUser == null) {
+            String email = sharedPrefManager.getCurrentUserEmail();
+            currentUser = userRepository.getUserByEmailLive(email);
+        }
         return currentUser;
     }
     public LiveData<UpdateState> getUpdateState() {

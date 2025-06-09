@@ -7,7 +7,6 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,10 +34,6 @@ import com.example.realestate.domain.service.SharedPrefManager;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -138,13 +133,19 @@ public class ProfileManagementFragment extends Fragment {
         // Profile Information
         profileImageView = view.findViewById(R.id.profileImageView);
 
-        File imageFile = new File(requireContext().getFilesDir(),
-                Objects.requireNonNull(viewModel.getCurrentUser().getValue()).getProfileImage());
+        User currentUser = viewModel.getCurrentUser().getValue();
 
-        Glide.with(requireContext())
-                .load(imageFile.exists() ? imageFile : R.drawable.ic_person)
-                .placeholder(R.drawable.ic_person)
-                .into(profileImageView);
+        if (currentUser != null) {
+
+            File imageFile = new File(requireContext().getFilesDir(),
+                    currentUser.getProfileImage());
+
+            Glide.with(requireContext())
+                    .load(imageFile.exists() ? imageFile : R.drawable.ic_person)
+                    .placeholder(R.drawable.ic_person)
+                    .into(profileImageView);
+
+        }
 
         changeProfileImageButton = view.findViewById(R.id.changeProfileImageButton);
         firstNameInput = view.findViewById(R.id.firstNameInput);
