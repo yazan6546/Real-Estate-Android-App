@@ -2,6 +2,7 @@ package com.example.realestate;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -143,28 +144,29 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     }
 
     private void loadProfileImageForUser(String image, ImageView profileImageView) {
-        // Use Glide to load the profile image from internal storage
+        // First set the default image to ensure it's not blank/white if loading fails
+        profileImageView.setImageResource(R.drawable.ic_person);
 
+        // If no image is set, we already have the default set
         if (image == null || image.isEmpty()) {
-            // If no image is set, use a default placeholder
-            profileImageView.setImageResource(R.drawable.ic_person);
             return;
         }
 
-        File imageFile = new File(getFilesDir(), image);
+        try {
+            File imageFile = new File(getFilesDir(), image);
 
-        if (!imageFile.exists()) {
-            // If the file doesn't exist, set a placeholder image
-            profileImageView.setImageResource(R.drawable.ic_person);
-            return;
-        }
-        if (imageFile.exists()) {
-            Glide.with(DashboardActivity.this)
-                    .load(imageFile)
-                    .placeholder(R.drawable.ic_person)
-                    .error(R.drawable.ic_person)
-                    .circleCrop()  // Optional: makes the image circular
-                    .into(profileImageView);
+            // Only try to load if the file actually exists
+            if (imageFile.exists()) {
+                Glide.with(DashboardActivity.this)
+                        .load(imageFile)
+                        .placeholder(R.drawable.ic_person)
+                        .error(R.drawable.ic_person)
+                        .circleCrop()  // Optional: makes the image circular
+                        .into(profileImageView);
+            }
+        } catch (Exception e) {
+            // Log the error but keep the default image already set
+            Log.e("DashboardActivity", "Error loading profile image: " + e.getMessage());
         }
     }
 
