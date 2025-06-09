@@ -40,7 +40,10 @@
     <color name="text_secondary2">#757575</color>
     <color name="background">#FAFAFA</color>
     <color name="card_background">#FFFFFF</color>
-    <color name="divider">#BDBDBD</color>
-    <color name="yellow_500">#FFC107</color>
+    <color name="divider">#BDBDBD</color>    <color name="yellow_500">#FFC107</color>
+    
+    <!-- Missing colors for layouts -->
+    <color name="background_light">#FFF8F9FA</color>
+    <color name="primary_color">#FF1976D2</color>
 </resources>
 

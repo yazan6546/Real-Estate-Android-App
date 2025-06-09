@@ -118,10 +118,38 @@ public class ReservationRepository {
     // Get the total count of reservations
     public LiveData<Integer> getReservationCount() {
         return reservationDao.getReservationCount();
-    }
+    } // Get reservation distribution by country
 
-    // Get reservation distribution by country
     public LiveData<List<CountryCount>> getReservationCountByCountry() {
         return reservationDao.getReservationCountByCountry();
+    }
+
+    // Simplified methods for basic reservation operations
+    public boolean submitReservation(Reservation reservation) {
+        try {
+            ReservationEntity entity = ReservationMapper.fromDomain(reservation);
+            reservationDao.insertReservation(entity);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public List<Reservation> getUserReservations(String userEmail) {
+        try {
+            // This would normally return LiveData, but for simplicity return a list
+            return ReservationMapper.toDomainList(reservationDao.getReservationsByUserEmail(userEmail));
+        } catch (Exception e) {
+            return new java.util.ArrayList<>();
+        }
+    }
+
+    public boolean cancelReservation(String reservationId) {
+        try {
+            reservationDao.deleteReservationById(Integer.parseInt(reservationId));
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

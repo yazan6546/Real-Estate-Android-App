@@ -40,7 +40,6 @@ public interface ReservationDao {
     @Query("SELECT * FROM reservations WHERE status = :status")
     LiveData<List<ReservationEntity>> getReservationsByStatus(String status);
 
-
     @Query("SELECT * FROM reservations WHERE email = :userEmail")
     LiveData<List<ReservationEntity>> getReservationsByUserId(String userEmail);
 
@@ -66,18 +65,21 @@ public interface ReservationDao {
     LiveData<List<ReservationEntity>> getReservationsByPropertyId(int propertyId);
 
     /**
-     * Transaction query to get reservations with property details for a specific user
+     * Transaction query to get reservations with property details for a specific
+     * user
      */
     @Transaction
     @Query("SELECT * FROM reservations WHERE email = :userEmail")
     LiveData<List<ReservationWithPropertyEntity>> getReservationsWithPropertyByUserId(String userEmail);
 
     /**
-     * Transaction query to get reservations with property details for a specific user filtered by status
+     * Transaction query to get reservations with property details for a specific
+     * user filtered by status
      */
     @Transaction
     @Query("SELECT * FROM reservations WHERE email = :userEmail AND status = :status")
-    LiveData<List<ReservationWithPropertyEntity>> getReservationsWithPropertyByUserIdAndStatus(String userEmail, String status);
+    LiveData<List<ReservationWithPropertyEntity>> getReservationsWithPropertyByUserIdAndStatus(String userEmail,
+            String status);
 
     /**
      * Transaction query to get all reservations with property details
@@ -87,16 +89,15 @@ public interface ReservationDao {
     LiveData<List<ReservationWithPropertyEntity>> getAllReservationsWithProperty();
 
     /**
-     * Transaction query to get all reservations with property details filtered by status
+     * Transaction query to get all reservations with property details filtered by
+     * status
      */
     @Transaction
     @Query("SELECT * FROM reservations WHERE status = :status")
     LiveData<List<ReservationWithPropertyEntity>> getAllReservationsWithPropertyByStatus(String status);
 
-
     @Query("SELECT COUNT(*) FROM reservations")
     LiveData<Integer> getReservationCount();
-
 
     // Count the reservations in all customer countries
     @Query("SELECT country, COUNT(country) as count" +
@@ -105,4 +106,16 @@ public interface ReservationDao {
             "GROUP BY u.country" +
             " ORDER BY COUNT(*) DESC")
     LiveData<List<CountryCount>> getReservationCountByCountry();
+
+    /**
+     * Get reservations by user email (synchronous method for repository)
+     */
+    @Query("SELECT * FROM reservations WHERE email = :userEmail")
+    List<ReservationEntity> getReservationsByUserEmail(String userEmail);
+
+    /**
+     * Delete reservation by ID
+     */
+    @Query("DELETE FROM reservations WHERE reservation_id = :reservationId")
+    void deleteReservationById(int reservationId);
 }

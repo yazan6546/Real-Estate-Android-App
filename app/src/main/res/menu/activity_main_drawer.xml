@@ -14,11 +14,10 @@
         <item
             android:id="@+id/nav_your_reservations"
             android:icon="@drawable/ic_calendar"
-            android:title="@string/menu_your_reservations" />
-        <item
-            android:id="@+id/nav_your_favorites"
+            android:title="@string/menu_your_reservations" />        <item
+            android:id="@+id/nav_favorites"
             android:icon="@drawable/ic_favorite"
-            android:title="@string/menu_your_favorites" />
+            android:title="@string/menu_favorites" />
         <item
             android:id="@+id/nav_featured_properties"
             android:icon="@drawable/ic_star"

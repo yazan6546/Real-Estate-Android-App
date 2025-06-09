@@ -9,12 +9,54 @@
         android:id="@+id/nav_home"
         android:name="com.example.realestate.ui.user.home.HomeFragment"
         android:label="@string/menu_home"
-        tools:layout="@layout/fragment_home" />
-<!--    <fragment-->
-<!--        android:id="@+id/nav_properties"-->
-<!--        android:name="com.example.realestate.ui.properties.PropertiesFragment"-->
-<!--        android:label="@string/menu_properties"-->
-<!--        tools:layout="@layout/fragment_gallery" />-->    <fragment
+        tools:layout="@layout/fragment_home" />    <fragment
+        android:id="@+id/nav_properties"
+        android:name="com.example.realestate.ui.user.properties.PropertiesFragment"
+        android:label="@string/menu_properties"
+        tools:layout="@layout/fragment_properties" >
+        <action
+            android:id="@+id/action_nav_properties_to_propertyDetailFragment"
+            app:destination="@id/propertyDetailFragment" />
+        <action
+            android:id="@+id/action_nav_properties_to_reservationFragment"
+            app:destination="@id/reservationFragment" />
+    </fragment>
+    
+    <fragment
+        android:id="@+id/propertyDetailFragment"
+        android:name="com.example.realestate.ui.user.properties.PropertyDetailFragment"
+        android:label="Property Details"
+        tools:layout="@layout/fragment_property_detail" >
+        <action
+            android:id="@+id/action_propertyDetailFragment_to_reservationFragment"
+            app:destination="@id/reservationFragment" />
+        <argument
+            android:name="property"
+            app:argType="com.example.realestate.domain.model.Property" />
+    </fragment>
+    
+    <fragment
+        android:id="@+id/reservationFragment"
+        android:name="com.example.realestate.ui.user.reservation.ReservationFragment"
+        android:label="Make Reservation"
+        tools:layout="@layout/fragment_reservation" >
+        <argument
+            android:name="property"
+            app:argType="com.example.realestate.domain.model.Property" />
+    </fragment>
+    
+    <fragment
+        android:id="@+id/nav_favorites"
+        android:name="com.example.realestate.ui.user.favorites.FavoritesFragment"
+        android:label="@string/menu_favorites"
+        tools:layout="@layout/fragment_favorites" >
+        <action
+            android:id="@+id/action_nav_favorites_to_propertyDetailFragment"
+            app:destination="@id/propertyDetailFragment" />
+        <action
+            android:id="@+id/action_nav_favorites_to_reservationFragment"
+            app:destination="@id/reservationFragment" />
+    </fragment><fragment
         android:id="@+id/nav_your_reservations"
         android:name="com.example.realestate.ui.user.reservations.UserReservationsFragment"
         android:label="@string/menu_your_reservations"

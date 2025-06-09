@@ -2,13 +2,22 @@ package com.example.realestate.domain.model;
 
 import java.util.Date;
 
-public class Reservation {
+public class Reservation implements java.io.Serializable {
     private int reservationId;
     private String email;
     private int propertyId;
     private Date startDate;
     private Date endDate;
     private String status;
+
+    // Additional fields for reservation details
+    private String customerName;
+    private String customerEmail;
+    private String customerPhone;
+    private Date reservationDateTime;
+    private String notes;
+    private Date createdAt;
+    private String propertyTitle;
 
     // Optional reference to related property
     private Property property;
@@ -19,7 +28,7 @@ public class Reservation {
     }
 
     public Reservation(int reservationId, String email, int propertyId, Date start,
-                       Date end, String status) {
+            Date end, String status) {
         this.reservationId = reservationId;
         this.email = email;
         this.propertyId = propertyId;
@@ -83,5 +92,70 @@ public class Reservation {
 
     public void setProperty(Property property) {
         this.property = property;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    // Additional getters and setters
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
+    }
+
+    public String getCustomerEmail() {
+        return customerEmail;
+    }
+
+    public void setCustomerEmail(String customerEmail) {
+        this.customerEmail = customerEmail;
+    }
+
+    public String getCustomerPhone() {
+        return customerPhone;
+    }
+
+    public void setCustomerPhone(String customerPhone) {
+        this.customerPhone = customerPhone;
+    }
+
+    public Date getReservationDateTime() {
+        return reservationDateTime;
+    }
+
+    public void setReservationDateTime(Date reservationDateTime) {
+        this.reservationDateTime = reservationDateTime;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public String getPropertyTitle() {
+        return propertyTitle;
+    }
+
+    public void setPropertyTitle(String propertyTitle) {
+        this.propertyTitle = propertyTitle;
     }
 }
