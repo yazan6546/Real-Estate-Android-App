@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -20,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -67,41 +69,55 @@ public class ProfileManagementFragment extends Fragment {
 
     // Activity Result Launchers
     private ActivityResultLauncher<Intent> imagePickerLauncher;
+    private ActivityResultLauncher<PickVisualMediaRequest> photoPickerLauncher;
     private ActivityResultLauncher<String> permissionLauncher;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState); // Initialize activity result launchers
+        super.onCreate(savedInstanceState);
+
+        // Legacy image picker launcher for older Android versions
         imagePickerLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
                         Uri imageUri = result.getData().getData();
-                        if (imageUri != null) {
-                            // Display the image
-                            Glide.with(requireContext())
-                                    .load(imageUri)
-                                    .placeholder(R.drawable.ic_person)
-                                    .into(profileImageView);
-
-                            // Set the image URI in the ViewModel for later use
-                            viewModel.setProfileImageUri(imageUri);
-                        } else {
-                            Toast.makeText(requireContext(), "Failed to save image", Toast.LENGTH_SHORT).show();
-                        }
+                        handleSelectedImageUri(imageUri);
                     }
                 });
 
+        // New photo picker launcher for Android 13+ (API 33+)
+        photoPickerLauncher = registerForActivityResult(
+                new ActivityResultContracts.PickVisualMedia(),
+                this::handleSelectedImageUri);
+
+        // Permission request launcher
         permissionLauncher = registerForActivityResult(
                 new ActivityResultContracts.RequestPermission(),
                 isGranted -> {
                     if (isGranted) {
-                        openImagePicker();
+                        selectImage();
                     } else {
-                        Toast.makeText(requireContext(), "Permission denied to access gallery", Toast.LENGTH_SHORT)
+                        Toast.makeText(requireContext(), "Permission denied to access photos", Toast.LENGTH_SHORT)
                                 .show();
                     }
                 });
+    }
+
+    // Process the selected image
+    private void handleSelectedImageUri(Uri imageUri) {
+        if (imageUri != null) {
+            // Display the image
+            Glide.with(requireContext())
+                    .load(imageUri)
+                    .placeholder(R.drawable.ic_person)
+                    .into(profileImageView);
+
+            // Set the image URI in the ViewModel for later use
+            viewModel.setProfileImageUri(imageUri);
+        } else {
+            Toast.makeText(requireContext(), "Failed to select image", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -193,23 +209,36 @@ public class ProfileManagementFragment extends Fragment {
     }
 
     private void setupButtons() {
-        changeProfileImageButton.setOnClickListener(v -> {
-            if (ContextCompat.checkSelfPermission(requireContext(),
-                    Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                openImagePicker();
-            } else {
-                permissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE);
-            }
-        });
+        changeProfileImageButton.setOnClickListener(v -> selectImage());
 
         saveProfileButton.setOnClickListener(v -> saveProfile());
 
         changePasswordButton.setOnClickListener(v -> changePassword());
     }
 
-    private void openImagePicker() {
-        Intent intent = new Intent();
-        intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+    private void selectImage() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            // For Android 13+ (API 33+), use the photo picker
+            photoPickerLauncher.launch(new PickVisualMediaRequest.Builder()
+                    .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
+                    .build());
+        } else if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2) {
+            // For Android 12 and below, check and request READ_EXTERNAL_STORAGE permission
+            if (ContextCompat.checkSelfPermission(requireContext(),
+                    Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                openLegacyImagePicker();
+            } else {
+                permissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE);
+            }
+        } else {
+            // This shouldn't happen given our permission handling, but just in case
+            Toast.makeText(requireContext(), "Unable to access photos on this Android version", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void openLegacyImagePicker() {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
         imagePickerLauncher.launch(intent);
     }
 
