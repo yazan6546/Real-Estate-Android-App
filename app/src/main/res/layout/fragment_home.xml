@@ -93,15 +93,15 @@
                         android:layout_width="48dp"
                         android:layout_height="48dp"
                         android:src="@drawable/ic_real_estate"
-                        android:tint="@color/accent_green"
+                        app:tint="@color/accent_green"
                         android:layout_marginEnd="16dp"
-                        android:contentDescription="About Icon" />
+                        android:contentDescription="@string/about_icon" />
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="About Real Estate"
+                        android:text="@string/about_real_estate"
                         android:textColor="@color/text_primary"
                         android:textSize="22sp"
                         android:textStyle="bold" />
@@ -114,7 +114,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
                     android:lineSpacingExtra="4dp"
-                    android:text="Real Estate is your trusted partner in finding the perfect property. With over 15 years of experience in the real estate market, we have helped thousands of families find their dream homes and investors discover profitable opportunities."
+                    android:text="@string/real_estate_description"
                     android:textColor="@color/text_primary"
                     android:textSize="16sp" />
 
@@ -149,9 +149,9 @@
                         android:layout_width="48dp"
                         android:layout_height="48dp"
                         android:src="@drawable/ic_calendar"
-                        android:tint="@color/accent_orange"
                         android:layout_marginEnd="16dp"
-                        android:contentDescription="History Icon" />
+                        android:contentDescription="History Icon"
+                        app:tint="@color/accent_orange" />
 
                     <TextView
                         android:layout_width="0dp"

@@ -4,6 +4,7 @@ package com.example.realestate.ui.user.profile;
 import android.app.Application;
 import android.content.Context;
 import android.net.Uri;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -19,7 +20,6 @@ import com.example.realestate.domain.model.User;
 import com.example.realestate.domain.service.CountryService;
 import com.example.realestate.domain.service.Hashing;
 import com.example.realestate.domain.service.SharedPrefManager;
-import com.example.realestate.domain.service.UserSession;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -249,7 +249,7 @@ public class ProfileManagementViewModel extends AndroidViewModel {
             // Return just the filename, which can be used to construct the full path later
             return fileName;
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e("Error saving image to internal storage", e.getMessage());
             return null;
         }
     }
