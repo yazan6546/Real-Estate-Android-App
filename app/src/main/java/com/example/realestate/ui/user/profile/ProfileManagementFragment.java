@@ -81,12 +81,16 @@ public class ProfileManagementFragment extends Fragment {
                     if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
                         Uri imageUri = result.getData().getData();
                         if (imageUri != null) {
+                            // Display the image
                             Glide.with(requireContext())
                                     .load(imageUri)
-                                    .placeholder(R.drawable.ic_person) // Placeholder image
+                                    .placeholder(R.drawable.ic_person)
                                     .into(profileImageView);
 
+                            // Set the image URI in the ViewModel for later use
                             viewModel.setProfileImageUri(imageUri);
+                        } else {
+                            Toast.makeText(requireContext(), "Failed to save image", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -105,7 +109,7 @@ public class ProfileManagementFragment extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-            @Nullable Bundle savedInstanceState) {
+                             @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_profile_management, container, false);
     }
 
@@ -115,9 +119,11 @@ public class ProfileManagementFragment extends Fragment {
 
         SharedPrefManager sharedPrefManager = SharedPrefManager.getInstance(requireContext());
 
-        // Initialize ViewModel
+        // Initialize ViewModel with application context
         viewModel = new ViewModelProvider(this,
-                new ProfileManagementViewModel.Factory(RealEstate.appContainer.getUserRepository(),
+                new ProfileManagementViewModel.Factory(
+                        requireActivity().getApplication(),
+                        RealEstate.appContainer.getUserRepository(),
                         sharedPrefManager))
                 .get(ProfileManagementViewModel.class);
 
@@ -306,33 +312,4 @@ public class ProfileManagementFragment extends Fragment {
         newPasswordInput.setText("");
         confirmPasswordInput.setText("");
     }
-
-    private void saveImageToInternalStorage(Uri imageUri) {
-        try {
-            // Open the input stream from the URI
-            InputStream inputStream = requireContext().getContentResolver().openInputStream(imageUri);
-
-            // Generate a unique file name
-            String fileName = "image_" + System.currentTimeMillis() + ".jpg";
-            File file = new File(requireContext().getFilesDir(), fileName);
-
-            // Create an output stream to write the image
-            OutputStream outputStream = new FileOutputStream(file);
-
-            // Copy the data
-            byte[] buffer = new byte[4096];
-            int bytesRead;
-            while ((bytesRead = inputStream.read(buffer)) != -1) {
-                outputStream.write(buffer, 0, bytesRead);
-            }
-
-            outputStream.close();
-            inputStream.close();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            // Handle error (e.g., show Toast)
-        }
-    }
-
 }

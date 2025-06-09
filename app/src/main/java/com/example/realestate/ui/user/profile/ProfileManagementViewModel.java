@@ -100,7 +100,9 @@ public class ProfileManagementViewModel extends AndroidViewModel {
 
             // If a new profile image was selected, update it
             if (profileImageUri != null) {
-                updatedUser.setProfileImage(profileImageUri.toString());
+                // Save the image to internal storage and get the filename
+                String imageFileName = saveImageToInternalStorage(profileImageUri);
+                updatedUser.setProfileImage(imageFileName);
             }
 
             // Update in repository
@@ -193,13 +195,20 @@ public class ProfileManagementViewModel extends AndroidViewModel {
     }
 
 
-    private void saveImageToInternalStorage(Context context, Uri imageUri) {
+    /**
+     * Saves the selected image to internal storage and returns the filename
+     * @param imageUri The URI of the image to save
+     * @return The filename of the saved image
+     */
+    public String saveImageToInternalStorage(Uri imageUri) {
+        Context context = getApplication().getApplicationContext();
+        String fileName = "image_" + System.currentTimeMillis() + ".jpg";
+
         try {
             // Open the input stream from the URI
             InputStream inputStream = context.getContentResolver().openInputStream(imageUri);
 
-            // Generate a unique file name
-            String fileName = "image_" + System.currentTimeMillis() + ".jpg";
+            // Create file in internal storage
             File file = new File(context.getFilesDir(), fileName);
 
             // Create an output stream to write the image
@@ -215,19 +224,22 @@ public class ProfileManagementViewModel extends AndroidViewModel {
             outputStream.close();
             inputStream.close();
 
+            return fileName;
         } catch (IOException e) {
             e.printStackTrace();
             // Handle error (e.g., show Toast)
+            return null;
         }
     }
 
     // Factory for ViewModel creation
     public static class Factory implements ViewModelProvider.Factory {
-
+        private final Application application;
         private final UserRepository userRepository;
         private final SharedPrefManager sharedPrefManager;
 
-        public Factory(UserRepository userRepository, SharedPrefManager sharedPrefManager) {
+        public Factory(Application application, UserRepository userRepository, SharedPrefManager sharedPrefManager) {
+            this.application = application;
             this.userRepository = userRepository;
             this.sharedPrefManager = sharedPrefManager;
         }
@@ -237,7 +249,7 @@ public class ProfileManagementViewModel extends AndroidViewModel {
         @SuppressWarnings("unchecked")
         public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
             if (modelClass.isAssignableFrom(ProfileManagementViewModel.class)) {
-                return (T) new ProfileManagementViewModel(userRepository, sharedPrefManager);
+                return (T) new ProfileManagementViewModel(application, userRepository, sharedPrefManager);
             }
             throw new IllegalArgumentException("Unknown ViewModel class: " + modelClass.getName());
         }
