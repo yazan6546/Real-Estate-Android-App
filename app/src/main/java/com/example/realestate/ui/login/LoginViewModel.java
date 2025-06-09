@@ -66,6 +66,7 @@ public class LoginViewModel extends ViewModel {
                             user.getEmail(),
                             user.getFirstName(),
                             user.getLastName(),
+                            user.getProfileImage(),
                             user.isAdmin()
                     );
 
