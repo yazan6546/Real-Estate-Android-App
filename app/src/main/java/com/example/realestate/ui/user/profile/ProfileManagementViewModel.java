@@ -1,8 +1,12 @@
 package com.example.realestate.ui.user.profile;
 
+
+import android.app.Application;
+import android.content.Context;
 import android.net.Uri;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -16,10 +20,13 @@ import com.example.realestate.domain.service.CountryService;
 import com.example.realestate.domain.service.Hashing;
 import com.example.realestate.domain.service.SharedPrefManager;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
-public class ProfileManagementViewModel extends ViewModel {
+public class ProfileManagementViewModel extends AndroidViewModel {
 
     private final UserRepository userRepository;
 
@@ -38,7 +45,8 @@ public class ProfileManagementViewModel extends ViewModel {
     private Uri profileImageUri;
 
 
-    public ProfileManagementViewModel(UserRepository userRepository, SharedPrefManager sharedPrefManager) {
+    public ProfileManagementViewModel(Application application, UserRepository userRepository, SharedPrefManager sharedPrefManager) {
+        super(application);
         this.userRepository = userRepository;
         String userEmail = sharedPrefManager.getCurrentUserEmail();
         currentUser = userRepository.getUserByEmailLive(userEmail);
@@ -184,8 +192,38 @@ public class ProfileManagementViewModel extends ViewModel {
         }
     }
 
+
+    private void saveImageToInternalStorage(Context context, Uri imageUri) {
+        try {
+            // Open the input stream from the URI
+            InputStream inputStream = context.getContentResolver().openInputStream(imageUri);
+
+            // Generate a unique file name
+            String fileName = "image_" + System.currentTimeMillis() + ".jpg";
+            File file = new File(context.getFilesDir(), fileName);
+
+            // Create an output stream to write the image
+            OutputStream outputStream = new FileOutputStream(file);
+
+            // Copy the data
+            byte[] buffer = new byte[4096];
+            int bytesRead;
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
+            }
+
+            outputStream.close();
+            inputStream.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Handle error (e.g., show Toast)
+        }
+    }
+
     // Factory for ViewModel creation
     public static class Factory implements ViewModelProvider.Factory {
+
         private final UserRepository userRepository;
         private final SharedPrefManager sharedPrefManager;
 

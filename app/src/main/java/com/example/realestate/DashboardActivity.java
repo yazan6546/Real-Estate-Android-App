@@ -145,7 +145,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
     private void loadProfileImageForUser(String email, ImageView profileImageView) {
         // Get the user repository and load the current user's profile image
-        RealEstate.appContainer.getUserRepository().getUserByEmail(email, new RepositoryCallback<User>() {
+        RealEstate.appContainer.getUserRepository().getUserByEmail(email, new RepositoryCallback<>() {
             @Override
             public void onSuccess(User user) {
                 if (user != null && user.getProfileImage() != null && !user.getProfileImage().isEmpty()) {

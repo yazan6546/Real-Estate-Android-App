@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,12 +27,18 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.bumptech.glide.Glide;
 import com.example.realestate.R;
 import com.example.realestate.RealEstate;
 import com.example.realestate.domain.model.User;
 import com.example.realestate.domain.service.SharedPrefManager;
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -74,7 +81,11 @@ public class ProfileManagementFragment extends Fragment {
                     if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
                         Uri imageUri = result.getData().getData();
                         if (imageUri != null) {
-                            // Use Glide to load the selected image immediately
+                            Glide.with(requireContext())
+                                    .load(imageUri)
+                                    .placeholder(R.drawable.ic_person) // Placeholder image
+                                    .into(profileImageView);
+
                             viewModel.setProfileImageUri(imageUri);
                         }
                     }
@@ -187,8 +198,8 @@ public class ProfileManagementFragment extends Fragment {
     }
 
     private void openImagePicker() {
-        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        intent.setType("image/*");
+        Intent intent = new Intent();
+        intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
         imagePickerLauncher.launch(intent);
     }
 
@@ -295,4 +306,33 @@ public class ProfileManagementFragment extends Fragment {
         newPasswordInput.setText("");
         confirmPasswordInput.setText("");
     }
+
+    private void saveImageToInternalStorage(Uri imageUri) {
+        try {
+            // Open the input stream from the URI
+            InputStream inputStream = requireContext().getContentResolver().openInputStream(imageUri);
+
+            // Generate a unique file name
+            String fileName = "image_" + System.currentTimeMillis() + ".jpg";
+            File file = new File(requireContext().getFilesDir(), fileName);
+
+            // Create an output stream to write the image
+            OutputStream outputStream = new FileOutputStream(file);
+
+            // Copy the data
+            byte[] buffer = new byte[4096];
+            int bytesRead;
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
+            }
+
+            outputStream.close();
+            inputStream.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Handle error (e.g., show Toast)
+        }
+    }
+
 }
