@@ -163,24 +163,62 @@ public class ReservationRepository {
     }
 
     /**
-     * Gets all reservations with property details grouped by user in a more efficient way
-     * using Room's multimap relationship feature
+     * Gets all reservations grouped by user in a more efficient way
+     * using Room's direct multimap relationship feature
      * @return LiveData of Map<User, List<Reservation>>
      */
     public LiveData<Map<User, List<Reservation>>> getAllUserReservationsWithProperty() {
         return Transformations.map(
             reservationDao.getUsersWithReservations(),
-            userWithReservationsList -> {
+            userReservationMap -> {
                 Map<User, List<Reservation>> result = new HashMap<>();
 
-                for (UserWithReservations userWithReservations : userWithReservationsList) {
-                    User user = UserMapper.toDomain(userWithReservations.getUser());
-                    List<Reservation> reservations = ReservationMapper.toDomainWithPropertyList(
-                        userWithReservations.getReservations());
+                for (Map.Entry<UserEntity, List<ReservationEntity>> entry : userReservationMap.entrySet()) {
+                    UserEntity userEntity = entry.getKey();
+                    List<ReservationEntity> reservationEntities = entry.getValue();
+
+                    // Map entities to domain models
+                    User user = UserMapper.toDomain(userEntity);
+                    List<Reservation> reservations = ReservationMapper.toDomainList(reservationEntities);
 
                     // Only add users who have reservations
                     if (!reservations.isEmpty()) {
                         result.put(user, reservations);
+                    }
+                }
+
+                return result;
+            }
+        );
+    }
+
+    /**
+     * Gets all reservations grouped by user and filtered by status
+     * @param status The status to filter by (confirmed, pending, cancelled, etc.)
+     * @return LiveData of Map<User, List<Reservation>>
+     */
+    public LiveData<Map<User, List<Reservation>>> getAllUserReservationsWithPropertyByStatus(String status) {
+        return Transformations.map(
+            reservationDao.getUsersWithReservationsByStatus(status),
+            userReservationMap -> {
+                Map<User, List<Reservation>> result = new HashMap<>();
+
+                for (Map.Entry<UserEntity, List<ReservationEntity>> entry : userReservationMap.entrySet()) {
+                    UserEntity userEntity = entry.getKey();
+                    List<ReservationEntity> reservationEntities = entry.getValue();
+
+                    // Map entities to domain models
+                    User user = UserMapper.toDomain(userEntity);
+                    List<Reservation> reservations = ReservationMapper.toDomainList(reservationEntities);
+
+                    // Filter reservations by status again (to ensure data consistency)
+                    List<Reservation> filteredReservations = reservations.stream()
+                        .filter(reservation -> status.equalsIgnoreCase(reservation.getStatus()))
+                        .collect(java.util.stream.Collectors.toList());
+
+                    // Only add users who have reservations with this status
+                    if (!filteredReservations.isEmpty()) {
+                        result.put(user, filteredReservations);
                     }
                 }
 

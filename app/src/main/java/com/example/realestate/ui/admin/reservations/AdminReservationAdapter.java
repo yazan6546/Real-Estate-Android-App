@@ -83,7 +83,14 @@ public class AdminReservationAdapter extends RecyclerView.Adapter<RecyclerView.V
         if (holder instanceof UserHeaderViewHolder) {
             UserHeaderViewHolder headerHolder = (UserHeaderViewHolder) holder;
             User user = (User) items.get(position);
-            headerHolder.bind(user);
+            // Calculate reservation count for this user
+            int reservationCount = 0;
+            if (position + 1 < items.size() && items.get(position + 1) instanceof Reservation) {
+                // There are reservations following this header
+                reservationCount = ((List<Reservation>) items.subList(position + 1, items.size()))
+                        .size();
+            }
+            headerHolder.bind(user, reservationCount);
         } else if (holder instanceof ReservationViewHolder) {
             ReservationViewHolder reservationHolder = (ReservationViewHolder) holder;
             Reservation reservation = (Reservation) items.get(position);
@@ -100,17 +107,52 @@ public class AdminReservationAdapter extends RecyclerView.Adapter<RecyclerView.V
      * ViewHolder for user headers
      */
     static class UserHeaderViewHolder extends RecyclerView.ViewHolder {
+        private final TextView tvUserName;
         private final TextView tvUserEmail;
+        private final TextView tvReservationCount;
+        private final ImageView ivExpandIcon;
+        private final ImageView ivUserAvatar;
 
         public UserHeaderViewHolder(@NonNull View itemView) {
             super(itemView);
+            tvUserName = itemView.findViewById(R.id.tvUserName);
             tvUserEmail = itemView.findViewById(R.id.tvUserEmail);
+            tvReservationCount = itemView.findViewById(R.id.tvReservationCount);
+            ivExpandIcon = itemView.findViewById(R.id.ivExpandIcon);
+            ivUserAvatar = itemView.findViewById(R.id.ivUserAvatar);
         }
 
-        public void bind(User user) {
-            // Display user's full name and email
-            String displayText = user.getFirstName() + " " + user.getLastName() + " (" + user.getEmail() + ")";
-            tvUserEmail.setText(displayText);
+        public void bind(User user, int reservationCount) {
+            // Display user's full name
+            String fullName = user.getFirstName() + " " + user.getLastName();
+            tvUserName.setText(fullName);
+
+            // Display email
+            tvUserEmail.setText(user.getEmail());
+
+            // Display reservation count
+            String reservationText = reservationCount + " " +
+                    (reservationCount == 1 ? "reservation" : "reservations");
+            tvReservationCount.setText(reservationText);
+
+            // Set avatar image - could use Glide here if user has a profile image URL
+            // For now we'll use a placeholder with the first letter of their name
+            if (user.getProfileImage() != null && !user.getProfileImage().isEmpty()) {
+                Glide.with(itemView.getContext())
+                        .load(user.getProfileImage())
+                        .placeholder(R.drawable.ic_person)
+                        .into(ivUserAvatar);
+            } else {
+                // Use default avatar
+                ivUserAvatar.setImageResource(R.drawable.ic_person);
+            }
+
+            // Set click listener for expanding/collapsing
+            itemView.setOnClickListener(v -> {
+                // Toggle visibility of this user's reservations
+                // This would require additional implementation to track expanded state
+                ivExpandIcon.setRotation(ivExpandIcon.getRotation() == 0 ? 180 : 0);
+            });
         }
     }
 
@@ -136,8 +178,8 @@ public class AdminReservationAdapter extends RecyclerView.Adapter<RecyclerView.V
             tvPropertyType = itemView.findViewById(R.id.tvPropertyType);
             tvPropertyDescription = itemView.findViewById(R.id.tvPropertyDescription);
             tvPropertyLocation = itemView.findViewById(R.id.tvPropertyLocation);
-            tvReservationStartDateTime = itemView.findViewById(R.id.tvReservationStartDateTime);
-            tvReservationEndDateTime = itemView.findViewById(R.id.tvReservationEndDateTime);
+            tvReservationStartDateTime = itemView.findViewById(R.id.tvReservationStartDate);
+            tvReservationEndDateTime = itemView.findViewById(R.id.tvReservationEndDate);
             tvReservationStatus = itemView.findViewById(R.id.tvReservationStatus);
             imageView = itemView.findViewById(R.id.ivPropertyImage);
         }
@@ -145,10 +187,10 @@ public class AdminReservationAdapter extends RecyclerView.Adapter<RecyclerView.V
         public void bind(Reservation reservation, SimpleDateFormat dateFormat) {
             // Set property details
             tvPropertyId.setText("Property ID: #" + reservation.getPropertyId());
-            tvPropertyTitle.setText(reservation.getPropertyTitle());
-            tvPropertyType.setText(reservation.getPropertyType());
-            tvPropertyDescription.setText(reservation.getPropertyDescription());
-            tvPropertyLocation.setText(reservation.getPropertyLocation());
+            tvPropertyTitle.setText(reservation.getProperty().getTitle());
+            tvPropertyType.setText(reservation.getProperty().getType());
+            tvPropertyDescription.setText(reservation.getProperty().getDescription());
+            tvPropertyLocation.setText(reservation.getProperty().getLocation());
 
             // Format dates
             tvReservationStartDateTime.setText("Start: " + dateFormat.format(reservation.getStartDate()));
@@ -179,9 +221,9 @@ public class AdminReservationAdapter extends RecyclerView.Adapter<RecyclerView.V
             tvReservationStatus.setTextColor(color);
 
             // Load property image if available
-            if (reservation.getPropertyImageUrl() != null && !reservation.getPropertyImageUrl().isEmpty()) {
+            if (reservation.getProperty().getImageUrl() != null && !reservation.getProperty().getImageUrl().isEmpty()) {
                 Glide.with(itemView.getContext())
-                        .load(reservation.getPropertyImageUrl())
+                        .load(reservation.getProperty().getImageUrl())
                         .placeholder(R.drawable.ic_building)
                         .into(imageView);
             } else {

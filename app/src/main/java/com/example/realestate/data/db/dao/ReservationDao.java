@@ -123,17 +123,17 @@ public interface ReservationDao {
     void deleteReservationById(int reservationId);
 
     /**
-     * Transaction query to get all reservations with property details grouped by user email
-     */
-    @Transaction
-    @Query("SELECT * FROM reservations ORDER BY email")
-    LiveData<List<ReservationWithPropertyEntity>> getAllReservationsWithPropertyOrderedByUser();
-
-    /**
-     * Multimap query that returns users with their reservations
+     * Multimap query that directly returns a map of users to their reservations
      * This is more efficient than manually building the map
      */
     @Transaction
     @Query("SELECT * FROM users")
-    LiveData<List<UserWithReservations>> getUsersWithReservations();
+    LiveData<Map<UserEntity, List<ReservationEntity>>> getUsersWithReservations();
+
+    /**
+     * Multimap query that directly returns a map of users to their reservations filtered by status
+     */
+    @Transaction
+    @Query("SELECT u.* FROM users u WHERE EXISTS (SELECT 1 FROM reservations r WHERE r.email = u.email AND r.status = :status)")
+    LiveData<Map<UserEntity, List<ReservationEntity>>> getUsersWithReservationsByStatus(String status);
 }

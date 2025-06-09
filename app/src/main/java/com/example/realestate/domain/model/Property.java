@@ -77,9 +77,6 @@ public class Property implements java.io.Serializable {
         this.location = location;
     }
 
-    public String getImage() {
-        return image;
-    }
 
     public void setImage(String image) {
         this.image = image;

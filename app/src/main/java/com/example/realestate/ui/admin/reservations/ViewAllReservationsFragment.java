@@ -28,6 +28,9 @@ public class ViewAllReservationsFragment extends Fragment {
     private AdminReservationAdapter adapter;
     private TabLayout tabLayout;
 
+    // Status filter values
+    private static final String[] STATUS_VALUES = {"All", "Confirmed", "Pending", "Cancelled", "Completed"};
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
@@ -58,8 +61,8 @@ public class ViewAllReservationsFragment extends Fragment {
         // Observe reservations data
         observeReservations();
 
-        // Load initial data
-        loadReservations(null);
+        // Load initial data with the current filter (or null if none)
+        loadReservations();
 
         return root;
     }
@@ -69,20 +72,17 @@ public class ViewAllReservationsFragment extends Fragment {
         tabLayout.removeAllTabs();
 
         // Add status filter tabs
-        tabLayout.addTab(tabLayout.newTab().setText("All"));
-        tabLayout.addTab(tabLayout.newTab().setText("Confirmed"));
-        tabLayout.addTab(tabLayout.newTab().setText("Pending"));
-        tabLayout.addTab(tabLayout.newTab().setText("Cancelled"));
+        for (String status : STATUS_VALUES) {
+            tabLayout.addTab(tabLayout.newTab().setText(status));
+        }
 
         // Handle tab selection
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                String status = null;
-                if (tab.getPosition() > 0) {
-                    status = tab.getText().toString();
-                }
-                loadReservations(status);
+                String status = tab.getText().toString();
+                // Use null for "All" to show all statuses
+                loadReservations(status.equals("All") ? null : status);
             }
 
             @Override
@@ -92,9 +92,24 @@ public class ViewAllReservationsFragment extends Fragment {
 
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
-                // Not needed
+                // Refresh the data when tab is reselected
+                String status = tab.getText().toString();
+                loadReservations(status.equals("All") ? null : status);
             }
         });
+
+        // Select the appropriate tab based on current filter
+        String currentStatus = viewModel.getCurrentStatus();
+        int tabIndex = 0; // Default to "All"
+        if (currentStatus != null) {
+            for (int i = 0; i < STATUS_VALUES.length; i++) {
+                if (STATUS_VALUES[i].equals(currentStatus)) {
+                    tabIndex = i;
+                    break;
+                }
+            }
+        }
+        tabLayout.selectTab(tabLayout.getTabAt(tabIndex));
     }
 
     private void observeReservations() {
@@ -112,13 +127,17 @@ public class ViewAllReservationsFragment extends Fragment {
         });
     }
 
+    private void loadReservations() {
+        // Load with current filter status
+        loadReservations(viewModel.getCurrentStatus());
+    }
+
     private void loadReservations(String status) {
         progressBar.setVisibility(View.VISIBLE);
         emptyView.setVisibility(View.GONE);
         reservationsRecyclerView.setVisibility(View.GONE);
 
-        // For now, just load all reservations
-        // In a full implementation, we would filter by status
-        viewModel.loadAllReservations();
+        // Load reservations with optional status filter
+        viewModel.loadReservations(status);
     }
 }

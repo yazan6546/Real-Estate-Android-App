@@ -21,6 +21,9 @@ public class ViewAllReservationsViewModel extends ViewModel {
     private final MediatorLiveData<Map<User, List<Reservation>>> userReservationsMap = new MediatorLiveData<>();
     private LiveData<Map<User, List<Reservation>>> currentSource;
 
+    // Current filter status
+    private String currentStatus = null;
+
     public ViewAllReservationsViewModel(ReservationRepository reservationRepository) {
         this.reservationRepository = reservationRepository;
     }
@@ -29,17 +32,31 @@ public class ViewAllReservationsViewModel extends ViewModel {
         return userReservationsMap;
     }
 
+    public String getCurrentStatus() {
+        return currentStatus;
+    }
+
     /**
-     * Load all reservations grouped by user
+     * Load reservations with optional status filter
+     * @param status The status to filter by, or null for all reservations
      */
-    public void loadAllReservations() {
+    public void loadReservations(String status) {
+        // Save current status
+        currentStatus = status;
+
         // Clear any existing sources
         if (currentSource != null) {
             userReservationsMap.removeSource(currentSource);
         }
 
-        // Get all reservations grouped by user
-        currentSource = reservationRepository.getAllUserReservationsWithProperty();
+        // Get reservations based on filter
+        if (status == null) {
+            // Get all reservations
+            currentSource = reservationRepository.getAllUserReservationsWithProperty();
+        } else {
+            // Get filtered reservations
+            currentSource = reservationRepository.getAllUserReservationsWithPropertyByStatus(status);
+        }
 
         // Connect to our mediator live data
         userReservationsMap.addSource(currentSource, userReservationsMap::setValue);
