@@ -7,15 +7,23 @@ public class UserSession {
     private String lastName;
 
     private boolean rememberMe;
+    private String profileImage;
 
     public UserSession(String email, String firstName, String lastName,
+                       String profileImage,
                        boolean isAdmin) {
 
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
         this.isAdmin = isAdmin;
+        this.profileImage = profileImage;
         this.rememberMe = false; // Default value
+    }
+
+    public UserSession(String email, String firstName, String lastName,
+                       boolean isAdmin) {
+        this(email, firstName, lastName, null, isAdmin);
     }
 
     public String getEmail() {
@@ -40,6 +48,14 @@ public class UserSession {
 
     public void setRememberMe(boolean rememberMe) {
         this.rememberMe = rememberMe;
+    }
+
+    public String getProfileImage() {
+        return profileImage;
+    }
+
+    public void setProfileImage(String profileImage) {
+        this.profileImage = profileImage;
     }
 
 }

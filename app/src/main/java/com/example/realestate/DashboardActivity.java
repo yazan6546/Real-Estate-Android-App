@@ -1,8 +1,8 @@
 package com.example.realestate;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,15 +18,15 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import com.example.realestate.RealEstate;
-import com.example.realestate.data.repository.RepositoryCallback;
-import com.example.realestate.domain.model.User;
+import com.bumptech.glide.Glide;
 import com.example.realestate.domain.service.SharedPrefManager;
 import com.example.realestate.domain.service.UserSession;
 import com.example.realestate.ui.login.LoginActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
+
+import java.io.File;
 
 public class DashboardActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -139,34 +139,35 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             emailTextView.setText(userSession.getEmail());
 
             // Load profile image from stored user data
-            loadProfileImageForUser(userSession.getEmail(), profileImageView);
+            loadProfileImageForUser(userSession.getProfileImage(), profileImageView);
         }
     }
 
-    private void loadProfileImageForUser(String email, ImageView profileImageView) {
-        // Get the user repository and load the current user's profile image
-        RealEstate.appContainer.getUserRepository().getUserByEmail(email, new RepositoryCallback<User>() {
-            @Override
-            public void onSuccess(User user) {
-                if (user != null && user.getProfileImage() != null && !user.getProfileImage().isEmpty()) {
-                    try {
-                        // Use Glide to load the profile image from URI
-                    } catch (Exception e) {
-                        // If loading fails, use default placeholder
-                        profileImageView.setImageResource(R.drawable.ic_person);
-                    }
-                } else {
-                    // Use default placeholder if no profile image is set
-                    profileImageView.setImageResource(R.drawable.ic_person);
-                }
-            }
+    private void loadProfileImageForUser(String image, ImageView profileImageView) {
+        // First set the default image to ensure it's not blank/white if loading fails
+        profileImageView.setImageResource(R.drawable.ic_person);
 
-            @Override
-            public void onError(Throwable t) {
-                // Use default placeholder if user loading fails
-                profileImageView.setImageResource(R.drawable.ic_person);
+        // If no image is set, we already have the default set
+        if (image == null || image.isEmpty()) {
+            return;
+        }
+
+        try {
+            File imageFile = new File(getFilesDir(), image);
+
+            // Only try to load if the file actually exists
+            if (imageFile.exists()) {
+                Glide.with(DashboardActivity.this)
+                        .load(imageFile)
+                        .placeholder(R.drawable.ic_person)
+                        .error(R.drawable.ic_person)
+                        .circleCrop()  // Optional: makes the image circular
+                        .into(profileImageView);
             }
-        });
+        } catch (Exception e) {
+            // Log the error but keep the default image already set
+            Log.e("DashboardActivity", "Error loading profile image: " + e.getMessage());
+        }
     }
 
     @Override
@@ -205,5 +206,19 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     public boolean onSupportNavigateUp() {
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
+    }
+
+    /**
+     * Public method to refresh the navigation header with the latest user data.
+     * This is called after profile updates to immediately reflect changes.
+     */
+    public void refreshNavigationHeader() {
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        SharedPrefManager sharedPrefManager = SharedPrefManager.getInstance(this);
+        UserSession userSession = sharedPrefManager.readObject("user_session", UserSession.class, null);
+
+        if (navigationView != null && userSession != null) {
+            updateNavigationHeader(navigationView, userSession);
+        }
     }
 }

@@ -1,6 +1,7 @@
 package com.example.realestate.data.db.dao;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -36,6 +37,10 @@ public interface UserDao {
 
      @Query("SELECT * FROM users WHERE email = :email")
      UserEntity getUserByEmail(String email);
+
+
+     @Query("SELECT * FROM users WHERE email = :email")
+     LiveData<UserEntity> getUserByEmailLive(String email);
 
      @Query("SELECT * FROM users WHERE phone = :phone")
      UserEntity getUserByPhone(String phone);

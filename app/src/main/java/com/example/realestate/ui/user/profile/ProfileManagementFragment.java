@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,13 +27,15 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.bumptech.glide.Glide;
+import com.example.realestate.DashboardActivity;
 import com.example.realestate.R;
 import com.example.realestate.RealEstate;
 import com.example.realestate.domain.model.User;
 import com.example.realestate.domain.service.SharedPrefManager;
-import com.example.realestate.domain.service.UserSession;
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -75,8 +78,16 @@ public class ProfileManagementFragment extends Fragment {
                     if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
                         Uri imageUri = result.getData().getData();
                         if (imageUri != null) {
-                            // Use Glide to load the selected image immediately
+                            // Display the image
+                            Glide.with(requireContext())
+                                    .load(imageUri)
+                                    .placeholder(R.drawable.ic_person)
+                                    .into(profileImageView);
+
+                            // Set the image URI in the ViewModel for later use
                             viewModel.setProfileImageUri(imageUri);
+                        } else {
+                            Toast.makeText(requireContext(), "Failed to save image", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -95,7 +106,7 @@ public class ProfileManagementFragment extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-            @Nullable Bundle savedInstanceState) {
+                             @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_profile_management, container, false);
     }
 
@@ -103,23 +114,32 @@ public class ProfileManagementFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Initialize ViewModel
+        SharedPrefManager sharedPrefManager = SharedPrefManager.getInstance(requireContext());
+
+        // Initialize ViewModel with application context
         viewModel = new ViewModelProvider(this,
-                new ProfileManagementViewModel.Factory(RealEstate.appContainer.getUserRepository()))
+                new ProfileManagementViewModel.Factory(
+                        requireActivity().getApplication(),
+                        RealEstate.appContainer.getUserRepository(),
+                        sharedPrefManager))
                 .get(ProfileManagementViewModel.class);
 
         initializeViews(view);
         setupSpinners();
         setupButtons();
         observeViewModel();
-
-        // Load current user profile
-        loadCurrentUser();
     }
 
     private void initializeViews(View view) {
         // Profile Information
         profileImageView = view.findViewById(R.id.profileImageView);
+
+        // Initialize with default image first
+        profileImageView.setImageResource(R.drawable.ic_person);
+
+        // We'll load the actual profile image in the observeViewModel method
+        // when the user data becomes available through LiveData observation
+
         changeProfileImageButton = view.findViewById(R.id.changeProfileImageButton);
         firstNameInput = view.findViewById(R.id.firstNameInput);
         lastNameInput = view.findViewById(R.id.lastNameInput);
@@ -188,8 +208,8 @@ public class ProfileManagementFragment extends Fragment {
     }
 
     private void openImagePicker() {
-        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        intent.setType("image/*");
+        Intent intent = new Intent();
+        intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
         imagePickerLauncher.launch(intent);
     }
 
@@ -247,6 +267,14 @@ public class ProfileManagementFragment extends Fragment {
 
             if (state == ProfileManagementViewModel.UpdateState.SUCCESS) {
                 Toast.makeText(requireContext(), "Profile updated successfully!", Toast.LENGTH_SHORT).show();
+                // When user clicks save, immediately update the navigation header with the new image
+                // This ensures the header image is consistent with the profile changes
+                if (requireActivity() instanceof DashboardActivity) {
+                    DashboardActivity dashboardActivity = (DashboardActivity) requireActivity();
+                    dashboardActivity.refreshNavigationHeader();
+                }
+
+
                 clearPasswordFields();
             }
         });
@@ -282,20 +310,31 @@ public class ProfileManagementFragment extends Fragment {
         }
 
         // Email should be read-only for security
-        emailInput.setEnabled(false); // Load profile image if available
+        emailInput.setEnabled(false);
+
+        // Load profile image if available
         if (user.getProfileImage() != null && !user.getProfileImage().isEmpty()) {
-            // Use Glide to load the profile image
+            try {
+                // Create file object from the stored filename
+                File imageFile = new File(requireContext().getFilesDir(), user.getProfileImage());
+
+                // Use Glide to load the profile image from internal storage
+                if (imageFile.exists()) {
+                    Glide.with(requireContext())
+                            .load(imageFile)
+                            .placeholder(R.drawable.ic_person)
+                            .error(R.drawable.ic_person)
+                            .into(profileImageView);
+                } else {
+                    profileImageView.setImageResource(R.drawable.ic_person);
+                }
+            } catch (Exception e) {
+                Log.e("ProfileManagementFragment", "Error loading profile image", e);
+                profileImageView.setImageResource(R.drawable.ic_person);
+            }
         } else {
             // Use default placeholder if no profile image is set
             profileImageView.setImageResource(R.drawable.ic_person);
-        }
-    }
-
-    private void loadCurrentUser() {
-        SharedPrefManager sharedPrefManager = SharedPrefManager.getInstance(requireContext());
-        UserSession userSession = sharedPrefManager.readObject("user_session", UserSession.class, null);
-        if (userSession != null) {
-            viewModel.loadUserProfile(userSession.getEmail());
         }
     }
 
