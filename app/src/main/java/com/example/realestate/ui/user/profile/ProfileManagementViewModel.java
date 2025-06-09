@@ -1,8 +1,13 @@
 package com.example.realestate.ui.user.profile;
 
+
+import android.app.Application;
+import android.content.Context;
 import android.net.Uri;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -12,22 +17,27 @@ import com.example.realestate.data.repository.RepositoryCallback;
 import com.example.realestate.data.repository.UserRepository;
 import com.example.realestate.domain.exception.ValidationException;
 import com.example.realestate.domain.model.User;
-import com.example.realestate.domain.service.AuthenticationService;
+import com.example.realestate.domain.service.CountryService;
 import com.example.realestate.domain.service.Hashing;
+import com.example.realestate.domain.service.SharedPrefManager;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
-public class ProfileManagementViewModel extends ViewModel {
+public class ProfileManagementViewModel extends AndroidViewModel {
 
     private final UserRepository userRepository;
+    private final SharedPrefManager sharedPrefManager;
 
     public enum UpdateState {
         IDLE, LOADING, SUCCESS, ERROR
     }
 
     // LiveData for UI state
-    private final MutableLiveData<User> currentUser = new MutableLiveData<>();
+    private LiveData<User> currentUser;
     private final MutableLiveData<UpdateState> updateState = new MutableLiveData<>(UpdateState.IDLE);
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
     private final MutableLiveData<String[]> cities = new MutableLiveData<>();
@@ -36,17 +46,26 @@ public class ProfileManagementViewModel extends ViewModel {
     // Profile image URI
     private Uri profileImageUri;
 
-    // Country and city data (same as registration)
-    private final Map<String, String[]> countryCityMap = new HashMap<>();
-    private final Map<String, String> countryCodeMap = new HashMap<>();
 
-    public ProfileManagementViewModel(UserRepository userRepository) {
+    public ProfileManagementViewModel(Application application, UserRepository userRepository, SharedPrefManager sharedPrefManager) {
+        super(application);
         this.userRepository = userRepository;
-        initializeCountryData();
+        this.sharedPrefManager = sharedPrefManager;
     }
 
     // Public getters for LiveData
     public LiveData<User> getCurrentUser() {
+
+        if (currentUser == null && sharedPrefManager.getCurrentUserEmail() == null) {
+            errorMessage.postValue("No user is currently logged in");
+            updateState.postValue(UpdateState.ERROR);
+            return null;
+        }
+
+        if (currentUser == null) {
+            String email = sharedPrefManager.getCurrentUserEmail();
+            currentUser = userRepository.getUserByEmailLive(email);
+        }
         return currentUser;
     }
     public LiveData<UpdateState> getUpdateState() {
@@ -69,27 +88,6 @@ public class ProfileManagementViewModel extends ViewModel {
     public Uri getProfileImageUri() {
         return profileImageUri;
     } // Load user profile
-
-    public void loadUserProfile(String email) {
-        updateState.postValue(UpdateState.LOADING);
-
-        userRepository.getUserByEmail(email, new RepositoryCallback<>() {
-            @Override
-            public void onSuccess(User user) {
-                currentUser.postValue(user);
-                updateState.postValue(UpdateState.IDLE);
-
-                // Set country and trigger city loading
-                onCountrySelected(user.getCountry());
-            }
-
-            @Override
-            public void onError(Throwable t) {
-                errorMessage.postValue("Failed to load profile: " + t.getMessage());
-                updateState.postValue(UpdateState.ERROR);
-            }
-        });
-    } // Update profile information
 
     public void updateProfile(String firstName, String lastName, String phone,
             User.Gender gender, String country, String city) {
@@ -114,16 +112,23 @@ public class ProfileManagementViewModel extends ViewModel {
 
             // If a new profile image was selected, update it
             if (profileImageUri != null) {
-                updatedUser.setProfileImage(profileImageUri.toString());
+                // Save the image to internal storage and get the filename
+                String imageFileName = saveImageToInternalStorage(profileImageUri);
+                if (imageFileName != null) {
+                    updatedUser.setProfileImage(imageFileName);
+                } else {
+                    errorMessage.postValue("Failed to save profile image");
+                    updateState.postValue(UpdateState.ERROR);
+                    return;
+                }
             }
 
             // Update in repository
-            userRepository.updateUser(updatedUser, new RepositoryCallback<>() {
+            userRepository.updateUser(updatedUser, false, new RepositoryCallback<>() {
                 @Override
                 public void onSuccess() {
-                    currentUser.postValue(updatedUser);
                     updateState.postValue(UpdateState.SUCCESS);
-                    profileImageUri = null; // Reset after successful update
+                    sharedPrefManager.saveUserSession(updatedUser);
                 }
 
                 @Override
@@ -155,14 +160,6 @@ public class ProfileManagementViewModel extends ViewModel {
             return;
         }
 
-        // Validate new password
-        if (!AuthenticationService.validatePassword(newPassword)) {
-            errorMessage.postValue(
-                    "New password must be at least 6 characters with uppercase, lowercase, digit, and special character");
-            updateState.postValue(UpdateState.ERROR);
-            return;
-        }
-
         // Check password confirmation
         if (!newPassword.equals(confirmPassword)) {
             errorMessage.postValue("New passwords do not match");
@@ -178,14 +175,10 @@ public class ProfileManagementViewModel extends ViewModel {
             // Preserve profile image
             updatedUser.setProfileImage(user.getProfileImage());
 
-            // Hash the new password before storing
-            updatedUser.hashAndSetPassword();
-
             // Update in repository
             userRepository.updateUser(updatedUser, new RepositoryCallback<>() {
                 @Override
                 public void onSuccess() {
-                    currentUser.postValue(updatedUser);
                     updateState.postValue(UpdateState.SUCCESS);
                 }
 
@@ -204,48 +197,73 @@ public class ProfileManagementViewModel extends ViewModel {
 
     // Country and city handling
     public String[] getCountries() {
-        return countryCityMap.keySet().toArray(new String[0]);
+        return CountryService.countriesWithCities.keySet().toArray(new String[0]);
     }
 
     public void onCountrySelected(String country) {
-        String[] countryCities = countryCityMap.get(country);
+        String[] countryCities = CountryService.countriesWithCities.get(country);
         if (countryCities != null) {
             cities.postValue(countryCities);
         }
 
-        String code = countryCodeMap.get(country);
+        String code = CountryService.countryCodeMap.get(country);
         if (code != null) {
             countryCode.postValue(code);
         }
     }
 
-    private void initializeCountryData() {
-        // Initialize country-city mapping (same as registration)
-        countryCityMap.put("Palestine", new String[] { "Tulkarem", "Nablus", "Ramallah", "Jerusalem", "Gaza", "Hebron",
-                "Bethlehem", "Jenin", "Qalqilya", "Salfit" });
-        countryCityMap.put("Jordan", new String[] { "Amman", "Zarqa", "Irbid", "Russeifa", "Wadi as-Sir", "Aqaba",
-                "Madaba", "As-Salt", "Al-Mafraq", "Jerash" });
-        countryCityMap.put("Lebanon", new String[] { "Beirut", "Tripoli", "Sidon", "Tyre", "Jounieh", "Baalbek",
-                "Byblos", "Zahle", "Aley", "Nabatieh" });
-        countryCityMap.put("Syria", new String[] { "Damascus", "Aleppo", "Homs", "Latakia", "Hama", "Deir ez-Zor",
-                "Raqqa", "Daraa", "Al-Hasakah", "Qamishli" });
-        countryCityMap.put("Egypt", new String[] { "Cairo", "Alexandria", "Giza", "Luxor", "Aswan", "Sharm El Sheikh",
-                "Hurghada", "Port Said", "Suez", "Mansoura" });
 
-        // Initialize country codes
-        countryCodeMap.put("Palestine", "970");
-        countryCodeMap.put("Jordan", "962");
-        countryCodeMap.put("Lebanon", "961");
-        countryCodeMap.put("Syria", "963");
-        countryCodeMap.put("Egypt", "20");
+    /**
+     * Saves the selected image to internal storage and returns the filename
+     * @param imageUri The URI of the image to save
+     * @return The filename of the saved image (relative to the app's files directory)
+     */
+    public String saveImageToInternalStorage(Uri imageUri) {
+        Context context = getApplication().getApplicationContext();
+        String fileName = "image_" + System.currentTimeMillis() + ".jpg";
+
+        try {
+            // Open the input stream from the URI
+            InputStream inputStream = context.getContentResolver().openInputStream(imageUri);
+            if (inputStream == null) {
+                return null;
+            }
+
+            // Create file in internal storage
+            File file = new File(context.getFilesDir(), fileName);
+
+            // Create an output stream to write the image
+            OutputStream outputStream = new FileOutputStream(file);
+
+            // Copy the data
+            byte[] buffer = new byte[4096];
+            int bytesRead;
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
+            }
+
+            // Close streams properly to prevent resource leaks
+            outputStream.close();
+            inputStream.close();
+
+            // Return just the filename, which can be used to construct the full path later
+            return fileName;
+        } catch (IOException e) {
+            Log.e("Error saving image to internal storage", e.getMessage());
+            return null;
+        }
     }
 
     // Factory for ViewModel creation
     public static class Factory implements ViewModelProvider.Factory {
+        private final Application application;
         private final UserRepository userRepository;
+        private final SharedPrefManager sharedPrefManager;
 
-        public Factory(UserRepository userRepository) {
+        public Factory(Application application, UserRepository userRepository, SharedPrefManager sharedPrefManager) {
+            this.application = application;
             this.userRepository = userRepository;
+            this.sharedPrefManager = sharedPrefManager;
         }
 
         @NonNull
@@ -253,7 +271,7 @@ public class ProfileManagementViewModel extends ViewModel {
         @SuppressWarnings("unchecked")
         public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
             if (modelClass.isAssignableFrom(ProfileManagementViewModel.class)) {
-                return (T) new ProfileManagementViewModel(userRepository);
+                return (T) new ProfileManagementViewModel(application, userRepository, sharedPrefManager);
             }
             throw new IllegalArgumentException("Unknown ViewModel class: " + modelClass.getName());
         }

@@ -70,6 +70,18 @@ public class UserRepository {
         });
     }
 
+    public void updateUser(User user, boolean hash, RepositoryCallback<User> callback) {
+        Executors.newSingleThreadExecutor().execute(() -> {
+            try {
+                userDao.updateUser(UserMapper.fromDomain(user, hash));
+                callback.onSuccess();
+            } catch (Exception e) {
+                Log.e("UserRepository", "Error updating user without hashing password", e);
+                callback.onError(e);
+            }
+        });
+    }
+
     public void updateUser(User user) {
         updateUser(user, CallbackUtils.emptyCallback());
     }
@@ -108,6 +120,10 @@ public class UserRepository {
                 callback.onError(e);
             }
         });
+    }
+
+    public LiveData<User> getUserByEmailLive(String email) {
+        return Transformations.map(userDao.getUserByEmailLive(email), UserMapper::toDomain);
     }
 
     public LiveData<GenderCount> getGenderDistribution() {

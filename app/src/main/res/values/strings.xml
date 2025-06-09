@@ -47,5 +47,8 @@
     <string name="add_admin_text">Add New Administrator</string>
     <string name="property_details_not_available">Property details not available</string>
     <string name="location_not_specified">Location not specified</string>
+    <string name="about_icon">About Icon</string>
+    <string name="about_real_estate">About Real Estate</string>
+    <string name="real_estate_description">Real Estate is your trusted partner in finding the perfect property. With over 15 years of experience in the real estate market, we have helped thousands of families find their dream homes and investors discover profitable opportunities.</string>
 </resources>
 
