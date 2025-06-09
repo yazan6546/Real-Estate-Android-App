@@ -12,9 +12,12 @@ import androidx.room.Update;
 import com.example.realestate.data.db.entity.ReservationEntity;
 import com.example.realestate.data.db.entity.ReservationWithPropertyEntity;
 import com.example.realestate.data.db.result.CountryCount;
+import com.example.realestate.data.db.entity.UserEntity;
+import com.example.realestate.data.db.entity.UserWithReservations;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Dao
 public interface ReservationDao {
@@ -118,4 +121,19 @@ public interface ReservationDao {
      */
     @Query("DELETE FROM reservations WHERE reservation_id = :reservationId")
     void deleteReservationById(int reservationId);
+
+    /**
+     * Transaction query to get all reservations with property details grouped by user email
+     */
+    @Transaction
+    @Query("SELECT * FROM reservations ORDER BY email")
+    LiveData<List<ReservationWithPropertyEntity>> getAllReservationsWithPropertyOrderedByUser();
+
+    /**
+     * Multimap query that returns users with their reservations
+     * This is more efficient than manually building the map
+     */
+    @Transaction
+    @Query("SELECT * FROM users")
+    LiveData<List<UserWithReservations>> getUsersWithReservations();
 }

@@ -4,45 +4,45 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.realestate.data.repository.RepositoryCallback;
 import com.example.realestate.data.repository.ReservationRepository;
 import com.example.realestate.domain.model.Reservation;
+import com.example.realestate.domain.model.User;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
+import java.util.Map;
 
 public class ViewAllReservationsViewModel extends ViewModel {
     private final ReservationRepository reservationRepository;
-    private final MutableLiveData<List<Reservation>> reservations = new MutableLiveData<>(new ArrayList<>());
+    private final MediatorLiveData<Map<User, List<Reservation>>> userReservationsMap = new MediatorLiveData<>();
+    private LiveData<Map<User, List<Reservation>>> currentSource;
 
     public ViewAllReservationsViewModel(ReservationRepository reservationRepository) {
         this.reservationRepository = reservationRepository;
     }
 
-    public LiveData<List<Reservation>> getReservations() {
-        return reservations;
+    public LiveData<Map<User, List<Reservation>>> getUserReservationsMap() {
+        return userReservationsMap;
     }
 
+    /**
+     * Load all reservations grouped by user
+     */
     public void loadAllReservations() {
-        // Temporary implementation that sets empty list
-        // In a real app, this would fetch from repository
-        reservations.setValue(new ArrayList<>());
-    }
+        // Clear any existing sources
+        if (currentSource != null) {
+            userReservationsMap.removeSource(currentSource);
+        }
 
-    public void loadReservationsByStatus(String status) {
-        // Temporary implementation that sets empty list
-        // In a real app, this would filter by status
-        reservations.setValue(new ArrayList<>());
+        // Get all reservations grouped by user
+        currentSource = reservationRepository.getAllUserReservationsWithProperty();
+
+        // Connect to our mediator live data
+        userReservationsMap.addSource(currentSource, userReservationsMap::setValue);
     }
 
     // Factory for creating ViewModel with dependencies
@@ -55,7 +55,6 @@ public class ViewAllReservationsViewModel extends ViewModel {
 
         @NonNull
         @Override
-        @SuppressWarnings("unchecked")
         public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
             if (modelClass.isAssignableFrom(ViewAllReservationsViewModel.class)) {
                 return (T) new ViewAllReservationsViewModel(reservationRepository);

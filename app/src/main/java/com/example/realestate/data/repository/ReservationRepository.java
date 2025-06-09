@@ -5,22 +5,31 @@ import androidx.lifecycle.Transformations;
 
 import com.example.realestate.data.db.dao.PropertyDao;
 import com.example.realestate.data.db.dao.ReservationDao;
+import com.example.realestate.data.db.dao.UserDao;
 import com.example.realestate.data.db.entity.ReservationEntity;
+import com.example.realestate.data.db.entity.UserEntity;
 import com.example.realestate.data.db.result.CountryCount;
 import com.example.realestate.domain.mapper.ReservationMapper;
+import com.example.realestate.domain.mapper.UserMapper;
 import com.example.realestate.domain.model.Reservation;
+import com.example.realestate.domain.model.User;
 import com.example.realestate.domain.service.CallbackUtils;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executors;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ReservationRepository {
 
     private final ReservationDao reservationDao;
+    private final UserDao userDao;
 
-    public ReservationRepository(ReservationDao reservationDao, PropertyDao propertyDao) {
+    public ReservationRepository(ReservationDao reservationDao, PropertyDao propertyDao, UserDao userDao) {
         this.reservationDao = reservationDao;
+        this.userDao = userDao;
     }
 
     public LiveData<List<Reservation>> getReservationsWithPropertyByUserId(String email) {
@@ -151,5 +160,32 @@ public class ReservationRepository {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    /**
+     * Gets all reservations with property details grouped by user in a more efficient way
+     * using Room's multimap relationship feature
+     * @return LiveData of Map<User, List<Reservation>>
+     */
+    public LiveData<Map<User, List<Reservation>>> getAllUserReservationsWithProperty() {
+        return Transformations.map(
+            reservationDao.getUsersWithReservations(),
+            userWithReservationsList -> {
+                Map<User, List<Reservation>> result = new HashMap<>();
+
+                for (UserWithReservations userWithReservations : userWithReservationsList) {
+                    User user = UserMapper.toDomain(userWithReservations.getUser());
+                    List<Reservation> reservations = ReservationMapper.toDomainWithPropertyList(
+                        userWithReservations.getReservations());
+
+                    // Only add users who have reservations
+                    if (!reservations.isEmpty()) {
+                        result.put(user, reservations);
+                    }
+                }
+
+                return result;
+            }
+        );
     }
 }
