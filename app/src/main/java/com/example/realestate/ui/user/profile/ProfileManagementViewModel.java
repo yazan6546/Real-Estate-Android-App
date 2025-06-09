@@ -96,7 +96,7 @@ public class ProfileManagementViewModel extends ViewModel {
             }
 
             // Update in repository
-            userRepository.updateUserNoHash(updatedUser, new RepositoryCallback<>() {
+            userRepository.updateUser(updatedUser, false, new RepositoryCallback<>() {
                 @Override
                 public void onSuccess() {
                     updateState.postValue(UpdateState.SUCCESS);

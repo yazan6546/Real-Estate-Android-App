@@ -30,7 +30,6 @@ import com.example.realestate.R;
 import com.example.realestate.RealEstate;
 import com.example.realestate.domain.model.User;
 import com.example.realestate.domain.service.SharedPrefManager;
-import com.example.realestate.domain.service.UserSession;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
