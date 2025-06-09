@@ -133,19 +133,11 @@ public class ProfileManagementFragment extends Fragment {
         // Profile Information
         profileImageView = view.findViewById(R.id.profileImageView);
 
-        User currentUser = viewModel.getCurrentUser().getValue();
+        // Initialize with default image first
+        profileImageView.setImageResource(R.drawable.ic_person);
 
-        if (currentUser != null) {
-
-            File imageFile = new File(requireContext().getFilesDir(),
-                    currentUser.getProfileImage());
-
-            Glide.with(requireContext())
-                    .load(imageFile.exists() ? imageFile : R.drawable.ic_person)
-                    .placeholder(R.drawable.ic_person)
-                    .into(profileImageView);
-
-        }
+        // We'll load the actual profile image in the observeViewModel method
+        // when the user data becomes available through LiveData observation
 
         changeProfileImageButton = view.findViewById(R.id.changeProfileImageButton);
         firstNameInput = view.findViewById(R.id.firstNameInput);
@@ -309,9 +301,28 @@ public class ProfileManagementFragment extends Fragment {
         }
 
         // Email should be read-only for security
-        emailInput.setEnabled(false); // Load profile image if available
+        emailInput.setEnabled(false);
+
+        // Load profile image if available
         if (user.getProfileImage() != null && !user.getProfileImage().isEmpty()) {
-            // Use Glide to load the profile image
+            try {
+                // Create file object from the stored filename
+                File imageFile = new File(requireContext().getFilesDir(), user.getProfileImage());
+
+                // Use Glide to load the profile image from internal storage
+                if (imageFile.exists()) {
+                    Glide.with(requireContext())
+                            .load(imageFile)
+                            .placeholder(R.drawable.ic_person)
+                            .error(R.drawable.ic_person)
+                            .into(profileImageView);
+                } else {
+                    profileImageView.setImageResource(R.drawable.ic_person);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                profileImageView.setImageResource(R.drawable.ic_person);
+            }
         } else {
             // Use default placeholder if no profile image is set
             profileImageView.setImageResource(R.drawable.ic_person);
