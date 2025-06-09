@@ -18,6 +18,7 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.bumptech.glide.Glide;
 import com.example.realestate.RealEstate;
 import com.example.realestate.data.repository.RepositoryCallback;
 import com.example.realestate.domain.model.User;
@@ -27,6 +28,8 @@ import com.example.realestate.ui.login.LoginActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
+
+import java.io.File;
 
 public class DashboardActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -150,7 +153,19 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             public void onSuccess(User user) {
                 if (user != null && user.getProfileImage() != null && !user.getProfileImage().isEmpty()) {
                     try {
-                        // Use Glide to load the profile image from URI
+                        // Use Glide to load the profile image from internal storage
+                        File imageFile = new File(getFilesDir(), user.getProfileImage());
+                        if (imageFile.exists()) {
+                            Glide.with(DashboardActivity.this)
+                                .load(imageFile)
+                                .placeholder(R.drawable.ic_person)
+                                .error(R.drawable.ic_person)
+                                .circleCrop()  // Optional: makes the image circular
+                                .into(profileImageView);
+                        } else {
+                            // Use default placeholder if file doesn't exist
+                            profileImageView.setImageResource(R.drawable.ic_person);
+                        }
                     } catch (Exception e) {
                         // If loading fails, use default placeholder
                         profileImageView.setImageResource(R.drawable.ic_person);

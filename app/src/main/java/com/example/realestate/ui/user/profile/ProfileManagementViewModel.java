@@ -198,7 +198,7 @@ public class ProfileManagementViewModel extends AndroidViewModel {
     /**
      * Saves the selected image to internal storage and returns the filename
      * @param imageUri The URI of the image to save
-     * @return The filename of the saved image
+     * @return The filename of the saved image (relative to the app's files directory)
      */
     public String saveImageToInternalStorage(Uri imageUri) {
         Context context = getApplication().getApplicationContext();
@@ -207,6 +207,9 @@ public class ProfileManagementViewModel extends AndroidViewModel {
         try {
             // Open the input stream from the URI
             InputStream inputStream = context.getContentResolver().openInputStream(imageUri);
+            if (inputStream == null) {
+                return null;
+            }
 
             // Create file in internal storage
             File file = new File(context.getFilesDir(), fileName);
@@ -221,13 +224,14 @@ public class ProfileManagementViewModel extends AndroidViewModel {
                 outputStream.write(buffer, 0, bytesRead);
             }
 
+            // Close streams properly to prevent resource leaks
             outputStream.close();
             inputStream.close();
 
+            // Return just the filename, which can be used to construct the full path later
             return fileName;
         } catch (IOException e) {
             e.printStackTrace();
-            // Handle error (e.g., show Toast)
             return null;
         }
     }
