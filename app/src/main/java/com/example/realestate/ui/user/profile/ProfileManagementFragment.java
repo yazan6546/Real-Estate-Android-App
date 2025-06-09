@@ -328,7 +328,7 @@ public class ProfileManagementFragment extends Fragment {
                     profileImageView.setImageResource(R.drawable.ic_person);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Log.e("ProfileManagementFragment", "Error loading profile image", e);
                 profileImageView.setImageResource(R.drawable.ic_person);
             }
         } else {
