@@ -12,6 +12,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.realestate.R;
 import com.example.realestate.domain.model.Property;
 
@@ -161,10 +162,16 @@ public class PropertyAdapter extends RecyclerView.Adapter<PropertyAdapter.Proper
                 ivFeaturedStar.setVisibility(View.GONE);
             }
 
-            // Property image - For now using default icon
-            // In a real app, you would load the image using a library like Glide or Picasso
-            // Example: Glide.with(context).load(property.getImage()).into(ivPropertyImage);
-            ivPropertyImage.setImageResource(R.drawable.ic_building);
+            // Load property image if available
+            if (property.getImage() != null && !property.getImage().isEmpty()) {
+                Glide.with(itemView.getContext())
+                        .load(property.getImage())
+                        .placeholder(R.drawable.ic_building)
+                        .error(R.drawable.ic_building)
+                        .into(ivPropertyImage);
+            } else {
+                ivPropertyImage.setImageResource(R.drawable.ic_building);
+            }
 
             // Check and set favorite status
             setupFavoriteButton(property);
