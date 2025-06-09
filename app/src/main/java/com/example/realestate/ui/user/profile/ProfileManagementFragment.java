@@ -27,6 +27,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
+import com.example.realestate.DashboardActivity;
 import com.example.realestate.R;
 import com.example.realestate.RealEstate;
 import com.example.realestate.domain.model.User;
@@ -266,6 +267,14 @@ public class ProfileManagementFragment extends Fragment {
 
             if (state == ProfileManagementViewModel.UpdateState.SUCCESS) {
                 Toast.makeText(requireContext(), "Profile updated successfully!", Toast.LENGTH_SHORT).show();
+                // When user clicks save, immediately update the navigation header with the new image
+                // This ensures the header image is consistent with the profile changes
+                if (requireActivity() instanceof DashboardActivity) {
+                    DashboardActivity dashboardActivity = (DashboardActivity) requireActivity();
+                    dashboardActivity.refreshNavigationHeader();
+                }
+
+
                 clearPasswordFields();
             }
         });

@@ -209,4 +209,18 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
     }
+
+    /**
+     * Public method to refresh the navigation header with the latest user data.
+     * This is called after profile updates to immediately reflect changes.
+     */
+    public void refreshNavigationHeader() {
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        SharedPrefManager sharedPrefManager = SharedPrefManager.getInstance(this);
+        UserSession userSession = sharedPrefManager.readObject("user_session", UserSession.class, null);
+
+        if (navigationView != null && userSession != null) {
+            updateNavigationHeader(navigationView, userSession);
+        }
+    }
 }
