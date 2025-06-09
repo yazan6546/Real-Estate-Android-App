@@ -114,7 +114,13 @@ public class ProfileManagementViewModel extends AndroidViewModel {
             if (profileImageUri != null) {
                 // Save the image to internal storage and get the filename
                 String imageFileName = saveImageToInternalStorage(profileImageUri);
-                updatedUser.setProfileImage(imageFileName);
+                if (imageFileName != null) {
+                    updatedUser.setProfileImage(imageFileName);
+                } else {
+                    errorMessage.postValue("Failed to save profile image");
+                    updateState.postValue(UpdateState.ERROR);
+                    return;
+                }
             }
 
             // Update in repository
