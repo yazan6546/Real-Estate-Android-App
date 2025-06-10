@@ -91,6 +91,19 @@ public class PropertyRepositoryImpl implements PropertyRepository {
     }
 
     @Override
+    public void updateProperty(Property property, RepositoryCallback<Property> callback) {
+        Executors.newSingleThreadExecutor().execute(() -> {
+            try {
+                PropertyEntity entity = PropertyMapper.fromDomain(property);
+                propertyDao.updateExistingProperties(java.util.Collections.singletonList(entity));
+                callback.onSuccess(property);
+            } catch (Exception e) {
+                callback.onError(e);
+            }
+        });
+    }
+
+    @Override
     public List<Property> getFavoriteProperties() {
         // For now, return an empty list. In a real app, this would fetch from favorites
         // table

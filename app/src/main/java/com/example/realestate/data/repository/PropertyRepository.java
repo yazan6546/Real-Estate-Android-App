@@ -44,6 +44,14 @@ public interface PropertyRepository {
     LiveData<Integer> getPropertyCount();
 
     /**
+     * Update a property in the database
+     * 
+     * @param property the property to update
+     * @param callback callback to notify when operation completes
+     */
+    void updateProperty(Property property, RepositoryCallback<Property> callback);
+
+    /**
      * Get favorite properties for current user
      * 
      * @return List of favorite properties
