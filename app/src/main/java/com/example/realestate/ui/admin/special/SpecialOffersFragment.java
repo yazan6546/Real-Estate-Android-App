@@ -86,6 +86,15 @@ public class SpecialOffersFragment extends Fragment implements SpecialOffersAdap
 
     @Override
     public void onToggleOffer(com.example.realestate.domain.model.Property property, double discountPercentage) {
+        // Trigger animations before making the database call
+        if (discountPercentage > 0) {
+            // Creating offer - animate strikethrough appearance
+            adapter.animateOfferCreation(property.getPropertyId(), discountPercentage);
+        } else {
+            // Removing offer - animate strikethrough removal
+            adapter.animateOfferRemoval(property.getPropertyId());
+        }
+
         viewModel.toggleOffer(property, discountPercentage);
     }
 

@@ -1,10 +1,14 @@
 package com.example.realestate.ui.admin.special;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SeekBar;
@@ -44,6 +48,52 @@ public class SpecialOffersAdapter extends RecyclerView.Adapter<SpecialOffersAdap
     public void setProperties(List<Property> properties) {
         this.properties = properties != null ? properties : new ArrayList<>();
         notifyDataSetChanged();
+    }
+
+    public void animateOfferCreation(int propertyId, double discountPercentage) {
+        for (int i = 0; i < properties.size(); i++) {
+            if (properties.get(i).getPropertyId() == propertyId) {
+                // Find the RecyclerView from the context
+                if (context instanceof androidx.fragment.app.FragmentActivity) {
+                    androidx.fragment.app.FragmentActivity activity = (androidx.fragment.app.FragmentActivity) context;
+                    RecyclerView recyclerView = activity.findViewById(R.id.offersRecyclerView);
+                    if (recyclerView != null) {
+                        RecyclerView.ViewHolder holder = recyclerView.findViewHolderForAdapterPosition(i);
+                        if (holder instanceof SpecialOfferViewHolder) {
+                            SpecialOfferViewHolder offerHolder = (SpecialOfferViewHolder) holder;
+                            // Trigger button animation first
+                            offerHolder.animateButtonChange(true);
+                            // Then trigger strikethrough and price animations
+                            offerHolder.animateStrikethrough(true);
+                        }
+                    }
+                }
+                break;
+            }
+        }
+    }
+
+    public void animateOfferRemoval(int propertyId) {
+        for (int i = 0; i < properties.size(); i++) {
+            if (properties.get(i).getPropertyId() == propertyId) {
+                // Find the RecyclerView from the context
+                if (context instanceof androidx.fragment.app.FragmentActivity) {
+                    androidx.fragment.app.FragmentActivity activity = (androidx.fragment.app.FragmentActivity) context;
+                    RecyclerView recyclerView = activity.findViewById(R.id.offersRecyclerView);
+                    if (recyclerView != null) {
+                        RecyclerView.ViewHolder holder = recyclerView.findViewHolderForAdapterPosition(i);
+                        if (holder instanceof SpecialOfferViewHolder) {
+                            SpecialOfferViewHolder offerHolder = (SpecialOfferViewHolder) holder;
+                            // Trigger button animation first
+                            offerHolder.animateButtonChange(false);
+                            // Then trigger strikethrough removal animation
+                            offerHolder.animateStrikethrough(false);
+                        }
+                    }
+                }
+                break;
+            }
+        }
     }
 
     @NonNull
@@ -250,13 +300,118 @@ public class SpecialOffersAdapter extends RecyclerView.Adapter<SpecialOffersAdap
         }
 
         private void updateButtonState(Property property) {
-            if (property.getDiscount() > 0) {
-                btnCreateOffer.setText("REMOVE OFFER");
-                btnCreateOffer.setBackgroundTintList(context.getColorStateList(android.R.color.holo_red_light));
+            animateButtonChange(property.getDiscount() > 0);
+        }
+
+        private void animateButtonChange(boolean isRemoveState) {
+            // Fade out button
+            ObjectAnimator fadeOut = ObjectAnimator.ofFloat(btnCreateOffer, "alpha", 1f, 0.3f);
+            fadeOut.setDuration(150);
+            
+            fadeOut.addListener(new android.animation.AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(android.animation.Animator animation) {
+                    // Change button properties while faded
+                    if (isRemoveState) {
+                        btnCreateOffer.setText("REMOVE OFFER");
+                        btnCreateOffer.setBackgroundTintList(context.getColorStateList(android.R.color.holo_red_light));
+                    } else {
+                        btnCreateOffer.setText("CREATE OFFER");
+                        btnCreateOffer.setBackgroundTintList(context.getColorStateList(R.color.green_700));
+                    }
+                    
+                    // Fade back in
+                    ObjectAnimator fadeIn = ObjectAnimator.ofFloat(btnCreateOffer, "alpha", 0.3f, 1f);
+                    fadeIn.setDuration(150);
+                    fadeIn.start();
+                }
+            });
+            
+            fadeOut.start();
+        }
+
+        private void animateStrikethrough(boolean show) {
+            if (show) {
+                // Animate strikethrough appearance
+                tvOriginalPrice.setVisibility(View.VISIBLE);
+                tvOriginalPrice.setAlpha(0f);
+                tvOriginalPrice.setScaleY(0.8f);
+                
+                AnimatorSet strikethroughSet = new AnimatorSet();
+                ObjectAnimator fadeIn = ObjectAnimator.ofFloat(tvOriginalPrice, "alpha", 0f, 1f);
+                ObjectAnimator scaleY = ObjectAnimator.ofFloat(tvOriginalPrice, "scaleY", 0.8f, 1f);
+                ObjectAnimator scaleX = ObjectAnimator.ofFloat(tvOriginalPrice, "scaleX", 0.95f, 1f);
+                
+                strikethroughSet.playTogether(fadeIn, scaleY, scaleX);
+                strikethroughSet.setDuration(300);
+                strikethroughSet.setInterpolator(new AccelerateDecelerateInterpolator());
+                
+                // Animate the strikethrough line drawing
+                ValueAnimator strikeAnimator = ValueAnimator.ofFloat(0f, 1f);
+                strikeAnimator.setDuration(400);
+                strikeAnimator.setStartDelay(200);
+                strikeAnimator.addUpdateListener(animation -> {
+                    float progress = (float) animation.getAnimatedValue();
+                    if (progress > 0.7f) {
+                        tvOriginalPrice.setPaintFlags(tvOriginalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                    }
+                });
+                
+                strikethroughSet.start();
+                strikeAnimator.start();
+                
             } else {
-                btnCreateOffer.setText("CREATE OFFER");
-                btnCreateOffer.setBackgroundTintList(context.getColorStateList(R.color.green_700));
+                // Animate strikethrough removal
+                ObjectAnimator fadeOut = ObjectAnimator.ofFloat(tvOriginalPrice, "alpha", 1f, 0f);
+                ObjectAnimator scaleDown = ObjectAnimator.ofFloat(tvOriginalPrice, "scaleY", 1f, 0.8f);
+                
+                AnimatorSet hideSet = new AnimatorSet();
+                hideSet.playTogether(fadeOut, scaleDown);
+                hideSet.setDuration(200);
+                hideSet.addListener(new android.animation.AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(android.animation.Animator animation) {
+                        tvOriginalPrice.setVisibility(View.GONE);
+                        tvOriginalPrice.setPaintFlags(tvOriginalPrice.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+                    }
+                });
+                hideSet.start();
             }
+        }
+
+        private void animatePriceChange(String newPrice, boolean isDiscounted) {
+            // Animate price text change
+            ObjectAnimator scaleDown = ObjectAnimator.ofFloat(tvPropertyPrice, "scaleY", 1f, 0.8f);
+            ObjectAnimator fadeOut = ObjectAnimator.ofFloat(tvPropertyPrice, "alpha", 1f, 0.6f);
+            
+            AnimatorSet changeOut = new AnimatorSet();
+            changeOut.playTogether(scaleDown, fadeOut);
+            changeOut.setDuration(150);
+            
+            changeOut.addListener(new android.animation.AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(android.animation.Animator animation) {
+                    tvPropertyPrice.setText(newPrice);
+                    
+                    // Change color if it's a discounted price
+                    if (isDiscounted) {
+                        tvPropertyPrice.setTextColor(context.getColor(R.color.green_700));
+                    } else {
+                        tvPropertyPrice.setTextColor(context.getColor(android.R.color.black));
+                    }
+                    
+                    ObjectAnimator scaleUp = ObjectAnimator.ofFloat(tvPropertyPrice, "scaleY", 0.8f, 1f);
+                    ObjectAnimator fadeIn = ObjectAnimator.ofFloat(tvPropertyPrice, "alpha", 0.6f, 1f);
+                    
+                    AnimatorSet changeIn = new AnimatorSet();
+                    changeIn.playTogether(scaleUp, fadeIn);
+                    changeIn.setDuration(200);
+                    changeIn.setInterpolator(new AccelerateDecelerateInterpolator());
+                    changeIn.start();
+                }
+            });
+            
+            changeOut.start();
         }
     }
 }
