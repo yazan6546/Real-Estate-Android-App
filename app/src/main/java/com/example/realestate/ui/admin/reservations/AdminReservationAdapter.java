@@ -144,49 +144,32 @@ public class AdminReservationAdapter extends RecyclerView.Adapter<RecyclerView.V
                 boolean wasExpanded = expandedUsers.contains(user.getEmail());
                 
                 if (wasExpanded) {
-                    // Collapsing - animate arrow rotation first, then collapse items
+                    // Collapsing - animate arrow rotation
                     Animation rotateCollapse = AnimationUtils.loadAnimation(view.getContext(), R.anim.rotate_collapse);
                     expandIcon.startAnimation(rotateCollapse);
                     
-                    // Remove from expanded set and rebuild list with slide up animation
+                    // Remove from expanded set
                     expandedUsers.remove(user.getEmail());
-                    animateItemsCollapse(position, userReservationsMap.get(user).size());
                 } else {
-                    // Expanding - animate arrow rotation first, then expand items
+                    // Expanding - animate arrow rotation
                     Animation rotateExpand = AnimationUtils.loadAnimation(view.getContext(), R.anim.rotate_expand);
                     expandIcon.startAnimation(rotateExpand);
                     
-                    // Add to expanded set and rebuild list with slide down animation
+                    // Add to expanded set
                     expandedUsers.add(user.getEmail());
-                    animateItemsExpand(position, userReservationsMap.get(user).size());
                 }
                 
+                // Rebuild the list to show/hide reservations
                 rebuildItemsList();
             });
 
         } else if (holder instanceof ReservationViewHolder) {
-            // Apply slide down animation for newly visible reservation items
+            ((ReservationViewHolder) holder).bind((Reservation) items.get(position), dateFormat);
+            
+            // Apply expand animation only for newly visible items
             Animation slideDown = AnimationUtils.loadAnimation(holder.itemView.getContext(), R.anim.slide_down);
             holder.itemView.startAnimation(slideDown);
-            
-            ((ReservationViewHolder) holder).bind((Reservation) items.get(position), dateFormat);
         }
-    }
-
-    /**
-     * Animate expanding items with slide down effect
-     */
-    private void animateItemsExpand(int headerPosition, int itemCount) {
-        // Notify that items are being inserted after the header
-        notifyItemRangeInserted(headerPosition + 1, itemCount);
-    }
-
-    /**
-     * Animate collapsing items with slide up effect
-     */
-    private void animateItemsCollapse(int headerPosition, int itemCount) {
-        // Notify that items are being removed after the header
-        notifyItemRangeRemoved(headerPosition + 1, itemCount);
     }
 
     @Override
