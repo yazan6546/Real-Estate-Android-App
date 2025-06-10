@@ -17,7 +17,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.realestate.R;
 import com.example.realestate.RealEstate;
 import com.example.realestate.data.repository.ReservationRepository;
-import com.google.android.material.tabs.TabLayout;
 
 public class ViewAllReservationsFragment extends Fragment {
 
@@ -26,10 +25,6 @@ public class ViewAllReservationsFragment extends Fragment {
     private LinearLayout emptyView;
     private ProgressBar progressBar;
     private AdminReservationAdapter adapter;
-    private TabLayout tabLayout;
-
-    // Status filter values
-    private static final String[] STATUS_VALUES = {"All", "Pending", "Confirmed", "Cancelled"};
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -40,7 +35,6 @@ public class ViewAllReservationsFragment extends Fragment {
         reservationsRecyclerView = root.findViewById(R.id.reservationsRecyclerView);
         emptyView = root.findViewById(R.id.emptyView);
         progressBar = root.findViewById(R.id.progressBar);
-        tabLayout = root.findViewById(R.id.tabLayout);
 
         // Initialize adapter
         adapter = new AdminReservationAdapter();
@@ -55,61 +49,13 @@ public class ViewAllReservationsFragment extends Fragment {
 
         viewModel = new ViewModelProvider(this, factory).get(ViewAllReservationsViewModel.class);
 
-        // Setup tabs for filtering
-        setupTabs();
-
         // Observe reservations data
         observeReservations();
 
-        // Load initial data with the current filter (or null if none)
-        loadReservations();
+        // Load all reservations
+        loadAllReservations();
 
         return root;
-    }
-
-    private void setupTabs() {
-        // Clear existing tabs
-        tabLayout.removeAllTabs();
-
-        // Add status filter tabs
-        for (String status : STATUS_VALUES) {
-            tabLayout.addTab(tabLayout.newTab().setText(status));
-        }
-
-        // Handle tab selection
-        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                String status = tab.getText().toString();
-                // Use null for "All" to show all statuses
-                loadReservations(status.equals("All") ? null : status);
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-                // Not needed
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-                // Refresh the data when tab is reselected
-                String status = tab.getText().toString();
-                loadReservations(status.equals("All") ? null : status);
-            }
-        });
-
-        // Select the appropriate tab based on current filter
-        String currentStatus = viewModel.getCurrentStatus();
-        int tabIndex = 0; // Default to "All"
-        if (currentStatus != null) {
-            for (int i = 0; i < STATUS_VALUES.length; i++) {
-                if (STATUS_VALUES[i].equals(currentStatus)) {
-                    tabIndex = i;
-                    break;
-                }
-            }
-        }
-        tabLayout.selectTab(tabLayout.getTabAt(tabIndex));
     }
 
     private void observeReservations() {
@@ -127,17 +73,12 @@ public class ViewAllReservationsFragment extends Fragment {
         });
     }
 
-    private void loadReservations() {
-        // Load with current filter status
-        loadReservations(viewModel.getCurrentStatus());
-    }
-
-    private void loadReservations(String status) {
+    private void loadAllReservations() {
         progressBar.setVisibility(View.VISIBLE);
         emptyView.setVisibility(View.GONE);
         reservationsRecyclerView.setVisibility(View.GONE);
 
-        // Load reservations with optional status filter
-        viewModel.loadReservations(status);
+        // Load all reservations without any status filter
+        viewModel.loadAllReservations();
     }
 }

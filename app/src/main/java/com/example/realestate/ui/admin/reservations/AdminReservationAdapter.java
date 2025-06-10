@@ -1,8 +1,11 @@
 package com.example.realestate.ui.admin.reservations;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -14,6 +17,7 @@ import com.example.realestate.R;
 import com.example.realestate.domain.model.Reservation;
 import com.example.realestate.domain.model.User;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -134,19 +138,39 @@ public class AdminReservationAdapter extends RecyclerView.Adapter<RecyclerView.V
                 userReservationsMap.get(user).size(),
                 isExpanded);
 
-            // Set click listener directly
+            // Set click listener with animations
             holder.itemView.setOnClickListener(view -> {
-                // Toggle expansion
-                if (isExpanded) {
+                ImageView expandIcon = holder.itemView.findViewById(R.id.ivExpandIcon);
+                
+                // Toggle expansion state
+                boolean wasExpanded = expandedUsers.contains(user.getEmail());
+                
+                if (wasExpanded) {
+                    // Collapsing - animate arrow rotation
+                    Animation rotateCollapse = AnimationUtils.loadAnimation(view.getContext(), R.anim.rotate_collapse);
+                    expandIcon.startAnimation(rotateCollapse);
+                    
+                    // Remove from expanded set
                     expandedUsers.remove(user.getEmail());
                 } else {
+                    // Expanding - animate arrow rotation
+                    Animation rotateExpand = AnimationUtils.loadAnimation(view.getContext(), R.anim.rotate_expand);
+                    expandIcon.startAnimation(rotateExpand);
+                    
+                    // Add to expanded set
                     expandedUsers.add(user.getEmail());
                 }
+                
+                // Rebuild the list to show/hide reservations
                 rebuildItemsList();
             });
 
         } else if (holder instanceof ReservationViewHolder) {
             ((ReservationViewHolder) holder).bind((Reservation) items.get(position), dateFormat);
+            
+            // Apply expand animation only for newly visible items
+            Animation slideDown = AnimationUtils.loadAnimation(holder.itemView.getContext(), R.anim.slide_down);
+            holder.itemView.startAnimation(slideDown);
         }
     }
 
@@ -187,16 +211,40 @@ public class AdminReservationAdapter extends RecyclerView.Adapter<RecyclerView.V
                 (reservationCount == 1 ? "reservation" : "reservations");
             tvReservationCount.setText(countText);
 
-            // Set expansion indicator
+            // Set initial arrow state without animation (for recycled views)
             ivExpandIcon.setRotation(isExpanded ? 180 : 0);
 
-            // Set avatar
+            // Load profile image if available
             if (user.getProfileImage() != null && !user.getProfileImage().isEmpty()) {
-                Glide.with(itemView.getContext())
-                    .load(user.getProfileImage())
-                    .placeholder(R.drawable.ic_person)
-                    .into(ivUserAvatar);
+                try {
+                    // Create file object from the stored filename using itemView context
+                    File imageFile = new File(itemView.getContext().getFilesDir(), user.getProfileImage());
+
+                    // Use Glide to load the profile image from internal storage
+                    if (imageFile.exists()) {
+                        // Remove tint for actual profile images
+                        ivUserAvatar.setImageTintList(null);
+                        
+                        Glide.with(itemView.getContext())
+                                .load(imageFile)
+                                .placeholder(R.drawable.ic_person)
+                                .error(R.drawable.ic_person)
+                                .circleCrop() // Make the image circular
+                                .into(ivUserAvatar);
+                    } else {
+                        // Restore tint for default icon
+                        ivUserAvatar.setImageTintList(itemView.getContext().getColorStateList(R.color.primary_blue));
+                        ivUserAvatar.setImageResource(R.drawable.ic_person);
+                    }
+                } catch (Exception e) {
+                    Log.e("AdminReservationAdapter", "Error loading profile image", e);
+                    // Restore tint for default icon
+                    ivUserAvatar.setImageTintList(itemView.getContext().getColorStateList(R.color.primary_blue));
+                    ivUserAvatar.setImageResource(R.drawable.ic_person);
+                }
             } else {
+                // Use default placeholder if no profile image is set and restore tint
+                ivUserAvatar.setImageTintList(itemView.getContext().getColorStateList(R.color.primary_blue));
                 ivUserAvatar.setImageResource(R.drawable.ic_person);
             }
         }
