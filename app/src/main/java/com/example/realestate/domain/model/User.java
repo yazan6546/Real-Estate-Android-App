@@ -4,6 +4,8 @@ import com.example.realestate.domain.exception.ValidationException;
 import com.example.realestate.domain.service.AuthenticationService;
 import com.example.realestate.domain.service.Hashing;
 
+import java.util.List;
+
 public class User {
 
     public enum Gender {
@@ -21,6 +23,8 @@ public class User {
     private Gender gender;
     private boolean admin;
     private String profileImage;
+
+    private List<Reservation> reservations;
 
     public User(String firstName, String lastName, String email, String password, String phone,
                 String country, String city, String gender,  boolean admin) {
@@ -180,5 +184,13 @@ public class User {
 
     public void setProfileImage(String profileImage) {
         this.profileImage = profileImage;
+    }
+
+    public List<Reservation> getReservations() {
+        return reservations;
+    }
+
+    public void setReservations(List<Reservation> reservations) {
+        this.reservations = reservations;
     }
 }

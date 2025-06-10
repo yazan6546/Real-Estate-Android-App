@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
+import androidx.room.MapInfo;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Transaction;
@@ -11,6 +12,7 @@ import androidx.room.Update;
 
 import com.example.realestate.data.db.entity.ReservationEntity;
 import com.example.realestate.data.db.entity.ReservationWithPropertyEntity;
+import com.example.realestate.data.db.entity.UserWithReservationsAndProperties;
 import com.example.realestate.data.db.result.CountryCount;
 import com.example.realestate.data.db.entity.UserEntity;
 
@@ -125,11 +127,11 @@ public interface ReservationDao {
      * Multimap query that directly returns a map of users to their reservations
      * This is more efficient than manually building the map
      */
+
     @Transaction
-    @Query("SELECT users.*, reservations.* FROM users " +
-            "JOIN reservations ON users.email = reservations.email " +
-            "WHERE is_admin=0")
-    LiveData<Map<UserEntity, List<ReservationWithPropertyEntity>>> getUsersWithReservations();
+    @Query("SELECT * FROM users WHERE is_admin = 0")
+    LiveData<List<UserWithReservationsAndProperties>> getUsersWithReservationsAndPropertiesInternal();
+
 
     /**
      * Multimap query that directly returns a map of users to their reservations filtered by status
