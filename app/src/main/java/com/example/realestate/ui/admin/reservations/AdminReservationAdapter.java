@@ -222,21 +222,29 @@ public class AdminReservationAdapter extends RecyclerView.Adapter<RecyclerView.V
 
                     // Use Glide to load the profile image from internal storage
                     if (imageFile.exists()) {
+                        // Remove tint for actual profile images
+                        ivUserAvatar.setImageTintList(null);
+                        
                         Glide.with(itemView.getContext())
                                 .load(imageFile)
                                 .placeholder(R.drawable.ic_person)
-                                .circleCrop()
                                 .error(R.drawable.ic_person)
+                                .circleCrop() // Make the image circular
                                 .into(ivUserAvatar);
                     } else {
+                        // Restore tint for default icon
+                        ivUserAvatar.setImageTintList(itemView.getContext().getColorStateList(R.color.primary_blue));
                         ivUserAvatar.setImageResource(R.drawable.ic_person);
                     }
                 } catch (Exception e) {
                     Log.e("AdminReservationAdapter", "Error loading profile image", e);
+                    // Restore tint for default icon
+                    ivUserAvatar.setImageTintList(itemView.getContext().getColorStateList(R.color.primary_blue));
                     ivUserAvatar.setImageResource(R.drawable.ic_person);
                 }
             } else {
-                // Use default placeholder if no profile image is set
+                // Use default placeholder if no profile image is set and restore tint
+                ivUserAvatar.setImageTintList(itemView.getContext().getColorStateList(R.color.primary_blue));
                 ivUserAvatar.setImageResource(R.drawable.ic_person);
             }
         }
