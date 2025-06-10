@@ -1,7 +1,5 @@
 package com.example.realestate.ui.admin.reservations;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
@@ -12,7 +10,6 @@ import com.example.realestate.data.repository.ReservationRepository;
 import com.example.realestate.domain.model.Reservation;
 import com.example.realestate.domain.model.User;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -30,10 +27,6 @@ public class ViewAllReservationsViewModel extends ViewModel {
 
     public LiveData<Map<User, List<Reservation>>> getUserReservationsMap() {
         return userReservationsMap;
-    }
-
-    public String getCurrentStatus() {
-        return currentStatus;
     }
 
     /**
