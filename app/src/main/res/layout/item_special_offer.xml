@@ -111,8 +111,7 @@
                         android:textAlignment="textEnd"
                         android:textColor="@android:color/darker_gray"
                         android:textSize="12sp"
-                        android:visibility="visible"
-                        android:paintFlags="strike_through_text" />
+                        android:visibility="gone" />
 
                     <!-- New Discounted Price -->
                     <TextView
