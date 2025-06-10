@@ -16,6 +16,7 @@ import com.example.realestate.domain.model.User;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -30,14 +31,27 @@ public class AdminReservationAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     private List<Object> items = new ArrayList<>();
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
+    
+    // Track expanded state for each user
+    private Map<String, Boolean> expandedUsers = new HashMap<>();
+    // Store user reservations mapping for expand/collapse functionality
+    private Map<User, List<Reservation>> userReservationsMap = new HashMap<>();
 
     /**
      * Set reservations data grouped by user
      */
     public void setUserReservations(Map<User, List<Reservation>> userReservationsMap) {
+        this.userReservationsMap = userReservationsMap;
+        rebuildItemsList();
+    }
+
+    /**
+     * Rebuild the items list based on current expanded states
+     */
+    private void rebuildItemsList() {
         items.clear();
 
-        // For each user, add a header followed by their reservations
+        // For each user, add a header and their reservations if expanded
         for (Map.Entry<User, List<Reservation>> entry : userReservationsMap.entrySet()) {
             User user = entry.getKey();
             List<Reservation> reservations = entry.getValue();
@@ -46,12 +60,32 @@ public class AdminReservationAdapter extends RecyclerView.Adapter<RecyclerView.V
                 // Add user header
                 items.add(user);
 
-                // Add all reservations for this user
-                items.addAll(reservations);
+                // Add reservations only if this user is expanded
+                String userKey = getUserKey(user);
+                if (expandedUsers.getOrDefault(userKey, false)) {
+                    items.addAll(reservations);
+                }
             }
         }
 
         notifyDataSetChanged();
+    }
+
+    /**
+     * Generate a unique key for each user
+     */
+    private String getUserKey(User user) {
+        return user.getEmail(); // Use email as unique identifier
+    }
+
+    /**
+     * Toggle the expanded state of a user
+     */
+    private void toggleUserExpansion(User user) {
+        String userKey = getUserKey(user);
+        boolean isCurrentlyExpanded = expandedUsers.getOrDefault(userKey, false);
+        expandedUsers.put(userKey, !isCurrentlyExpanded);
+        rebuildItemsList();
     }
 
     @Override
@@ -83,15 +117,16 @@ public class AdminReservationAdapter extends RecyclerView.Adapter<RecyclerView.V
         if (holder instanceof UserHeaderViewHolder) {
             UserHeaderViewHolder headerHolder = (UserHeaderViewHolder) holder;
             User user = (User) items.get(position);
-            // Calculate reservation count for this user
-            int reservationCount = 0;
-            int index = position + 1;
-
-            while (index < items.size() && items.get(index) instanceof Reservation) {
-                reservationCount++;
-                index++;
-            }
-            headerHolder.bind(user, reservationCount);
+            
+            // Calculate total reservation count for this user
+            List<Reservation> userReservations = userReservationsMap.get(user);
+            int reservationCount = userReservations != null ? userReservations.size() : 0;
+            
+            // Check if user is expanded
+            String userKey = getUserKey(user);
+            boolean isExpanded = expandedUsers.getOrDefault(userKey, false);
+            
+            headerHolder.bind(user, reservationCount, isExpanded, this::toggleUserExpansion);
         } else if (holder instanceof ReservationViewHolder) {
             ReservationViewHolder reservationHolder = (ReservationViewHolder) holder;
             Reservation reservation = (Reservation) items.get(position);
@@ -123,7 +158,7 @@ public class AdminReservationAdapter extends RecyclerView.Adapter<RecyclerView.V
             ivUserAvatar = itemView.findViewById(R.id.ivUserAvatar);
         }
 
-        public void bind(User user, int reservationCount) {
+        public void bind(User user, int reservationCount, boolean isExpanded, UserClickListener clickListener) {
             // Display user's full name
             String fullName = user.getFirstName() + " " + user.getLastName();
             tvUserName.setText(fullName);
@@ -136,8 +171,7 @@ public class AdminReservationAdapter extends RecyclerView.Adapter<RecyclerView.V
                     (reservationCount == 1 ? "reservation" : "reservations");
             tvReservationCount.setText(reservationText);
 
-            // Set avatar image - could use Glide here if user has a profile image URL
-            // For now we'll use a placeholder with the first letter of their name
+            // Set avatar image
             if (user.getProfileImage() != null && !user.getProfileImage().isEmpty()) {
                 Glide.with(itemView.getContext())
                         .load(user.getProfileImage())
@@ -148,13 +182,23 @@ public class AdminReservationAdapter extends RecyclerView.Adapter<RecyclerView.V
                 ivUserAvatar.setImageResource(R.drawable.ic_person);
             }
 
+            // Set expand icon rotation based on expanded state
+            ivExpandIcon.setRotation(isExpanded ? 180 : 0);
+
             // Set click listener for expanding/collapsing
             itemView.setOnClickListener(v -> {
-                // Toggle visibility of this user's reservations
-                // This would require additional implementation to track expanded state
-                ivExpandIcon.setRotation(ivExpandIcon.getRotation() == 0 ? 180 : 0);
+                if (clickListener != null) {
+                    clickListener.onUserClick(user);
+                }
             });
         }
+    }
+
+    /**
+     * Interface for handling user header clicks
+     */
+    interface UserClickListener {
+        void onUserClick(User user);
     }
 
     /**
@@ -187,11 +231,19 @@ public class AdminReservationAdapter extends RecyclerView.Adapter<RecyclerView.V
 
         public void bind(Reservation reservation, SimpleDateFormat dateFormat) {
             // Set property details
-            tvPropertyId.setText("Property ID: #" + reservation.getProperty().getPropertyId());
-            tvPropertyTitle.setText(reservation.getProperty().getTitle());
-            tvPropertyType.setText(reservation.getProperty().getType());
-            tvPropertyDescription.setText(reservation.getProperty().getDescription());
-            tvPropertyLocation.setText(reservation.getProperty().getLocation());
+            if (reservation.getProperty() != null) {
+                tvPropertyId.setText("Property ID: #" + reservation.getProperty().getPropertyId());
+                tvPropertyTitle.setText(reservation.getProperty().getTitle());
+                tvPropertyType.setText(reservation.getProperty().getType());
+                tvPropertyDescription.setText(reservation.getProperty().getDescription());
+                tvPropertyLocation.setText(reservation.getProperty().getLocation());
+            } else {
+                tvPropertyId.setText("Property ID: #" + reservation.getPropertyId());
+                tvPropertyTitle.setText("Property Not Available");
+                tvPropertyType.setText("Unknown Type");
+                tvPropertyDescription.setText("Property details not available");
+                tvPropertyLocation.setText("Location not specified");
+            }
 
             // Format dates
             tvReservationStartDateTime.setText("Start: " + dateFormat.format(reservation.getStartDate()));
@@ -222,7 +274,9 @@ public class AdminReservationAdapter extends RecyclerView.Adapter<RecyclerView.V
             tvReservationStatus.setTextColor(color);
 
             // Load property image if available
-            if (reservation.getProperty().getImageUrl() != null && !reservation.getProperty().getImageUrl().isEmpty()) {
+            if (reservation.getProperty() != null && 
+                reservation.getProperty().getImageUrl() != null && 
+                !reservation.getProperty().getImageUrl().isEmpty()) {
                 Glide.with(itemView.getContext())
                         .load(reservation.getProperty().getImageUrl())
                         .placeholder(R.drawable.ic_building)
