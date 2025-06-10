@@ -1,5 +1,6 @@
 package com.example.realestate.ui.user.properties;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Paint;
 import android.view.LayoutInflater;

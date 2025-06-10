@@ -129,7 +129,7 @@ public interface ReservationDao {
     @Query("SELECT users.*, reservations.* FROM users " +
             "JOIN reservations ON users.email = reservations.email " +
             "WHERE is_admin=0")
-    LiveData<Map<UserEntity, List<ReservationEntity>>> getUsersWithReservations();
+    LiveData<Map<UserEntity, List<ReservationWithPropertyEntity>>> getUsersWithReservations();
 
     /**
      * Multimap query that directly returns a map of users to their reservations filtered by status
@@ -138,5 +138,5 @@ public interface ReservationDao {
     @Query("SELECT users.*, reservations.* FROM users " +
             "JOIN reservations ON users.email = reservations.email " +
             "WHERE is_admin=0 AND reservations.status = :status")
-    LiveData<Map<UserEntity, List<ReservationEntity>>> getUsersWithReservationsByStatus(String status);
+    LiveData<Map<UserEntity, List<ReservationWithPropertyEntity>>> getUsersWithReservationsByStatus(String status);
 }

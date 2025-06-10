@@ -7,6 +7,7 @@ import com.example.realestate.data.db.dao.PropertyDao;
 import com.example.realestate.data.db.dao.ReservationDao;
 import com.example.realestate.data.db.dao.UserDao;
 import com.example.realestate.data.db.entity.ReservationEntity;
+import com.example.realestate.data.db.entity.ReservationWithPropertyEntity;
 import com.example.realestate.data.db.entity.UserEntity;
 import com.example.realestate.data.db.result.CountryCount;
 import com.example.realestate.domain.mapper.ReservationMapper;
@@ -173,13 +174,13 @@ public class ReservationRepository {
             userReservationMap -> {
                 Map<User, List<Reservation>> result = new HashMap<>();
 
-                for (Map.Entry<UserEntity, List<ReservationEntity>> entry : userReservationMap.entrySet()) {
+                for (Map.Entry<UserEntity, List<ReservationWithPropertyEntity>> entry : userReservationMap.entrySet()) {
                     UserEntity userEntity = entry.getKey();
-                    List<ReservationEntity> reservationEntities = entry.getValue();
+                    List<ReservationWithPropertyEntity> reservationEntities = entry.getValue();
 
                     // Map entities to domain models
                     User user = UserMapper.toDomain(userEntity);
-                    List<Reservation> reservations = ReservationMapper.toDomainList(reservationEntities);
+                    List<Reservation> reservations = ReservationMapper.toDomainWithPropertyList(reservationEntities);
 
                     // Only add users who have reservations
                     if (!reservations.isEmpty()) {
@@ -203,22 +204,22 @@ public class ReservationRepository {
             userReservationMap -> {
                 Map<User, List<Reservation>> result = new HashMap<>();
 
-                for (Map.Entry<UserEntity, List<ReservationEntity>> entry : userReservationMap.entrySet()) {
+                for (Map.Entry<UserEntity, List<ReservationWithPropertyEntity>> entry : userReservationMap.entrySet()) {
                     UserEntity userEntity = entry.getKey();
-                    List<ReservationEntity> reservationEntities = entry.getValue();
+                    List<ReservationWithPropertyEntity> reservationEntities = entry.getValue();
 
                     // Map entities to domain models
                     User user = UserMapper.toDomain(userEntity);
-                    List<Reservation> reservations = ReservationMapper.toDomainList(reservationEntities);
+                    List<Reservation> reservations = ReservationMapper.toDomainWithPropertyList(reservationEntities);
 
-                    // Filter reservations by status again (to ensure data consistency)
-                    List<Reservation> filteredReservations = reservations.stream()
-                        .filter(reservation -> status.equalsIgnoreCase(reservation.getStatus()))
-                        .collect(java.util.stream.Collectors.toList());
+//                    // Filter reservations by status again (to ensure data consistency)
+//                    List<Reservation> filteredReservations = reservations.stream()
+//                        .filter(reservation -> status.equalsIgnoreCase(reservation.getStatus()))
+//                        .collect(java.util.stream.Collectors.toList());
 
                     // Only add users who have reservations with this status
-                    if (!filteredReservations.isEmpty()) {
-                        result.put(user, filteredReservations);
+                    if (!reservations.isEmpty()) {
+                        result.put(user, reservations);
                     }
                 }
 
