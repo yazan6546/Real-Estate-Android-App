@@ -12,251 +12,51 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- Property Image with Discount Badge -->
-        <FrameLayout
+        <!-- Reuse shared property content -->
+        <include
+            layout="@layout/layout_property_content"
             android:layout_width="match_parent"
-            android:layout_height="200dp">
+            android:layout_height="wrap_content" />
 
-            <ImageView
-                android:id="@+id/ivPropertyImage"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="centerCrop"
-                android:background="@android:color/darker_gray"
-                android:src="@drawable/ic_building" />
-
-            <!-- Discount Badge -->
-            <TextView
-                android:id="@+id/tvDiscountBadge"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="top|end"
-                android:layout_margin="12dp"
-                android:background="@drawable/circle_background"
-                android:backgroundTint="@color/green_700"
-                android:padding="8dp"
-                android:text="20% OFF"
-                android:textColor="@android:color/white"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                android:visibility="gone" />
-
-            <!-- Featured Property Star -->
-            <ImageView
-                android:id="@+id/ivFeaturedStar"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_gravity="top|start"
-                android:layout_margin="12dp"
-                android:src="@drawable/ic_star"
-                android:visibility="gone"
-                app:tint="@color/yellow_500" />
-        </FrameLayout>
-
+        <!-- Action Buttons Section -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
+            android:orientation="horizontal"
+            android:gravity="center"
             android:padding="16dp">
 
-            <!-- Property Header with Type, Price and Discount Info -->
-            <LinearLayout
-                android:layout_width="362dp"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="8dp"
-                android:orientation="horizontal">
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/tvPropertyType"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingVertical="4dp"
-                        android:text="Apartment"
-                        android:textAlignment="viewStart"
-                        android:textColor="@color/blue_700"
-                        android:textSize="12sp"
-                        android:textStyle="bold" />
-
-                    <!-- Discount Text -->
-                    <TextView
-                        android:id="@+id/tvDiscountText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Limited Time Offer!"
-                        android:textColor="@color/green_700"
-                        android:textSize="10sp"
-                        android:textStyle="italic"
-                        android:visibility="gone" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:gravity="end">
-
-                    <!-- Original Price (crossed out when discount available) -->
-                    <TextView
-                        android:id="@+id/tvOriginalPrice"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="$1,500/month"
-                        android:textAlignment="textEnd"
-                        android:textColor="@android:color/darker_gray"
-                        android:textSize="12sp"
-                        android:visibility="gone" />
-
-                    <TextView
-                        android:id="@+id/tvPropertyPrice"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="$1,200/month"
-                        android:textAlignment="textEnd"
-                        android:textColor="@color/green_700"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <!-- Property Title -->
-            <TextView
-                android:id="@+id/tvPropertyTitle"
-                android:layout_width="match_parent"
+            <Button
+                android:id="@+id/btnAddToFavorites"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Modern Apartment in Downtown"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="@android:color/black"
-                android:layout_marginBottom="8dp" />
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1"
+                android:background="@drawable/button_outline"
+                android:padding="12dp"
+                android:text="Favorite"
+                android:textColor="@color/blue_700"
+                android:textSize="13sp"
+                android:drawableStart="@drawable/ic_favorite"
+                android:drawablePadding="8dp"
+                android:gravity="center"
+                android:drawableTint="@color/blue_700" />
 
-            <!-- Property Description -->
-            <TextView
-                android:id="@+id/tvPropertyDescription"
-                android:layout_width="match_parent"
+            <Button
+                android:id="@+id/btnReserveProperty"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Beautiful 2-bedroom apartment with modern amenities, fully furnished, and great city views."
-                android:textSize="14sp"
-                android:textColor="@android:color/darker_gray"
-                android:layout_marginBottom="12dp"
-                android:maxLines="3"
-                android:ellipsize="end" />
-
-            <!-- Location -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="8dp"
-                android:gravity="center_vertical">
-
-                <ImageView
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
-                    android:src="@drawable/ic_building"
-                    android:layout_marginEnd="8dp"
-                    app:tint="@android:color/darker_gray" />
-
-                <TextView
-                    android:id="@+id/tvPropertyLocation"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Downtown, City Center"
-                    android:textSize="14sp"
-                    android:textColor="@android:color/darker_gray" />
-
-            </LinearLayout>
-
-            <!-- Property Details (Bedrooms, Bathrooms, Area) -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="16dp">
-
-                <TextView
-                    android:id="@+id/tvBedrooms"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="2 Beds"
-                    android:textSize="12sp"
-                    android:textColor="@android:color/darker_gray"
-                    android:drawableStart="@drawable/ic_bed"
-                    android:drawablePadding="4dp"
-                    android:gravity="center_vertical" />
-
-                <TextView
-                    android:id="@+id/tvBathrooms"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="2 Baths"
-                    android:textSize="12sp"
-                    android:textColor="@android:color/darker_gray"
-                    android:drawableStart="@drawable/ic_bath"
-                    android:drawablePadding="4dp"
-                    android:gravity="center_vertical" />
-
-                <TextView
-                    android:id="@+id/tvArea"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="120 sqm"
-                    android:textSize="12sp"
-                    android:textColor="@android:color/darker_gray"
-                    android:drawableStart="@drawable/ic_area"
-                    android:drawablePadding="4dp"
-                    android:gravity="center_vertical" />
-
-            </LinearLayout>            <!-- Action Buttons with Icons -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center">
-
-                <Button
-                    android:id="@+id/btnAddToFavorites"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/button_outline"
-                    android:padding="12dp"
-                    android:text="Favorite"
-                    android:textColor="@color/blue_700"
-                    android:textSize="13sp"
-                    android:drawableStart="@drawable/ic_favorite"
-                    android:drawablePadding="8dp"
-                    android:gravity="center"
-                    android:drawableTint="@color/blue_700" />
-
-                <Button
-                    android:id="@+id/btnReserveProperty"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/button_primary"                android:padding="12dp"
-                    android:text="Reserve"
-                    android:textColor="@android:color/white"
-                    android:textSize="13sp"
-                    android:drawableStart="@drawable/ic_calendar"
-                    android:drawablePadding="8dp"
-                    android:gravity="center"
-                    android:drawableTint="@android:color/white" />
-
-            </LinearLayout>
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:background="@drawable/button_primary"
+                android:padding="12dp"
+                android:text="Reserve"
+                android:textColor="@android:color/white"
+                android:textSize="13sp"
+                android:drawableStart="@drawable/ic_calendar"
+                android:drawablePadding="8dp"
+                android:gravity="center"
+                android:drawableTint="@android:color/white" />
 
         </LinearLayout>
 

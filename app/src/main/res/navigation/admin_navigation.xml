@@ -17,11 +17,6 @@
         android:label="View All Reservations"
         tools:layout="@layout/fragment_view_all_reservations" />
 
-    <fragment
-        android:id="@+id/nav_manage_properties"
-        android:name="com.example.realestate.ui.admin.properties.ManagePropertiesFragment"
-        android:label="Manage Properties"
-        tools:layout="@layout/fragment_manage_properties" />
 
     <fragment
         android:id="@+id/nav_special_offers"
