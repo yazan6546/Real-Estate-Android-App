@@ -29,7 +29,7 @@ public class ViewAllReservationsFragment extends Fragment {
     private TabLayout tabLayout;
 
     // Status filter values
-    private static final String[] STATUS_VALUES = {"All", "Confirmed", "Pending", "Cancelled", "Completed"};
+    private static final String[] STATUS_VALUES = {"All", "Pending", "Confirmed", "Cancelled"};
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
