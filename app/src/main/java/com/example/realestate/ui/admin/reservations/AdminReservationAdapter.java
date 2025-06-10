@@ -52,10 +52,26 @@ public class AdminReservationAdapter extends RecyclerView.Adapter<RecyclerView.V
     private void rebuildItemsList() {
         items.clear();
 
-        // For each user, add header and reservations if expanded
-        for (Map.Entry<User, List<Reservation>> entry : userReservationsMap.entrySet()) {
-            User user = entry.getKey();
-            List<Reservation> reservations = entry.getValue();
+        // Get users and sort them by name for consistent ordering
+        List<User> sortedUsers = new ArrayList<>(userReservationsMap.keySet());
+        sortedUsers.sort((user1, user2) -> {
+            // Primary sort by first name
+            int firstNameCompare = user1.getFirstName().compareToIgnoreCase(user2.getFirstName());
+            if (firstNameCompare != 0) {
+                return firstNameCompare;
+            }
+            // Secondary sort by last name
+            int lastNameCompare = user1.getLastName().compareToIgnoreCase(user2.getLastName());
+            if (lastNameCompare != 0) {
+                return lastNameCompare;
+            }
+            // Final sort by email to ensure complete consistency
+            return user1.getEmail().compareToIgnoreCase(user2.getEmail());
+        });
+
+        // For each user in sorted order, add header and reservations if expanded
+        for (User user : sortedUsers) {
+            List<Reservation> reservations = userReservationsMap.get(user);
 
             if (user != null && reservations != null && !reservations.isEmpty()) {
                 // Always add user header
@@ -63,7 +79,18 @@ public class AdminReservationAdapter extends RecyclerView.Adapter<RecyclerView.V
 
                 // Add reservations if user is expanded
                 if (expandedUsers.contains(user.getEmail())) {
-                    items.addAll(reservations);
+                    // Sort reservations by start date (descending)
+                    List<Reservation> sortedReservations = new ArrayList<>(reservations);
+                    sortedReservations.sort((r1, r2) -> {
+                        // Most recent first
+                        int dateCompare = r2.getStartDate().compareTo(r1.getStartDate());
+                        if (dateCompare != 0) {
+                            return dateCompare;
+                        }
+                        // If dates are the same, sort by property ID for consistency
+                        return Integer.compare(r1.getPropertyId(), r2.getPropertyId());
+                    });
+                    items.addAll(sortedReservations);
                 }
             }
         }
