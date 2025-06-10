@@ -16,7 +16,6 @@ public class ReservationMapper {
         Reservation reservation = new Reservation();
         reservation.setReservationId(entity.reservation_id);
         reservation.setEmail(entity.email);
-        reservation.setPropertyId(entity.property_id);
         reservation.setStartDate(entity.startDate);
         reservation.setEndDate(entity.endDate);
         reservation.setStatus(entity.status);
@@ -48,7 +47,6 @@ public class ReservationMapper {
         ReservationEntity entity = new ReservationEntity();
         entity.reservation_id = reservation.getReservationId();
         entity.email = reservation.getEmail();
-        entity.property_id = reservation.getPropertyId();
         entity.startDate = reservation.getStartDate();
         entity.endDate = reservation.getEndDate();
         entity.status = reservation.getStatus();

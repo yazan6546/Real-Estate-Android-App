@@ -116,8 +116,7 @@ public class PropertyDetailFragment extends Fragment {
         favoriteButton.setOnClickListener(v -> {
             // TODO: Get current user email from UserSession
             SharedPrefManager sharedPrefManager = SharedPrefManager.getInstance(getContext());
-            UserSession userSession = sharedPrefManager.readObject("user_session", UserSession.class, null);
-            String userEmail = userSession != null ? userSession.getEmail() : "guest@example.com";
+            String userEmail = sharedPrefManager.getCurrentUserEmail();
 
             // Toggle favorite status
             propertiesViewModel.addToFavorites(property, userEmail);

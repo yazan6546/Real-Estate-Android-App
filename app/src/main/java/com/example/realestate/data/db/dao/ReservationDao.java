@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
+import androidx.room.MapInfo;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Transaction;
@@ -11,10 +12,13 @@ import androidx.room.Update;
 
 import com.example.realestate.data.db.entity.ReservationEntity;
 import com.example.realestate.data.db.entity.ReservationWithPropertyEntity;
+import com.example.realestate.data.db.entity.UserWithReservationsAndProperties;
 import com.example.realestate.data.db.result.CountryCount;
+import com.example.realestate.data.db.entity.UserEntity;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Dao
 public interface ReservationDao {
@@ -118,4 +122,19 @@ public interface ReservationDao {
      */
     @Query("DELETE FROM reservations WHERE reservation_id = :reservationId")
     void deleteReservationById(int reservationId);
+
+
+
+    @Transaction
+    @Query("SELECT * FROM users WHERE is_admin = 0 ORDER BY first_name, last_name")
+    LiveData<List<UserWithReservationsAndProperties>> getUsersWithReservationsAndPropertiesInternal();
+
+
+
+    @Transaction
+    @Query("SELECT DISTINCT u.* FROM users u " +
+            "INNER JOIN reservations r ON u.email = r.email " +
+            "WHERE u.is_admin = 0 AND r.status = :status " +
+            "ORDER BY u.first_name, u.last_name")
+    LiveData<List<UserWithReservationsAndProperties>> getUsersWithReservationsByStatus(String status);
 }
