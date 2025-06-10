@@ -126,7 +126,7 @@ public interface ReservationDao {
 
 
     @Transaction
-    @Query("SELECT * FROM users WHERE is_admin = 0")
+    @Query("SELECT * FROM users WHERE is_admin = 0 ORDER BY first_name, last_name")
     LiveData<List<UserWithReservationsAndProperties>> getUsersWithReservationsAndPropertiesInternal();
 
 
@@ -134,6 +134,7 @@ public interface ReservationDao {
     @Transaction
     @Query("SELECT DISTINCT u.* FROM users u " +
             "INNER JOIN reservations r ON u.email = r.email " +
-            "WHERE u.is_admin = 0 AND r.status = :status")
+            "WHERE u.is_admin = 0 AND r.status = :status " +
+            "ORDER BY u.first_name, u.last_name")
     LiveData<List<UserWithReservationsAndProperties>> getUsersWithReservationsByStatus(String status);
 }
