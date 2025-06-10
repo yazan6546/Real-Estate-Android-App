@@ -9,6 +9,7 @@ import com.example.realestate.data.api.JsonResponse;
 import com.example.realestate.data.api.dto.PropertyDTO;
 import com.example.realestate.data.db.dao.PropertyDao;
 import com.example.realestate.data.db.entity.PropertyEntity;
+import com.example.realestate.data.db.entity.PropertyUpdate;
 import com.example.realestate.domain.mapper.PropertyMapper;
 import com.example.realestate.domain.model.Property;
 
@@ -67,7 +68,10 @@ public class PropertyRepositoryImpl implements PropertyRepository {
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
                 propertyDao.insertNewProperties(properties);
-                propertyDao.updateExistingProperties(properties);
+
+                List<PropertyUpdate> updateEntities = PropertyMapper.toPropertyUpdateList(properties);
+
+                propertyDao.updatePropertiesPartially(updateEntities);
                 callback.onSuccess();
             } catch (Exception e) {
                 callback.onError(e);

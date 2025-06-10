@@ -145,8 +145,8 @@ public class AdminDashboardFragment extends Fragment {
         }
 
         ValueAnimator animator = ValueAnimator.ofInt(startValue, endValue);
-        animator.setDuration(2000);
-        animator.setStartDelay(1200); // Start after card animations
+        animator.setDuration(1000);
+        animator.setStartDelay(1000); // Start after card animations
         animator.addUpdateListener(animation -> {
             if (isAdded()) {
                 int value = (int) animation.getAnimatedValue();
@@ -157,10 +157,10 @@ public class AdminDashboardFragment extends Fragment {
         // Add scale animation to make it more engaging
         ObjectAnimator scaleX = ObjectAnimator.ofFloat(textView, "scaleX", 0.8f, 1.2f, 1f);
         ObjectAnimator scaleY = ObjectAnimator.ofFloat(textView, "scaleY", 0.8f, 1.2f, 1f);
-        scaleX.setDuration(2000);
-        scaleX.setStartDelay(1200);
-        scaleY.setDuration(2000);
-        scaleY.setStartDelay(1200);
+        scaleX.setDuration(1000);
+        scaleX.setStartDelay(1000);
+        scaleY.setDuration(1000);
+        scaleY.setStartDelay(1000);
 
         AnimatorSet animatorSet = new AnimatorSet();
         animatorSet.playTogether(animator, scaleX, scaleY);

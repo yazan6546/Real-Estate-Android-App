@@ -15,21 +15,21 @@ import java.util.List;
 public interface PropertyRepository {
     /**
      * Fetch properties from remote source and store them locally
-     * 
+     *
      * @param callback Callback to notify when operation completes
      */
     void refreshProperties(RepositoryCallback<Property> callback);
 
     /**
      * Get all properties from local database
-     * 
+     *
      * @return LiveData list of properties
      */
     LiveData<List<Property>> getAllProperties();
 
     /**
      * Get a property by ID from local database
-     * 
+     *
      * @param propertyId the ID of the property
      * @return LiveData containing the property
      */
@@ -37,7 +37,7 @@ public interface PropertyRepository {
 
     /**
      * Get the number of properties
-     * 
+     *
      * @return number of properties as a livedata integer
      */
 
@@ -45,7 +45,7 @@ public interface PropertyRepository {
 
     /**
      * Update a property in the database
-     * 
+     *
      * @param property the property to update
      * @param callback callback to notify when operation completes
      */
@@ -53,22 +53,25 @@ public interface PropertyRepository {
 
     /**
      * Get favorite properties for current user
-     * 
+     *
      * @return List of favorite properties
      */
     List<Property> getFavoriteProperties();
 
     /**
      * Add property to favorites
-     * 
+     *
      * @param propertyId the property ID to add
      */
     void addToFavorites(String propertyId);
 
     /**
      * Remove property from favorites
-     * 
+     *
      * @param propertyId the property ID to remove
      */
     void removeFromFavorites(String propertyId);
+
 }
+
+

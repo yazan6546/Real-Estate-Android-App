@@ -45,6 +45,58 @@ public class PropertyEntity {
 
 
 
+    public int getPropertyId() {
+        return property_id;
+    }
+
+    public String getDescription()  {
+        return description;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public String getImageUrl() {
+        return image;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public int getBedrooms() {
+        return bedrooms;
+    }
+
+    public int getBathrooms() {
+        return bathrooms;
+    }
+
+    public String getArea() {
+        return area;
+    }
+
+    public boolean isFeatured() {
+        return isFeatured;
+    }
+
+    public double getDiscount() {
+        return discount;
+    }
+
+
+
+
+
 
 
 }
