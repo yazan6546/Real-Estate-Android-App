@@ -5,7 +5,6 @@ import java.util.Date;
 public class Reservation implements java.io.Serializable {
     private int reservationId;
     private String email;
-    private int propertyId;
     private Date startDate;
     private Date endDate;
     private String status;
@@ -17,7 +16,6 @@ public class Reservation implements java.io.Serializable {
     private Date reservationDateTime;
     private String notes;
     private Date createdAt;
-    private String propertyTitle;
 
     // Optional reference to related property
     private Property property;
@@ -27,11 +25,10 @@ public class Reservation implements java.io.Serializable {
         // Default constructor
     }
 
-    public Reservation(int reservationId, String email, int propertyId, Date start,
+    public Reservation(int reservationId, String email, Date start,
             Date end, String status) {
         this.reservationId = reservationId;
         this.email = email;
-        this.propertyId = propertyId;
         this.startDate = start;
         this.endDate = end;
         this.status = status;
@@ -54,13 +51,6 @@ public class Reservation implements java.io.Serializable {
         this.email = email;
     }
 
-    public int getPropertyId() {
-        return propertyId;
-    }
-
-    public void setPropertyId(int propertyId) {
-        this.propertyId = propertyId;
-    }
 
     public Date getStartDate() {
         return startDate;
@@ -151,11 +141,9 @@ public class Reservation implements java.io.Serializable {
         this.createdAt = createdAt;
     }
 
-    public String getPropertyTitle() {
-        return propertyTitle;
+    public int getPropertyId() {
+        return property != null ? property.getPropertyId() : 0;
     }
 
-    public void setPropertyTitle(String propertyTitle) {
-        this.propertyTitle = propertyTitle;
-    }
+
 }

@@ -187,7 +187,7 @@ public class AdminReservationAdapter extends RecyclerView.Adapter<RecyclerView.V
 
         public void bind(Reservation reservation, SimpleDateFormat dateFormat) {
             // Set property details
-            tvPropertyId.setText("Property ID: #" + reservation.getPropertyId());
+            tvPropertyId.setText("Property ID: #" + reservation.getProperty().getPropertyId());
             tvPropertyTitle.setText(reservation.getProperty().getTitle());
             tvPropertyType.setText(reservation.getProperty().getType());
             tvPropertyDescription.setText(reservation.getProperty().getDescription());

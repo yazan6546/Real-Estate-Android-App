@@ -215,8 +215,8 @@ public class ReservationFragment extends Fragment {
             return;
         } // Create reservation object
         Reservation reservation = new Reservation();
-        reservation.setPropertyId(Integer.parseInt(property.getId()));
-        reservation.setPropertyTitle(property.getTitle());
+        reservation.getProperty().setPropertyId(Integer.parseInt(property.getId()));
+        reservation.getProperty().setTitle(property.getTitle());
         reservation.setCustomerName(customerName);
         reservation.setCustomerEmail(customerEmail);
         reservation.setCustomerPhone(customerPhone);
