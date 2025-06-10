@@ -13,14 +13,10 @@
         android:fillColor="@android:color/darker_gray"
         android:pathData="M8,6c0,-1.1 0.9,-2 2,-2s2,0.9 2,2v4h-4v-4z"/>
     <!-- Water drops -->
-    <circle
+    <path
         android:fillColor="@android:color/darker_gray"
-        android:cx="6"
-        android:cy="8"
-        android:r="0.5"/>
-    <circle
+        android:pathData="M6,7.5a0.5,0.5 0,1 1,0 1a0.5,0.5 0,1 1,0 -1z"/>
+    <path
         android:fillColor="@android:color/darker_gray"
-        android:cx="7.5"
-        android:cy="6.5"
-        android:r="0.5"/>
+        android:pathData="M7.5,6a0.5,0.5 0,1 1,0 1a0.5,0.5 0,1 1,0 -1z"/>
 </vector>
