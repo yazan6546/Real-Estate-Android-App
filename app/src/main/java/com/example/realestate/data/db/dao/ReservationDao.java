@@ -137,8 +137,6 @@ public interface ReservationDao {
      * Multimap query that directly returns a map of users to their reservations filtered by status
      */
     @Transaction
-    @Query("SELECT users.*, reservations.* FROM users " +
-            "JOIN reservations ON users.email = reservations.email " +
-            "WHERE is_admin=0 AND reservations.status = :status")
-    LiveData<Map<UserEntity, List<ReservationWithPropertyEntity>>> getUsersWithReservationsByStatus(String status);
+    @Query("SELECT * FROM users WHERE is_admin = 0")
+    LiveData<UserWithReservationsAndProperties> getUsersWithReservationsByStatus(String status);
 }

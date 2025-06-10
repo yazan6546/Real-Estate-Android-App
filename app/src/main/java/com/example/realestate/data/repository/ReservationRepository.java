@@ -164,42 +164,16 @@ public class ReservationRepository {
         }
     }
 
-    /**
-     * Gets all reservations grouped by user in a more efficient way
-     * using Room's direct multimap relationship feature
-     *
-     * @return LiveData of Map<User, List<Reservation>>
-     */
+
+
     public LiveData<Map<User, List<Reservation>>> getAllUserReservationsWithProperty() {
         return Transformations.map(
-                reservationDao.getUsersWithReservations(),
-                userReservationMap -> {
-                    Map<User, List<Reservation>> result = new HashMap<>();
-
-                    for (Map.Entry<UserEntity, List<ReservationWithPropertyEntity>> entry : userReservationMap.entrySet()) {
-                        UserEntity userEntity = entry.getKey();
-                        List<ReservationWithPropertyEntity> reservationEntities = entry.getValue();
-
-                        // Map entities to domain models
-                        User user = UserMapper.toDomain(userEntity);
-                        List<Reservation> reservations = ReservationMapper.toDomainWithPropertyList(reservationEntities);
-
-                        // Only add users who have reservations
-                        if (!reservations.isEmpty()) {
-                            result.put(user, reservations);
-                        }
-                    }
-                };
-
-        return result;
-    }
-
-
-    public LiveData<Map<UserEntity, List<ReservationWithPropertyEntity>>> getUsersWithReservations() {
-        return Transformations.map(getUsersWithReservationsAndPropertiesInternal(), userWithReservationsList -> {
-            Map<UserEntity, List<ReservationWithPropertyEntity>> map = new HashMap<>();
+                reservationDao.getUsersWithReservationsAndPropertiesInternal(), userWithReservationsList -> {
+            Map<User, List<Reservation>> map = new HashMap<>();
             for (UserWithReservationsAndProperties item : userWithReservationsList) {
-                map.put(item.user, item.reservations);
+                User user = UserMapper.toDomain(item.user);
+                List<Reservation> reservations = ReservationMapper.toDomainWithPropertyList(item.reservations);
+                map.put(user, reservations);
             }
             return map;
         });
