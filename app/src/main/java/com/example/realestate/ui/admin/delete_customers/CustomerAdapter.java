@@ -1,5 +1,6 @@
 package com.example.realestate.ui.admin.delete_customers;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,11 +11,13 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.realestate.R;
 import com.example.realestate.domain.model.User;
 import com.example.realestate.domain.service.CountryService;
 import com.example.realestate.domain.service.PhoneFormatter;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,27 +74,50 @@ public class CustomerAdapter extends RecyclerView.Adapter<CustomerAdapter.Custom
             deleteButton = itemView.findViewById(R.id.deleteButton);
         }
 
-        public void bind(User customer) {
+        public void bind(User user) {
             // Set customer name
-            String fullName = customer.getFirstName() + " " + customer.getLastName();
+            String fullName = user.getFirstName() + " " + user.getLastName();
             customerNameTextView.setText(fullName);
             
             // Set email
-            customerEmailTextView.setText(customer.getEmail());
-            String phoneNumber = customer.getPhone();
-            String country = customer.getCountry();
+            customerEmailTextView.setText(user.getEmail());
+            String phoneNumber = user.getPhone();
+            String country = user.getCountry();
 
             customerPhoneTextView.setText(PhoneFormatter.formatMobile(phoneNumber, country));
-            
-            // Set profile image (use default person icon for now)
-            customerImageView.setImageResource(R.drawable.ic_person);
             
             // Set delete button click listener
             deleteButton.setOnClickListener(v -> {
                 if (deleteListener != null) {
-                    deleteListener.onDeleteCustomer(customer);
+                    deleteListener.onDeleteCustomer(user);
                 }
             });
+
+            // Load profile image if available
+            if (user.getProfileImage() != null && !user.getProfileImage().isEmpty()) {
+                try {
+                    // Create file object from the stored filename using itemView context
+                    File imageFile = new File(itemView.getContext().getFilesDir(), user.getProfileImage());
+
+                    // Use Glide to load the profile image from internal storage
+                    if (imageFile.exists()) {
+                        Glide.with(itemView.getContext())
+                                .load(imageFile)
+                                .placeholder(R.drawable.ic_person)
+                                .error(R.drawable.ic_person)
+                                .circleCrop()
+                                .into(customerImageView);
+                    } else {
+                        customerImageView.setImageResource(R.drawable.ic_person);
+                    }
+                } catch (Exception e) {
+                    Log.e("CustomerAdapter", "Error loading profile image", e);
+                    customerImageView.setImageResource(R.drawable.ic_person);
+                }
+            } else {
+                // Use default placeholder if no profile image is set
+                customerImageView.setImageResource(R.drawable.ic_person);
+            }
         }
     }
 }

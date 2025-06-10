@@ -1,5 +1,6 @@
 package com.example.realestate.ui.admin.reservations;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import com.example.realestate.R;
 import com.example.realestate.domain.model.Reservation;
 import com.example.realestate.domain.model.User;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -209,16 +211,32 @@ public class AdminReservationAdapter extends RecyclerView.Adapter<RecyclerView.V
                 (reservationCount == 1 ? "reservation" : "reservations");
             tvReservationCount.setText(countText);
 
-            // Set expansion indicator
+            // Set initial arrow state without animation (for recycled views)
             ivExpandIcon.setRotation(isExpanded ? 180 : 0);
 
-            // Set avatar
+            // Load profile image if available
             if (user.getProfileImage() != null && !user.getProfileImage().isEmpty()) {
-                Glide.with(itemView.getContext())
-                    .load(user.getProfileImage())
-                    .placeholder(R.drawable.ic_person)
-                    .into(ivUserAvatar);
+                try {
+                    // Create file object from the stored filename using itemView context
+                    File imageFile = new File(itemView.getContext().getFilesDir(), user.getProfileImage());
+
+                    // Use Glide to load the profile image from internal storage
+                    if (imageFile.exists()) {
+                        Glide.with(itemView.getContext())
+                                .load(imageFile)
+                                .placeholder(R.drawable.ic_person)
+                                .circleCrop()
+                                .error(R.drawable.ic_person)
+                                .into(ivUserAvatar);
+                    } else {
+                        ivUserAvatar.setImageResource(R.drawable.ic_person);
+                    }
+                } catch (Exception e) {
+                    Log.e("AdminReservationAdapter", "Error loading profile image", e);
+                    ivUserAvatar.setImageResource(R.drawable.ic_person);
+                }
             } else {
+                // Use default placeholder if no profile image is set
                 ivUserAvatar.setImageResource(R.drawable.ic_person);
             }
         }
