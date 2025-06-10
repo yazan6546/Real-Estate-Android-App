@@ -353,7 +353,6 @@ public class DatabaseSeeder {
     private Reservation createReservation(String email, int propertyId, long startDateMillis, long endDateMillis, String status) {
         Reservation reservation = new Reservation();
         reservation.setEmail(email);
-        reservation.setPropertyId(propertyId);
         reservation.setStartDate(new Date(startDateMillis));
         reservation.setEndDate(new Date(endDateMillis));
         reservation.setStatus(status);

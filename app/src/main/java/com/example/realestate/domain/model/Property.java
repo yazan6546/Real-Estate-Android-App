@@ -1,6 +1,6 @@
 package com.example.realestate.domain.model;
 
-public class Property {
+public class Property implements java.io.Serializable {
     private int propertyId;
     private String description;
     private String title;
@@ -21,7 +21,7 @@ public class Property {
     }
 
     public Property(int propertyId, String description, String title, double price, String location,
-                    String image, String type, int bedrooms, int bathrooms, String area, boolean isFeatured, double discount) {
+            String image, String type, int bedrooms, int bathrooms, String area, boolean isFeatured, double discount) {
         this.propertyId = propertyId;
         this.description = description;
         this.title = title;
@@ -77,9 +77,6 @@ public class Property {
         this.location = location;
     }
 
-    public String getImage() {
-        return image;
-    }
 
     public void setImage(String image) {
         this.image = image;
@@ -116,6 +113,7 @@ public class Property {
     public void setArea(String area) {
         this.area = area;
     }
+
     public boolean isFeatured() {
         return isFeatured;
     }
@@ -130,5 +128,14 @@ public class Property {
 
     public void setDiscount(double discount) {
         this.discount = discount;
+    }
+
+    // Additional convenience methods
+    public String getId() {
+        return String.valueOf(propertyId);
+    }
+
+    public String getImageUrl() {
+        return image;
     }
 }

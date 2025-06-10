@@ -21,7 +21,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 /**
- * Implementation of PropertyRepository that handles both API and database operations
+ * Implementation of PropertyRepository that handles both API and database
+ * operations
  */
 public class PropertyRepositoryImpl implements PropertyRepository {
 
@@ -39,7 +40,7 @@ public class PropertyRepositoryImpl implements PropertyRepository {
 
             @Override
             public void onResponse(@NonNull Call<JsonResponse> call,
-                                   @NonNull Response<JsonResponse> response) {
+                    @NonNull Response<JsonResponse> response) {
 
                 if (response.isSuccessful() && response.body() != null) {
 
@@ -55,7 +56,7 @@ public class PropertyRepositoryImpl implements PropertyRepository {
 
             @Override
             public void onFailure(@NonNull Call<JsonResponse> call,
-                                  @NonNull Throwable t) {
+                    @NonNull Throwable t) {
 
                 callback.onError(t);
             }
@@ -87,5 +88,22 @@ public class PropertyRepositoryImpl implements PropertyRepository {
     @Override
     public LiveData<Integer> getPropertyCount() {
         return propertyDao.getPropertyCount();
+    }
+
+    @Override
+    public List<Property> getFavoriteProperties() {
+        // For now, return an empty list. In a real app, this would fetch from favorites
+        // table
+        return new ArrayList<>();
+    }
+
+    @Override
+    public void addToFavorites(String propertyId) {
+        // For now, do nothing. In a real app, this would add to favorites table
+    }
+
+    @Override
+    public void removeFromFavorites(String propertyId) {
+        // For now, do nothing. In a real app, this would remove from favorites table
     }
 }
