@@ -25,11 +25,11 @@ import java.util.HashMap;
 public class ReservationRepository {
 
     private final ReservationDao reservationDao;
-    private final UserDao userDao;
+    private final PropertyDao propertyDao;
 
-    public ReservationRepository(ReservationDao reservationDao, PropertyDao propertyDao, UserDao userDao) {
+    public ReservationRepository(ReservationDao reservationDao, PropertyDao propertyDao) {
         this.reservationDao = reservationDao;
-        this.userDao = userDao;
+        this.propertyDao = propertyDao;
     }
 
     public LiveData<List<Reservation>> getReservationsWithPropertyByUserId(String email) {

@@ -48,7 +48,7 @@ public class ViewAllReservationsFragment extends Fragment {
         reservationsRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
         // Initialize ViewModel
-        ReservationRepository reservationRepository = ((RealEstate) requireActivity().getApplication()).getReservationRepository();
+        ReservationRepository reservationRepository = RealEstate.appContainer.getReservationRepository();
 
         ViewAllReservationsViewModel.Factory factory = new ViewAllReservationsViewModel.Factory(
                 reservationRepository);

@@ -163,9 +163,9 @@ public class PropertyAdapter extends RecyclerView.Adapter<PropertyAdapter.Proper
             }
 
             // Load property image if available
-            if (property.getImage() != null && !property.getImage().isEmpty()) {
+            if (property.getImageUrl() != null && !property.getImageUrl().isEmpty()) {
                 Glide.with(itemView.getContext())
-                        .load(property.getImage())
+                        .load(property.getImageUrl())
                         .placeholder(R.drawable.ic_building)
                         .error(R.drawable.ic_building)
                         .into(ivPropertyImage);

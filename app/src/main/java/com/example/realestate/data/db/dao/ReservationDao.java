@@ -13,7 +13,6 @@ import com.example.realestate.data.db.entity.ReservationEntity;
 import com.example.realestate.data.db.entity.ReservationWithPropertyEntity;
 import com.example.realestate.data.db.result.CountryCount;
 import com.example.realestate.data.db.entity.UserEntity;
-import com.example.realestate.data.db.entity.UserWithReservations;
 
 import java.util.Date;
 import java.util.List;
@@ -127,13 +126,17 @@ public interface ReservationDao {
      * This is more efficient than manually building the map
      */
     @Transaction
-    @Query("SELECT * FROM users")
+    @Query("SELECT users.*, reservations.* FROM users " +
+            "JOIN reservations ON users.email = reservations.email " +
+            "WHERE is_admin=0")
     LiveData<Map<UserEntity, List<ReservationEntity>>> getUsersWithReservations();
 
     /**
      * Multimap query that directly returns a map of users to their reservations filtered by status
      */
     @Transaction
-    @Query("SELECT u.* FROM users u WHERE EXISTS (SELECT 1 FROM reservations r WHERE r.email = u.email AND r.status = :status)")
+    @Query("SELECT users.*, reservations.* FROM users " +
+            "JOIN reservations ON users.email = reservations.email " +
+            "WHERE is_admin=0 AND reservations.status = :status")
     LiveData<Map<UserEntity, List<ReservationEntity>>> getUsersWithReservationsByStatus(String status);
 }

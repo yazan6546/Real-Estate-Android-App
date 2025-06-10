@@ -79,7 +79,7 @@ public class PropertyMapper {
         entity.description = property.getDescription();
         entity.price = property.getPrice();
         entity.location = property.getLocation();
-        entity.image = property.getImage();
+        entity.image = property.getImageUrl();
         entity.type = property.getType();
         entity.bedrooms = property.getBedrooms();
         entity.bathrooms = property.getBathrooms();

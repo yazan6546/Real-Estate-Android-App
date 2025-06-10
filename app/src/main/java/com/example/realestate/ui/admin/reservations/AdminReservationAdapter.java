@@ -85,10 +85,11 @@ public class AdminReservationAdapter extends RecyclerView.Adapter<RecyclerView.V
             User user = (User) items.get(position);
             // Calculate reservation count for this user
             int reservationCount = 0;
-            if (position + 1 < items.size() && items.get(position + 1) instanceof Reservation) {
-                // There are reservations following this header
-                reservationCount = ((List<Reservation>) items.subList(position + 1, items.size()))
-                        .size();
+            int index = position + 1;
+
+            while (index < items.size() && items.get(index) instanceof Reservation) {
+                reservationCount++;
+                index++;
             }
             headerHolder.bind(user, reservationCount);
         } else if (holder instanceof ReservationViewHolder) {

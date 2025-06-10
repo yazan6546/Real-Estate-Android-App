@@ -101,9 +101,9 @@ public class UserReservationAdapter extends RecyclerView.Adapter<UserReservation
             tvReservationEndDateTime.setText(endDateTime);
 
             // Load property image if available
-            if (reservation.getProperty() != null && reservation.getProperty().getImage() != null) {
+            if (reservation.getProperty() != null && reservation.getProperty().getImageUrl() != null) {
                 Glide.with(itemView.getContext())
-                        .load(reservation.getProperty().getImage())
+                        .load(reservation.getProperty().getImageUrl())
                         .placeholder(R.drawable.ic_building)
                         .error(R.drawable.ic_building)
                         .into(imageView);
