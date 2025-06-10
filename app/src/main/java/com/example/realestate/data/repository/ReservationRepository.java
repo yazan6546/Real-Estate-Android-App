@@ -197,4 +197,11 @@ public class ReservationRepository {
                     return map;
                 });
     }
+
+
+    public void deleteDuplicateReservations() {
+        Executors.newSingleThreadExecutor().execute(reservationDao::deleteDuplicateReservations);
+    }
+
+
 }
