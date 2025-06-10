@@ -55,9 +55,9 @@ public class FavoritesFragment extends Fragment implements PropertyAdapter.OnPro
     }
 
     private void loadFavorites() {
-        UserSession userSession = sharedPrefManager.readObject("user_session", UserSession.class, null);
-        if (userSession != null && userSession.getEmail() != null) {
-            viewModel.loadFavoriteProperties(userSession.getEmail());
+        String email = sharedPrefManager.getCurrentUserEmail();
+        if (email != null && !email.isEmpty()) {
+            viewModel.loadFavoriteProperties(email);
         } else {
             Toast.makeText(requireContext(), "Please log in to view favorites", Toast.LENGTH_SHORT).show();
         }

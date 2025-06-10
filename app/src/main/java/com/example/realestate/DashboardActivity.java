@@ -85,7 +85,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             // as a destination
             mAppBarConfiguration = new AppBarConfiguration.Builder(
                     R.id.nav_home, R.id.nav_properties, R.id.nav_your_reservations,
-                    R.id.nav_featured_properties, R.id.nav_profile_management, R.id.nav_contact_us)
+                    R.id.nav_featured_properties, R.id.nav_favorites, R.id.nav_profile_management, R.id.nav_contact_us)
                     .setOpenableLayout(drawer)
                     .build();
 
