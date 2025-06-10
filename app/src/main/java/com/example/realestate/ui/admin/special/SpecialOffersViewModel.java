@@ -81,7 +81,7 @@ public class SpecialOffersViewModel extends ViewModel {
             property.getPropertyId(),
             property.getDescription(),
             property.getTitle(),
-            newPrice, // Store the final price (discounted or original)
+            property.getPrice(),
             property.getLocation(),
             property.getImageUrl(),
             property.getType(),

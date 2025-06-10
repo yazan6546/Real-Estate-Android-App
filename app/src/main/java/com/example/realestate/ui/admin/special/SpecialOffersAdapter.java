@@ -202,9 +202,6 @@ public class SpecialOffersAdapter extends RecyclerView.Adapter<SpecialOffersAdap
             double discount = property.getDiscount();
 
             if (discount > 0) {
-                // Property has a discount - currentPrice is the discounted price
-                // Calculate original price from the discounted price
-                double originalPrice = currentPrice / (1 - discount / 100);
 
                 // Show discount badge
                 tvDiscountBadge.setText(String.format("%.0f%% OFF", discount));
@@ -215,12 +212,12 @@ public class SpecialOffersAdapter extends RecyclerView.Adapter<SpecialOffersAdap
                 tvDiscountText.setVisibility(View.VISIBLE);
 
                 // Show original price with strikethrough
-                tvOriginalPrice.setText(currencyFormat.format(originalPrice) + "/month");
+                tvOriginalPrice.setText(currencyFormat.format(currentPrice) + "/month");
                 tvOriginalPrice.setPaintFlags(tvOriginalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                 tvOriginalPrice.setVisibility(View.VISIBLE);
 
                 // Show discounted price (current price)
-                tvPropertyPrice.setText(currencyFormat.format(currentPrice) + "/month");
+                tvPropertyPrice.setText(currencyFormat.format(currentPrice * (1-discount/100)) + "/month");
             } else {
                 // No discount - show regular price
                 tvDiscountBadge.setText("0% OFF");
@@ -241,13 +238,9 @@ public class SpecialOffersAdapter extends RecyclerView.Adapter<SpecialOffersAdap
             Property property = properties.get(getAdapterPosition());
             double basePrice = property.getPrice();
             
-            // If property already has a discount, calculate original price
-            if (property.getDiscount() > 0) {
-                basePrice = property.getPrice() / (1 - property.getDiscount() / 100);
-            }
-            
+
             if (currentDiscount > 0) {
-                double discountedPrice = basePrice * (1 - currentDiscount / 100);
+                double discountedPrice = basePrice * (1-currentDiscount/(100));
                 double savingsAmount = basePrice - discountedPrice;
                 tvDiscountAmount.setText(String.format("Discount: %.0f%% (%s off)", 
                     currentDiscount, currencyFormat.format(savingsAmount)));
