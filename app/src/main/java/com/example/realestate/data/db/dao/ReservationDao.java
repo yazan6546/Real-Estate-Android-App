@@ -123,20 +123,17 @@ public interface ReservationDao {
     @Query("DELETE FROM reservations WHERE reservation_id = :reservationId")
     void deleteReservationById(int reservationId);
 
-    /**
-     * Multimap query that directly returns a map of users to their reservations
-     * This is more efficient than manually building the map
-     */
+
 
     @Transaction
     @Query("SELECT * FROM users WHERE is_admin = 0")
     LiveData<List<UserWithReservationsAndProperties>> getUsersWithReservationsAndPropertiesInternal();
 
 
-    /**
-     * Multimap query that directly returns a map of users to their reservations filtered by status
-     */
+
     @Transaction
-    @Query("SELECT * FROM users WHERE is_admin = 0")
-    LiveData<UserWithReservationsAndProperties> getUsersWithReservationsByStatus(String status);
+    @Query("SELECT DISTINCT u.* FROM users u " +
+            "INNER JOIN reservations r ON u.email = r.email " +
+            "WHERE u.is_admin = 0 AND r.status = :status")
+    LiveData<List<UserWithReservationsAndProperties>> getUsersWithReservationsByStatus(String status);
 }
