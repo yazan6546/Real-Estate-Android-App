@@ -3,6 +3,8 @@ package com.example.realestate.ui.admin.reservations;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -134,20 +136,57 @@ public class AdminReservationAdapter extends RecyclerView.Adapter<RecyclerView.V
                 userReservationsMap.get(user).size(),
                 isExpanded);
 
-            // Set click listener directly
+            // Set click listener with animations
             holder.itemView.setOnClickListener(view -> {
-                // Toggle expansion
-                if (isExpanded) {
+                ImageView expandIcon = holder.itemView.findViewById(R.id.ivExpandIcon);
+                
+                // Toggle expansion state
+                boolean wasExpanded = expandedUsers.contains(user.getEmail());
+                
+                if (wasExpanded) {
+                    // Collapsing - animate arrow rotation first, then collapse items
+                    Animation rotateCollapse = AnimationUtils.loadAnimation(view.getContext(), R.anim.rotate_collapse);
+                    expandIcon.startAnimation(rotateCollapse);
+                    
+                    // Remove from expanded set and rebuild list with slide up animation
                     expandedUsers.remove(user.getEmail());
+                    animateItemsCollapse(position, userReservationsMap.get(user).size());
                 } else {
+                    // Expanding - animate arrow rotation first, then expand items
+                    Animation rotateExpand = AnimationUtils.loadAnimation(view.getContext(), R.anim.rotate_expand);
+                    expandIcon.startAnimation(rotateExpand);
+                    
+                    // Add to expanded set and rebuild list with slide down animation
                     expandedUsers.add(user.getEmail());
+                    animateItemsExpand(position, userReservationsMap.get(user).size());
                 }
+                
                 rebuildItemsList();
             });
 
         } else if (holder instanceof ReservationViewHolder) {
+            // Apply slide down animation for newly visible reservation items
+            Animation slideDown = AnimationUtils.loadAnimation(holder.itemView.getContext(), R.anim.slide_down);
+            holder.itemView.startAnimation(slideDown);
+            
             ((ReservationViewHolder) holder).bind((Reservation) items.get(position), dateFormat);
         }
+    }
+
+    /**
+     * Animate expanding items with slide down effect
+     */
+    private void animateItemsExpand(int headerPosition, int itemCount) {
+        // Notify that items are being inserted after the header
+        notifyItemRangeInserted(headerPosition + 1, itemCount);
+    }
+
+    /**
+     * Animate collapsing items with slide up effect
+     */
+    private void animateItemsCollapse(int headerPosition, int itemCount) {
+        // Notify that items are being removed after the header
+        notifyItemRangeRemoved(headerPosition + 1, itemCount);
     }
 
     @Override
