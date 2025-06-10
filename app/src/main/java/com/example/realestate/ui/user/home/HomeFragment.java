@@ -145,42 +145,78 @@ public class HomeFragment extends Fragment {
         // Observe data from ViewModel and start animations when data is available
         homeViewModel.getUserCount().observe(getViewLifecycleOwner(), userCount -> {
             if (userCount != null) {
-                handler.postDelayed(() -> {
-                    // user count (clients)
-                    int startValue = Math.max(0, userCount - 20);
-                    animateCounter(binding.getRoot().findViewById(R.id.stat1),
-                            userCount + "", startValue, userCount);
-                }, 1500);
+                // Ensure we're on the main thread for UI operations
+                if (handler != null) {
+                    handler.postDelayed(() -> {
+                        // Check if the fragment is still active before updating UI
+                        if (isAdded() && binding != null) {
+                            // user count (clients)
+                            int startValue = Math.max(0, userCount - 20);
+                            View view = binding.getRoot().findViewById(R.id.stat1);
+                            if (view instanceof LinearLayout) {
+                                animateCounter((LinearLayout) view, userCount + "", startValue, userCount);
+                            }
+                        }
+                    }, 1500);
+                }
             }
         });
 
         homeViewModel.getPropertyCount().observe(getViewLifecycleOwner(), propertyCount -> {
             if (propertyCount != null) {
-                handler.postDelayed(() -> {
-                    // property count
-                    int startValue = Math.max(0, propertyCount - 20);
-                    animateCounter(binding.getRoot().findViewById(R.id.stat2),
-                            propertyCount + "", startValue, propertyCount);
-                }, 1500);
+                // Ensure we're on the main thread for UI operations
+                if (handler != null) {
+                    handler.postDelayed(() -> {
+                        // Check if the fragment is still active before updating UI
+                        if (isAdded() && binding != null) {
+                            // property count
+                            int startValue = Math.max(0, propertyCount - 20);
+                            View view = binding.getRoot().findViewById(R.id.stat2);
+                            if (view instanceof LinearLayout) {
+                                animateCounter((LinearLayout) view, propertyCount + "", startValue, propertyCount);
+                            }
+                        }
+                    }, 1500);
+                }
             }
         });
 
-        handler.postDelayed(() -> {
-            animateCounter(binding.getRoot().findViewById(R.id.stat3), "15", 10, 15);
-        }, 1500);
+        // Ensure we're on the main thread for UI operations
+        if (handler != null) {
+            handler.postDelayed(() -> {
+                // Check if the fragment is still active before updating UI
+                if (isAdded() && binding != null) {
+                    View view = binding.getRoot().findViewById(R.id.stat3);
+                    if (view instanceof LinearLayout) {
+                        animateCounter((LinearLayout) view, "15", 10, 15);
+                    }
+                }
+            }, 1500);
+        }
     }
 
     private void animateCounter(LinearLayout statContainer, String finalText, int startValue, int endValue) {
+        // Double-check that we're still attached to an activity before updating UI
+        if (!isAdded() || statContainer == null) {
+            return;
+        }
+
         TextView numberView = (TextView) statContainer.getChildAt(0);
+        if (numberView == null) {
+            return;
+        }
 
         ValueAnimator animator = ValueAnimator.ofInt(startValue, endValue);
         animator.setDuration(2000);
         animator.addUpdateListener(animation -> {
-            int value = (int) animation.getAnimatedValue();
-            if (finalText.contains("+")) {
-                numberView.setText(value + "+");
-            } else {
-                numberView.setText(String.valueOf(value));
+            // Check if the fragment is still attached before updating UI
+            if (isAdded()) {
+                int value = (int) animation.getAnimatedValue();
+                if (finalText.contains("+")) {
+                    numberView.setText(value + "+");
+                } else {
+                    numberView.setText(String.valueOf(value));
+                }
             }
         });
 
@@ -199,9 +235,9 @@ public class HomeFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
 
-        // Clean up handlers to prevent memory leaks
-        if (handler != null && welcomeMessageRunnable != null) {
-            handler.removeCallbacks(welcomeMessageRunnable);
+        // Clean up all handler callbacks to prevent memory leaks and crashes
+        if (handler != null) {
+            handler.removeCallbacksAndMessages(null); // Remove ALL callbacks and messages
         }
 
         binding = null;
