@@ -17,52 +17,52 @@ import com.example.realestate.domain.model.User;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
-/**
- * Adapter for displaying all user reservations in admin view
- * Groups reservations by user with a header for each user
- */
 public class AdminReservationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final int VIEW_TYPE_USER_HEADER = 0;
     private static final int VIEW_TYPE_RESERVATION = 1;
 
-    private List<Object> items = new ArrayList<>();
-    private final SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
-    
-    // Track expanded state for each user
-    private Map<String, Boolean> expandedUsers = new HashMap<>();
-    // Store user reservations mapping for expand/collapse functionality
+    // Items shown in the RecyclerView
+    private final List<Object> items = new ArrayList<>();
+
+    // Map of users to their reservations
     private Map<User, List<Reservation>> userReservationsMap = new HashMap<>();
 
+    // Track expanded users by email
+    private Set<String> expandedUsers = new HashSet<>();
+
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
+
     /**
-     * Set reservations data grouped by user
+     * Set the user reservations data
      */
-    public void setUserReservations(Map<User, List<Reservation>> userReservationsMap) {
-        this.userReservationsMap = userReservationsMap;
+    public void setUserReservations(Map<User, List<Reservation>> map) {
+        userReservationsMap = map != null ? new HashMap<>(map) : new HashMap<>();
         rebuildItemsList();
     }
 
     /**
-     * Rebuild the items list based on current expanded states
+     * Rebuild the items list based on current expanded state
      */
     private void rebuildItemsList() {
         items.clear();
 
-        // For each user, add a header and their reservations if expanded
+        // For each user, add header and reservations if expanded
         for (Map.Entry<User, List<Reservation>> entry : userReservationsMap.entrySet()) {
             User user = entry.getKey();
             List<Reservation> reservations = entry.getValue();
 
-            if (reservations != null && !reservations.isEmpty()) {
-                // Add user header
+            if (user != null && reservations != null && !reservations.isEmpty()) {
+                // Always add user header
                 items.add(user);
 
-                // Add reservations only if this user is expanded
-                String userKey = getUserKey(user);
-                if (expandedUsers.getOrDefault(userKey, false)) {
+                // Add reservations if user is expanded
+                if (expandedUsers.contains(user.getEmail())) {
                     items.addAll(reservations);
                 }
             }
@@ -71,31 +71,12 @@ public class AdminReservationAdapter extends RecyclerView.Adapter<RecyclerView.V
         notifyDataSetChanged();
     }
 
-    /**
-     * Generate a unique key for each user
-     */
-    private String getUserKey(User user) {
-        return user.getEmail(); // Use email as unique identifier
-    }
-
-    /**
-     * Toggle the expanded state of a user
-     */
-    private void toggleUserExpansion(User user) {
-        String userKey = getUserKey(user);
-        boolean isCurrentlyExpanded = expandedUsers.getOrDefault(userKey, false);
-        expandedUsers.put(userKey, !isCurrentlyExpanded);
-        rebuildItemsList();
-    }
-
     @Override
     public int getItemViewType(int position) {
-        Object item = items.get(position);
-        if (item instanceof User) {
-            return VIEW_TYPE_USER_HEADER;
-        } else {
+        if (position < 0 || position >= items.size()) {
             return VIEW_TYPE_RESERVATION;
         }
+        return items.get(position) instanceof User ? VIEW_TYPE_USER_HEADER : VIEW_TYPE_RESERVATION;
     }
 
     @NonNull
@@ -114,23 +95,31 @@ public class AdminReservationAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        if (position < 0 || position >= items.size()) {
+            return;
+        }
+
         if (holder instanceof UserHeaderViewHolder) {
-            UserHeaderViewHolder headerHolder = (UserHeaderViewHolder) holder;
             User user = (User) items.get(position);
-            
-            // Calculate total reservation count for this user
-            List<Reservation> userReservations = userReservationsMap.get(user);
-            int reservationCount = userReservations != null ? userReservations.size() : 0;
-            
-            // Check if user is expanded
-            String userKey = getUserKey(user);
-            boolean isExpanded = expandedUsers.getOrDefault(userKey, false);
-            
-            headerHolder.bind(user, reservationCount, isExpanded, this::toggleUserExpansion);
+            boolean isExpanded = expandedUsers.contains(user.getEmail());
+
+            ((UserHeaderViewHolder) holder).bind(user,
+                userReservationsMap.get(user).size(),
+                isExpanded);
+
+            // Set click listener directly
+            holder.itemView.setOnClickListener(view -> {
+                // Toggle expansion
+                if (isExpanded) {
+                    expandedUsers.remove(user.getEmail());
+                } else {
+                    expandedUsers.add(user.getEmail());
+                }
+                rebuildItemsList();
+            });
+
         } else if (holder instanceof ReservationViewHolder) {
-            ReservationViewHolder reservationHolder = (ReservationViewHolder) holder;
-            Reservation reservation = (Reservation) items.get(position);
-            reservationHolder.bind(reservation, dateFormat);
+            ((ReservationViewHolder) holder).bind((Reservation) items.get(position), dateFormat);
         }
     }
 
@@ -158,54 +147,39 @@ public class AdminReservationAdapter extends RecyclerView.Adapter<RecyclerView.V
             ivUserAvatar = itemView.findViewById(R.id.ivUserAvatar);
         }
 
-        public void bind(User user, int reservationCount, boolean isExpanded, UserClickListener clickListener) {
-            // Display user's full name
+        public void bind(User user, int reservationCount, boolean isExpanded) {
+            // Set user name
             String fullName = user.getFirstName() + " " + user.getLastName();
             tvUserName.setText(fullName);
 
-            // Display email
+            // Set email
             tvUserEmail.setText(user.getEmail());
 
-            // Display reservation count
-            String reservationText = reservationCount + " " +
-                    (reservationCount == 1 ? "reservation" : "reservations");
-            tvReservationCount.setText(reservationText);
+            // Set reservation count
+            String countText = reservationCount + " " +
+                (reservationCount == 1 ? "reservation" : "reservations");
+            tvReservationCount.setText(countText);
 
-            // Set avatar image
-            if (user.getProfileImage() != null && !user.getProfileImage().isEmpty()) {
-                Glide.with(itemView.getContext())
-                        .load(user.getProfileImage())
-                        .placeholder(R.drawable.ic_person)
-                        .into(ivUserAvatar);
-            } else {
-                // Use default avatar
-                ivUserAvatar.setImageResource(R.drawable.ic_person);
-            }
-
-            // Set expand icon rotation based on expanded state
+            // Set expansion indicator
             ivExpandIcon.setRotation(isExpanded ? 180 : 0);
 
-            // Set click listener for expanding/collapsing
-            itemView.setOnClickListener(v -> {
-                if (clickListener != null) {
-                    clickListener.onUserClick(user);
-                }
-            });
+            // Set avatar
+            if (user.getProfileImage() != null && !user.getProfileImage().isEmpty()) {
+                Glide.with(itemView.getContext())
+                    .load(user.getProfileImage())
+                    .placeholder(R.drawable.ic_person)
+                    .into(ivUserAvatar);
+            } else {
+                ivUserAvatar.setImageResource(R.drawable.ic_person);
+            }
         }
     }
 
     /**
-     * Interface for handling user header clicks
-     */
-    interface UserClickListener {
-        void onUserClick(User user);
-    }
-
-    /**
-     * ViewHolder for reservation items
-     * Reusing the same layout as the user reservation adapter
+     * ViewHolder for reservations
      */
     static class ReservationViewHolder extends RecyclerView.ViewHolder {
+        // Retain existing fields and methods
         private final TextView tvPropertyId;
         private final TextView tvPropertyTitle;
         private final TextView tvPropertyType;
@@ -230,59 +204,60 @@ public class AdminReservationAdapter extends RecyclerView.Adapter<RecyclerView.V
         }
 
         public void bind(Reservation reservation, SimpleDateFormat dateFormat) {
-            // Set property details
-            if (reservation.getProperty() != null) {
-                tvPropertyId.setText("Property ID: #" + reservation.getProperty().getPropertyId());
-                tvPropertyTitle.setText(reservation.getProperty().getTitle());
-                tvPropertyType.setText(reservation.getProperty().getType());
-                tvPropertyDescription.setText(reservation.getProperty().getDescription());
-                tvPropertyLocation.setText(reservation.getProperty().getLocation());
-            } else {
+            try {
+                // Set property details
                 tvPropertyId.setText("Property ID: #" + reservation.getPropertyId());
-                tvPropertyTitle.setText("Property Not Available");
-                tvPropertyType.setText("Unknown Type");
-                tvPropertyDescription.setText("Property details not available");
-                tvPropertyLocation.setText("Location not specified");
-            }
 
-            // Format dates
-            tvReservationStartDateTime.setText("Start: " + dateFormat.format(reservation.getStartDate()));
-            tvReservationEndDateTime.setText("End: " + dateFormat.format(reservation.getEndDate()));
+                if (reservation.getProperty() != null) {
+                    tvPropertyTitle.setText(reservation.getProperty().getTitle());
+                    tvPropertyType.setText(reservation.getProperty().getType());
+                    tvPropertyDescription.setText(reservation.getProperty().getDescription());
+                    tvPropertyLocation.setText(reservation.getProperty().getLocation());
 
-            // Set status with appropriate color
-            tvReservationStatus.setText(reservation.getStatus());
+                    // Load image if available
+                    if (reservation.getProperty().getImageUrl() != null &&
+                        !reservation.getProperty().getImageUrl().isEmpty()) {
 
-            // Set status color based on reservation status
-            int color;
-            switch (reservation.getStatus().toLowerCase()) {
-                case "confirmed":
-                    color = itemView.getResources().getColor(android.R.color.holo_green_dark);
-                    break;
-                case "pending":
-                    color = itemView.getResources().getColor(android.R.color.holo_blue_dark);
-                    break;
-                case "cancelled":
-                    color = itemView.getResources().getColor(android.R.color.holo_red_dark);
-                    break;
-                case "completed":
-                    color = itemView.getResources().getColor(android.R.color.darker_gray);
-                    break;
-                default:
-                    color = itemView.getResources().getColor(android.R.color.darker_gray);
-                    break;
-            }
-            tvReservationStatus.setTextColor(color);
+                        Glide.with(itemView.getContext())
+                                .load(reservation.getProperty().getImageUrl())
+                                .placeholder(R.drawable.ic_building)
+                                .into(imageView);
+                    } else {
+                        imageView.setImageResource(R.drawable.ic_building);
+                    }
+                } else {
+                    tvPropertyTitle.setText("Property Not Available");
+                    tvPropertyType.setText("Unknown Type");
+                    tvPropertyDescription.setText("No description available");
+                    tvPropertyLocation.setText("Unknown location");
+                    imageView.setImageResource(R.drawable.ic_building);
+                }
 
-            // Load property image if available
-            if (reservation.getProperty() != null && 
-                reservation.getProperty().getImageUrl() != null && 
-                !reservation.getProperty().getImageUrl().isEmpty()) {
-                Glide.with(itemView.getContext())
-                        .load(reservation.getProperty().getImageUrl())
-                        .placeholder(R.drawable.ic_building)
-                        .into(imageView);
-            } else {
-                imageView.setImageResource(R.drawable.ic_building);
+                // Set dates
+                tvReservationStartDateTime.setText("Start: " + dateFormat.format(reservation.getStartDate()));
+                tvReservationEndDateTime.setText("End: " + dateFormat.format(reservation.getEndDate()));
+
+                // Set status with color
+                tvReservationStatus.setText(reservation.getStatus());
+
+                int color;
+                switch (reservation.getStatus().toLowerCase()) {
+                    case "confirmed":
+                        color = itemView.getResources().getColor(android.R.color.holo_green_dark);
+                        break;
+                    case "pending":
+                        color = itemView.getResources().getColor(android.R.color.holo_blue_dark);
+                        break;
+                    case "cancelled":
+                        color = itemView.getResources().getColor(android.R.color.holo_red_dark);
+                        break;
+                    default:
+                        color = itemView.getResources().getColor(android.R.color.darker_gray);
+                        break;
+                }
+                tvReservationStatus.setTextColor(color);
+            } catch (Exception e) {
+                // Handle binding errors
             }
         }
     }
