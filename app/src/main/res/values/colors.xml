@@ -46,5 +46,8 @@
     <!-- Missing colors for layouts -->
     <color name="background_light">#FFF8F9FA</color>
     <color name="primary_color">#FF1976D2</color>
+    
+    <!-- Pink color for gender statistics -->
+    <color name="accent_pink">#FFE91E63</color>
 </resources>
 
