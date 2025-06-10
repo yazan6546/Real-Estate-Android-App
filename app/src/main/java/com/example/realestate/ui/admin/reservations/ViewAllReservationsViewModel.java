@@ -62,6 +62,13 @@ public class ViewAllReservationsViewModel extends ViewModel {
         userReservationsMap.addSource(currentSource, userReservationsMap::setValue);
     }
 
+    /**
+     * Load all reservations without any status filter
+     */
+    public void loadAllReservations() {
+        loadReservations(null);
+    }
+
     // Factory for creating ViewModel with dependencies
     public static class Factory implements ViewModelProvider.Factory {
         private final ReservationRepository reservationRepository;
