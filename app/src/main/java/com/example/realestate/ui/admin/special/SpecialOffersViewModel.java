@@ -48,21 +48,48 @@ public class SpecialOffersViewModel extends ViewModel {
 
     public void toggleOffer(Property property, double discountPercentage) {
         isLoading.setValue(true);
+        
+        // Calculate the correct original price and discounted price
+        double originalPrice;
+        double newPrice;
+        
+        if (discountPercentage > 0) {
+            // When creating an offer:
+            // If property currently has no discount, use current price as original
+            // If property already has discount, keep the original price
+            if (property.getDiscount() == 0) {
+                originalPrice = property.getPrice(); // Current price becomes original
+            } else {
+                // Property already has discount, calculate back to original
+                originalPrice = property.getPrice() / (1 - property.getDiscount() / 100);
+            }
+            // Calculate new discounted price
+            newPrice = originalPrice * (1 - discountPercentage / 100);
+        } else {
+            // When removing offer, restore original price
+            if (property.getDiscount() > 0) {
+                originalPrice = property.getPrice() / (1 - property.getDiscount() / 100);
+                newPrice = originalPrice; // No discount
+            } else {
+                originalPrice = property.getPrice();
+                newPrice = property.getPrice();
+            }
+        }
 
-        // Create updated property
+        // Create updated property with correct pricing
         Property updatedProperty = new Property(
-                property.getPropertyId(),
-                property.getDescription(),
-                property.getTitle(),
-                property.getPrice(),
-                property.getLocation(),
-                property.getImageUrl(),
-                property.getType(),
-                property.getBedrooms(),
-                property.getBathrooms(),
-                property.getArea(),
-                discountPercentage > 0, // is_featured becomes true when discount > 0
-                discountPercentage
+            property.getPropertyId(),
+            property.getDescription(),
+            property.getTitle(),
+            newPrice, // Store the final price (discounted or original)
+            property.getLocation(),
+            property.getImageUrl(),
+            property.getType(),
+            property.getBedrooms(),
+            property.getBathrooms(),
+            property.getArea(),
+            discountPercentage > 0, // is_featured becomes true when discount > 0
+            discountPercentage
         );
 
         propertyRepository.updateProperty(updatedProperty, new RepositoryCallback<Property>() {

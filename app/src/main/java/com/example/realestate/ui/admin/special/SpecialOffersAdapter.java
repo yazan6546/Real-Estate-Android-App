@@ -30,6 +30,7 @@ public class SpecialOffersAdapter extends RecyclerView.Adapter<SpecialOffersAdap
 
     public interface OnOfferActionListener {
         void onToggleOffer(Property property, double discountPercentage);
+        void onValidationError(String errorMessage);
     }
 
     public SpecialOffersAdapter(Context context) {
@@ -174,6 +175,20 @@ public class SpecialOffersAdapter extends RecyclerView.Adapter<SpecialOffersAdap
                         // Remove offer
                         listener.onToggleOffer(property, 0);
                     } else {
+                        // Validate discount before creating offer
+                        if (currentDiscount == 0) {
+                            listener.onValidationError("Discount should be greater than 0%");
+                            return;
+                        }
+                        if (currentDiscount >= 100) {
+                            listener.onValidationError("Discount cannot be 100% or more");
+                            return;
+                        }
+                        if (currentDiscount < 1) {
+                            listener.onValidationError("Discount should be at least 1%");
+                            return;
+                        }
+                        
                         // Create offer with current discount
                         listener.onToggleOffer(property, currentDiscount);
                     }
@@ -183,12 +198,13 @@ public class SpecialOffersAdapter extends RecyclerView.Adapter<SpecialOffersAdap
 
         private void setupPricing(Property property) {
             NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(Locale.US);
-            double price = property.getPrice();
+            double currentPrice = property.getPrice();
             double discount = property.getDiscount();
 
             if (discount > 0) {
-                // Show discount information
-                double originalPrice = price / (1 - discount / 100);
+                // Property has a discount - currentPrice is the discounted price
+                // Calculate original price from the discounted price
+                double originalPrice = currentPrice / (1 - discount / 100);
 
                 // Show discount badge
                 tvDiscountBadge.setText(String.format("%.0f%% OFF", discount));
@@ -203,8 +219,8 @@ public class SpecialOffersAdapter extends RecyclerView.Adapter<SpecialOffersAdap
                 tvOriginalPrice.setPaintFlags(tvOriginalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                 tvOriginalPrice.setVisibility(View.VISIBLE);
 
-                // Show discounted price
-                tvPropertyPrice.setText(currencyFormat.format(price) + "/month");
+                // Show discounted price (current price)
+                tvPropertyPrice.setText(currencyFormat.format(currentPrice) + "/month");
             } else {
                 // No discount - show regular price
                 tvDiscountBadge.setText("0% OFF");
@@ -213,7 +229,10 @@ public class SpecialOffersAdapter extends RecyclerView.Adapter<SpecialOffersAdap
                 tvDiscountText.setVisibility(View.VISIBLE);
                 tvOriginalPrice.setVisibility(View.GONE);
 
-                tvPropertyPrice.setText(currencyFormat.format(price) + "/month");
+                // Clear any previous paint flags
+                tvOriginalPrice.setPaintFlags(tvOriginalPrice.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+
+                tvPropertyPrice.setText(currencyFormat.format(currentPrice) + "/month");
             }
         }
 

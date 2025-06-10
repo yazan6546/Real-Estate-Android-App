@@ -88,4 +88,9 @@ public class SpecialOffersFragment extends Fragment implements SpecialOffersAdap
     public void onToggleOffer(com.example.realestate.domain.model.Property property, double discountPercentage) {
         viewModel.toggleOffer(property, discountPercentage);
     }
+
+    @Override
+    public void onValidationError(String errorMessage) {
+        Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show();
+    }
 }
