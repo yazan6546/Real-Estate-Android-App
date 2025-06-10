@@ -199,9 +199,9 @@ public class HomeFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
 
-        // Clean up handlers to prevent memory leaks
-        if (handler != null && welcomeMessageRunnable != null) {
-            handler.removeCallbacks(welcomeMessageRunnable);
+        // Clean up all handler callbacks to prevent memory leaks and crashes
+        if (handler != null) {
+            handler.removeCallbacksAndMessages(null); // Remove ALL callbacks and messages
         }
 
         binding = null;
