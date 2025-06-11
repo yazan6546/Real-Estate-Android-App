@@ -66,10 +66,10 @@ public class FavoritesFragment extends Fragment implements PropertyAdapter.OnPro
 
     private void setupClickListeners() {
         binding.browsePropertiesButton.setOnClickListener(v -> {
-            // Use the proper navigation action we defined in the navigation graph
-            // This will ensure the navigation drawer updates correctly
-            Navigation.findNavController(requireView())
-                    .navigate(R.id.action_nav_favorites_to_nav_properties);
+            // Use the navigation action we defined in the navigation graph
+            // The popUpTo and popUpToInclusive flags ensure proper back stack behavior
+            NavController navController = Navigation.findNavController(requireView());
+            navController.navigate(R.id.action_nav_favorites_to_nav_properties);
         });
     }
 
