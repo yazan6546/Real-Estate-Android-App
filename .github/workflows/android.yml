@@ -10,6 +10,10 @@ on:
   pull_request:
     branches: [ "main", "master", "develop" ]
 
+# Add explicit permissions for the workflow
+permissions:
+  contents: write  # This is needed for creating releases
+
 jobs:
   unit-tests:
     name: Run Unit Tests
@@ -73,6 +77,10 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/')
+
+    # Add permissions specifically for the release job
+    permissions:
+      contents: write  # This is needed for creating releases
 
     steps:
       - name: Checkout code
