@@ -3,6 +3,10 @@ name: Android CI
 on:
   push:
     branches: [ "main", "master", "develop" ]
+    tags:
+      - 'v*'       # Regular releases (v1.0.0)
+      - 'beta-*'   # Beta prereleases (beta-1.0.0)
+      - 'rc-*'     # Release candidates (rc-1.0.0)
   pull_request:
     branches: [ "main", "master", "develop" ]
 
@@ -55,5 +59,76 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
 
-      - name: Build with Gradle
-        run: ./gradlew build
+      - name: Build Release APK
+        run: ./gradlew assembleRelease
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release
+          path: app/build/outputs/apk/release/app-release*.apk
+
+  release:
+    name: Create Release
+    needs: build
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download APK from build
+        uses: actions/download-artifact@v4
+        with:
+          name: app-release
+          path: app/build/outputs/apk/release/
+
+      - name: Set release info
+        id: release_info
+        run: |
+          if [[ $GITHUB_REF == refs/tags/v* ]]; then
+            # Regular release (v1.0.0)
+            VERSION=${GITHUB_REF#refs/tags/v}
+            echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+            echo "PRERELEASE=false" >> $GITHUB_OUTPUT
+            echo "NAME=Release ${VERSION}" >> $GITHUB_OUTPUT
+          elif [[ $GITHUB_REF == refs/tags/beta-* ]]; then
+            # Beta release (beta-1.0.0)
+            VERSION=${GITHUB_REF#refs/tags/beta-}
+            echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+            echo "PRERELEASE=true" >> $GITHUB_OUTPUT
+            echo "NAME=Beta ${VERSION}" >> $GITHUB_OUTPUT
+          elif [[ $GITHUB_REF == refs/tags/rc-* ]]; then
+            # Release candidate (rc-1.0.0)
+            VERSION=${GITHUB_REF#refs/tags/rc-}
+            echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+            echo "PRERELEASE=true" >> $GITHUB_OUTPUT
+            echo "NAME=Release Candidate ${VERSION}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Rename APK file
+        run: |
+          VERSION=${{ steps.release_info.outputs.VERSION }}
+          cd app/build/outputs/apk/release/
+          # Find the APK file (should be app-release.apk or similar)
+          APK_FILE=$(find . -name "app-release*.apk" -type f | head -n 1)
+          if [[ -n "$APK_FILE" ]]; then
+            # Rename the file to include the version
+            NEW_NAME="RealEstate-v${VERSION}.apk"
+            mv "$APK_FILE" "$NEW_NAME"
+            echo "Renamed $APK_FILE to $NEW_NAME"
+          else
+            echo "No APK file found in the release directory"
+            exit 1
+          fi
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2.3.2
+        with:
+          name: ${{ steps.release_info.outputs.NAME }}
+          draft: false
+          prerelease: ${{ steps.release_info.outputs.PRERELEASE }}
+          files: app/build/outputs/apk/release/RealEstate-v${{ steps.release_info.outputs.VERSION }}.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
