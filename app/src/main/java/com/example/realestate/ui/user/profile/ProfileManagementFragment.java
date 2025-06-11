@@ -127,6 +127,8 @@ public class ProfileManagementFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+
+        successToastCounter.set(0); // Reset counter when fragment is created
         return inflater.inflate(R.layout.fragment_profile_management, container, false);
     }
 
@@ -298,30 +300,31 @@ public class ProfileManagementFragment extends Fragment {
             progressBar
                     .setVisibility(state == ProfileManagementViewModel.UpdateState.LOADING ? View.VISIBLE : View.GONE);
 
-            if (state == ProfileManagementViewModel.UpdateState.SUCCESS) {
-                // Only show toast if counter > 0 (similar to SpecialOffersFragment)
-                if (successToastCounter.get() > 0) {
-                    Toast.makeText(requireContext(), "Profile updated successfully!", Toast.LENGTH_SHORT).show();
+            if (state == ProfileManagementViewModel.UpdateState.SUCCESS
+                    && successToastCounter.get() > 0) {
 
-                    // When user clicks save, immediately update the navigation header with the new image
-                    // This ensures the header image is consistent with the profile changes
-                    if (requireActivity() instanceof DashboardActivity) {
-                        DashboardActivity dashboardActivity = (DashboardActivity) requireActivity();
-                        dashboardActivity.refreshNavigationHeader();
-                    }
+                Toast.makeText(requireContext(), "Profile updated successfully!", Toast.LENGTH_SHORT).show();
 
-                    clearPasswordFields();
+                // When user clicks save, immediately update the navigation header with the new image
+                // This ensures the header image is consistent with the profile changes
+                if (requireActivity() instanceof DashboardActivity) {
+                    DashboardActivity dashboardActivity = (DashboardActivity) requireActivity();
+                    dashboardActivity.refreshNavigationHeader();
                 }
+
+                successToastCounter.incrementAndGet();
+
+                clearPasswordFields();
+
+            } else if (state == ProfileManagementViewModel.UpdateState.ERROR
+                    && successToastCounter.get() > 0) {
+
+                Toast.makeText(requireContext(), viewModel.getErrorMessage(), Toast.LENGTH_LONG).show();
+                successToastCounter.incrementAndGet();
+
             } else if (state == ProfileManagementViewModel.UpdateState.LOADING) {
                 // Increment counter when starting a new update operation
                 successToastCounter.incrementAndGet();
-            }
-        });
-
-        // Observe error messages
-        viewModel.getErrorMessage().observe(getViewLifecycleOwner(), message -> {
-            if (message != null && !message.isEmpty()) {
-                Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show();
             }
         });
     }

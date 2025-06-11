@@ -15,12 +15,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.realestate.R;
 import com.example.realestate.RealEstate;
+import com.example.realestate.domain.model.Property;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class SpecialOffersFragment extends Fragment implements SpecialOffersAdapter.OnOfferActionListener {
 
     private SpecialOffersViewModel viewModel;
     private RecyclerView recyclerView;
     private SpecialOffersAdapter adapter;
+
+    private static final AtomicInteger successToastCounter = new AtomicInteger(0);
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -29,6 +34,7 @@ public class SpecialOffersFragment extends Fragment implements SpecialOffersAdap
 
         // Initialize views
         recyclerView = root.findViewById(R.id.offersRecyclerView);
+        successToastCounter.set(0);
 
         return root;
     }
@@ -66,26 +72,31 @@ public class SpecialOffersFragment extends Fragment implements SpecialOffersAdap
 
         // Observe loading state
         viewModel.getIsLoading().observe(getViewLifecycleOwner(), isLoading -> {
+
+            if (isLoading)
+                successToastCounter.incrementAndGet();
             // You could show/hide a progress bar here
         });
 
         // Observe error messages
         viewModel.getErrorMessage().observe(getViewLifecycleOwner(), error -> {
-            if (error != null && !error.isEmpty()) {
+            if (error != null && !error.isEmpty() && successToastCounter.get() > 0) {
                 Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show();
+                successToastCounter.incrementAndGet();
             }
         });
 
         // Observe success messages
         viewModel.getSuccessMessage().observe(getViewLifecycleOwner(), success -> {
-            if (success != null && !success.isEmpty()) {
+            if (success != null && !success.isEmpty() && successToastCounter.get() > 0) {
                 Toast.makeText(requireContext(), success, Toast.LENGTH_SHORT).show();
+                successToastCounter.incrementAndGet();
             }
         });
     }
 
     @Override
-    public void onToggleOffer(com.example.realestate.domain.model.Property property, double discountPercentage) {
+    public void onToggleOffer(Property property, double discountPercentage) {
         // Trigger animations before making the database call
         if (discountPercentage > 0) {
             // Creating offer - animate strikethrough appearance
