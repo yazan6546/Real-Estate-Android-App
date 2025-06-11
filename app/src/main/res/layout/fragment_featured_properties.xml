@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@android:color/white">
+
+    <!-- Header Section -->
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="4dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Title -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Featured Properties"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="@color/text_primary"
+                android:gravity="center"
+                android:layout_marginBottom="8dp" />
+
+            <!-- Subtitle -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Special offers and premium properties just for you!"
+                android:textSize="14sp"
+                android:textColor="@color/text_secondary"
+                android:gravity="center"
+                android:layout_marginBottom="8dp" />
+
+            <!-- Featured indicator with star -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_star"
+                    android:layout_marginEnd="8dp"
+                    app:tint="@color/yellow_500" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Properties with discounts and featured listings"
+                    android:textSize="12sp"
+                    android:textColor="@color/green_700"
+                    android:textStyle="italic" />
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_star"
+                    android:layout_marginStart="8dp"
+                    app:tint="@color/yellow_500" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <!-- Featured Properties RecyclerView -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewFeatured"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="8dp"
+        android:clipToPadding="false" />
+
+    <!-- Empty State -->
+    <LinearLayout
+        android:id="@+id/layoutEmptyState"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:visibility="gone"
+        android:padding="32dp">
+
+        <ImageView
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:src="@drawable/ic_star"
+            android:layout_marginBottom="24dp"
+            app:tint="@android:color/darker_gray" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No Featured Properties Available"
+            android:textSize="20sp"
+            android:textColor="@color/text_primary"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp"
+            android:gravity="center" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Check back later for special offers and featured listings"
+            android:textSize="14sp"
+            android:textColor="@color/text_secondary"
+            android:gravity="center"
+            android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="✨ Properties with discounts > 0% or marked as featured will appear here"
+            android:textSize="12sp"
+            android:textColor="@color/green_700"
+            android:gravity="center"
+            android:textStyle="italic" />
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -69,11 +69,18 @@
         android:label="@string/menu_your_reservations"
         tools:layout="@layout/fragment_user_reservations" />
 
-<!--    <fragment-->
-<!--        android:id="@+id/nav_featured_properties"-->
-<!--        android:name="com.example.realestate.ui.featured.FeaturedPropertiesFragment"-->
-<!--        android:label="@string/menu_featured_properties"-->
-<!--        tools:layout="@layout/fragment_featured_properties" />-->
+    <fragment
+        android:id="@+id/nav_featured_properties"
+        android:name="com.example.realestate.ui.user.featured.FeaturedPropertiesFragment"
+        android:label="@string/menu_featured_properties"
+        tools:layout="@layout/fragment_featured_properties" >
+        <action
+            android:id="@+id/action_nav_featured_properties_to_propertyDetailFragment"
+            app:destination="@id/propertyDetailFragment" />
+        <action
+            android:id="@+id/action_nav_featured_properties_to_reservationFragment"
+            app:destination="@id/reservationFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_profile_management"
