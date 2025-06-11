@@ -147,22 +147,6 @@ public class SpecialOffersAdapter extends BasePropertyAdapter<SpecialOffersAdapt
                 tvDiscountText.setText("Create Special Offer!");
             }
 
-            // Always show discount badge for special offers section
-            tvDiscountBadge.setVisibility(View.VISIBLE);
-        }
-
-        @Override
-        protected void setupPricing(Property property) {
-            super.setupPricing(property);
-
-            // Always show the discount text in special offers screen
-            tvDiscountText.setVisibility(View.VISIBLE);
-
-            // Make sure the discount badge is always visible in offers screen
-            if (property.getDiscount() == 0) {
-                tvDiscountBadge.setText("0% OFF");
-                tvDiscountBadge.setVisibility(View.VISIBLE);
-            }
         }
 
         private void setupButtonClickListener(Property property) {
