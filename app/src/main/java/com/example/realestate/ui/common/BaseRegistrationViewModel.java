@@ -1,4 +1,4 @@
-package com.example.realestate.ui.base;
+package com.example.realestate.ui.common;
 
 import static com.example.realestate.domain.service.CountryService.countriesWithCities;
 import static com.example.realestate.domain.service.CountryService.countryCodeMap;
@@ -11,10 +11,7 @@ import com.example.realestate.data.repository.RepositoryCallback;
 import com.example.realestate.data.repository.UserRepository;
 import com.example.realestate.domain.exception.ValidationException;
 import com.example.realestate.domain.model.User;
-import com.example.realestate.domain.service.CountryService;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 // 1. Create a base ViewModel class with common registration logic

@@ -4,33 +4,27 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
-import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.example.realestate.R;
 import com.example.realestate.domain.model.Property;
+import com.example.realestate.ui.common.BasePropertyAdapter;
 
 import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
-public class SpecialOffersAdapter extends RecyclerView.Adapter<SpecialOffersAdapter.SpecialOfferViewHolder> {
+public class SpecialOffersAdapter extends BasePropertyAdapter<SpecialOffersAdapter.SpecialOfferViewHolder> {
 
-    private List<Property> properties = new ArrayList<>();
     private OnOfferActionListener listener;
-    private Context context;
 
     public interface OnOfferActionListener {
         void onToggleOffer(Property property, double discountPercentage);
@@ -38,16 +32,11 @@ public class SpecialOffersAdapter extends RecyclerView.Adapter<SpecialOffersAdap
     }
 
     public SpecialOffersAdapter(Context context) {
-        this.context = context;
+        super(context);
     }
 
     public void setOnOfferActionListener(OnOfferActionListener listener) {
         this.listener = listener;
-    }
-
-    public void setProperties(List<Property> properties) {
-        this.properties = properties != null ? properties : new ArrayList<>();
-        notifyDataSetChanged();
     }
 
     public void animateOfferCreation(int propertyId, double discountPercentage) {
@@ -101,61 +90,22 @@ public class SpecialOffersAdapter extends RecyclerView.Adapter<SpecialOffersAdap
     public SpecialOfferViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_special_offer, parent, false);
-        return new SpecialOfferViewHolder(view);
+        return new SpecialOfferViewHolder(view, context);
     }
 
-    @Override
-    public void onBindViewHolder(@NonNull SpecialOfferViewHolder holder, int position) {
-        Property property = properties.get(position);
-        holder.bind(property);
-    }
-
-    @Override
-    public int getItemCount() {
-        return properties.size();
-    }
-
-    class SpecialOfferViewHolder extends RecyclerView.ViewHolder {
-
-        private ImageView ivPropertyImage;
-        private TextView tvDiscountBadge;
-        private ImageView ivFeaturedStar;
-        private TextView tvPropertyType;
-        private TextView tvDiscountText;
-        private TextView tvOriginalPrice;
-        private TextView tvPropertyPrice;
-        private TextView tvPropertyTitle;
-        private TextView tvPropertyDescription;
-        private TextView tvPropertyLocation;
-        private TextView tvBedrooms;
-        private TextView tvBathrooms;
-        private TextView tvArea;
+    class SpecialOfferViewHolder extends BasePropertyAdapter.BasePropertyViewHolder {
         private SeekBar seekBarDiscount;
         private TextView tvDiscountAmount;
         private Button btnCreateOffer;
-
         private double currentDiscount = 0;
 
-        public SpecialOfferViewHolder(@NonNull View itemView) {
-            super(itemView);
-            initViews(itemView);
+        public SpecialOfferViewHolder(@NonNull View itemView, Context context) {
+            super(itemView, context);
+            initAdditionalViews(itemView);
             setupSeekBarListener();
         }
 
-        private void initViews(View itemView) {
-            ivPropertyImage = itemView.findViewById(R.id.ivPropertyImage);
-            tvDiscountBadge = itemView.findViewById(R.id.tvDiscountBadge);
-            ivFeaturedStar = itemView.findViewById(R.id.ivFeaturedStar);
-            tvPropertyType = itemView.findViewById(R.id.tvPropertyType);
-            tvDiscountText = itemView.findViewById(R.id.tvDiscountText);
-            tvOriginalPrice = itemView.findViewById(R.id.tvOriginalPrice);
-            tvPropertyPrice = itemView.findViewById(R.id.tvPropertyPrice);
-            tvPropertyTitle = itemView.findViewById(R.id.tvPropertyTitle);
-            tvPropertyDescription = itemView.findViewById(R.id.tvPropertyDescription);
-            tvPropertyLocation = itemView.findViewById(R.id.tvPropertyLocation);
-            tvBedrooms = itemView.findViewById(R.id.tvBedrooms);
-            tvBathrooms = itemView.findViewById(R.id.tvBathrooms);
-            tvArea = itemView.findViewById(R.id.tvArea);
+        private void initAdditionalViews(View itemView) {
             seekBarDiscount = itemView.findViewById(R.id.seekBarDiscount);
             tvDiscountAmount = itemView.findViewById(R.id.tvDiscountAmount);
             btnCreateOffer = itemView.findViewById(R.id.btnCreateOffer);
@@ -179,46 +129,43 @@ public class SpecialOffersAdapter extends RecyclerView.Adapter<SpecialOffersAdap
             });
         }
 
-        public void bind(Property property) {
-            // Basic property information
-            tvPropertyTitle.setText(property.getTitle());
-            tvPropertyDescription.setText(property.getDescription());
-            tvPropertyLocation.setText(property.getLocation());
-            tvPropertyType.setText(property.getType());
-
-            // Property details
-            tvBedrooms.setText(property.getBedrooms() + " Beds");
-            tvBathrooms.setText(property.getBathrooms() + " Baths");
-            tvArea.setText(property.getArea());
-
+        @Override
+        protected void bindSpecificData(Property property) {
             // Set current discount from property
             currentDiscount = property.getDiscount();
             seekBarDiscount.setProgress((int) currentDiscount);
 
-            // Setup pricing and discount display
-            setupPricing(property);
+            // Special offer-specific handling
             updateDiscountDisplay();
-
-            // Featured property indicator
-            if (property.isFeatured()) {
-                ivFeaturedStar.setVisibility(View.VISIBLE);
-            } else {
-                ivFeaturedStar.setVisibility(View.GONE);
-            }
-
-            // Load property image if available
-            if (property.getImageUrl() != null && !property.getImageUrl().isEmpty()) {
-                Glide.with(itemView.getContext())
-                        .load(property.getImageUrl())
-                        .placeholder(R.drawable.ic_building)
-                        .error(R.drawable.ic_building)
-                        .into(ivPropertyImage);
-            } else {
-                ivPropertyImage.setImageResource(R.drawable.ic_building);
-            }
-
-            // Setup button behavior
             updateButtonState(property);
+            setupButtonClickListener(property);
+
+            // Override default behavior for discount text
+            if (property.getDiscount() > 0) {
+                tvDiscountText.setText("Special Offer Active!");
+            } else {
+                tvDiscountText.setText("Create Special Offer!");
+            }
+
+            // Always show discount badge for special offers section
+            tvDiscountBadge.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected void setupPricing(Property property) {
+            super.setupPricing(property);
+
+            // Always show the discount text in special offers screen
+            tvDiscountText.setVisibility(View.VISIBLE);
+
+            // Make sure the discount badge is always visible in offers screen
+            if (property.getDiscount() == 0) {
+                tvDiscountBadge.setText("0% OFF");
+                tvDiscountBadge.setVisibility(View.VISIBLE);
+            }
+        }
+
+        private void setupButtonClickListener(Property property) {
             btnCreateOffer.setOnClickListener(v -> {
                 if (listener != null) {
                     if (property.getDiscount() > 0) {
@@ -246,49 +193,11 @@ public class SpecialOffersAdapter extends RecyclerView.Adapter<SpecialOffersAdap
             });
         }
 
-        private void setupPricing(Property property) {
-            NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(Locale.US);
-            double currentPrice = property.getPrice();
-            double discount = property.getDiscount();
-
-            if (discount > 0) {
-
-                // Show discount badge
-                tvDiscountBadge.setText(String.format("%.0f%% OFF", discount));
-                tvDiscountBadge.setVisibility(View.VISIBLE);
-
-                // Show discount text
-                tvDiscountText.setText("Special Offer Active!");
-                tvDiscountText.setVisibility(View.VISIBLE);
-
-                // Show original price with strikethrough
-                tvOriginalPrice.setText(currencyFormat.format(currentPrice) + "/month");
-                tvOriginalPrice.setPaintFlags(tvOriginalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-                tvOriginalPrice.setVisibility(View.VISIBLE);
-
-                // Show discounted price (current price)
-                tvPropertyPrice.setText(currencyFormat.format(currentPrice * (1-discount/100)) + "/month");
-            } else {
-                // No discount - show regular price
-                tvDiscountBadge.setText("0% OFF");
-                tvDiscountBadge.setVisibility(View.VISIBLE);
-                tvDiscountText.setText("Create Special Offer!");
-                tvDiscountText.setVisibility(View.VISIBLE);
-                tvOriginalPrice.setVisibility(View.GONE);
-
-                // Clear any previous paint flags
-                tvOriginalPrice.setPaintFlags(tvOriginalPrice.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
-
-                tvPropertyPrice.setText(currencyFormat.format(currentPrice) + "/month");
-            }
-        }
-
         private void updateDiscountDisplay() {
             NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(Locale.US);
             Property property = properties.get(getAdapterPosition());
             double basePrice = property.getPrice();
             
-
             if (currentDiscount > 0) {
                 double discountedPrice = basePrice * (1-currentDiscount/(100));
                 double savingsAmount = basePrice - discountedPrice;
@@ -303,7 +212,7 @@ public class SpecialOffersAdapter extends RecyclerView.Adapter<SpecialOffersAdap
             animateButtonChange(property.getDiscount() > 0);
         }
 
-        private void animateButtonChange(boolean isRemoveState) {
+        public void animateButtonChange(boolean isRemoveState) {
             // Fade out button
             ObjectAnimator fadeOut = ObjectAnimator.ofFloat(btnCreateOffer, "alpha", 1f, 0.3f);
             fadeOut.setDuration(150);
@@ -330,7 +239,7 @@ public class SpecialOffersAdapter extends RecyclerView.Adapter<SpecialOffersAdap
             fadeOut.start();
         }
 
-        private void animateStrikethrough(boolean show) {
+        public void animateStrikethrough(boolean show) {
             if (show) {
                 // Animate strikethrough appearance
                 tvOriginalPrice.setVisibility(View.VISIBLE);
@@ -353,7 +262,7 @@ public class SpecialOffersAdapter extends RecyclerView.Adapter<SpecialOffersAdap
                 strikeAnimator.addUpdateListener(animation -> {
                     float progress = (float) animation.getAnimatedValue();
                     if (progress > 0.7f) {
-                        tvOriginalPrice.setPaintFlags(tvOriginalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                        tvOriginalPrice.setPaintFlags(tvOriginalPrice.getPaintFlags() | android.graphics.Paint.STRIKE_THRU_TEXT_FLAG);
                     }
                 });
                 
@@ -372,14 +281,14 @@ public class SpecialOffersAdapter extends RecyclerView.Adapter<SpecialOffersAdap
                     @Override
                     public void onAnimationEnd(android.animation.Animator animation) {
                         tvOriginalPrice.setVisibility(View.GONE);
-                        tvOriginalPrice.setPaintFlags(tvOriginalPrice.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+                        tvOriginalPrice.setPaintFlags(tvOriginalPrice.getPaintFlags() & (~android.graphics.Paint.STRIKE_THRU_TEXT_FLAG));
                     }
                 });
                 hideSet.start();
             }
         }
 
-        private void animatePriceChange(String newPrice, boolean isDiscounted) {
+        public void animatePriceChange(String newPrice, boolean isDiscounted) {
             // Animate price text change
             ObjectAnimator scaleDown = ObjectAnimator.ofFloat(tvPropertyPrice, "scaleY", 1f, 0.8f);
             ObjectAnimator fadeOut = ObjectAnimator.ofFloat(tvPropertyPrice, "alpha", 1f, 0.6f);
@@ -415,3 +324,4 @@ public class SpecialOffersAdapter extends RecyclerView.Adapter<SpecialOffersAdap
         }
     }
 }
+

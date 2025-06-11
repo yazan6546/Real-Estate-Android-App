@@ -21,7 +21,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.realestate.R;
 import com.example.realestate.RealEstate;
 import com.example.realestate.domain.model.User;
-import com.example.realestate.ui.base.BaseRegistrationViewModel;
+import com.example.realestate.ui.common.BaseRegistrationViewModel;
 import com.example.realestate.ui.admin.add_admins.AddNewAdminViewModel;
 
 public class RegisterFragment extends Fragment {
