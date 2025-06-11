@@ -19,11 +19,9 @@ import com.example.realestate.databinding.FragmentFavoritesBinding;
 import com.example.realestate.domain.model.Property;
 import com.example.realestate.domain.service.UserSession;
 import com.example.realestate.domain.service.SharedPrefManager;
-import com.example.realestate.ui.user.properties.PropertyDetailFragment;
 import com.example.realestate.ui.user.properties.PropertyAdapter;
 
 import android.widget.Toast;
-import java.util.ArrayList;
 
 public class FavoritesFragment extends Fragment implements PropertyAdapter.OnPropertyActionListener {
     private FragmentFavoritesBinding binding;

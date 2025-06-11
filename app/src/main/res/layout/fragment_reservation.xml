@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_light">
+    android:fillViewport="true"
+    tools:context=".ui.user.reservation.ReservationFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -17,27 +18,24 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            app:cardCornerRadius="12dp"
+            app:cardCornerRadius="8dp"
             app:cardElevation="4dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:padding="16dp">
+                android:padding="12dp">
 
-                <!-- Property Image -->
                 <ImageView
-                    android:id="@+id/propertyImageView"
+                    android:id="@+id/ivPropertyImage"
                     android:layout_width="80dp"
                     android:layout_height="80dp"
-                    android:layout_marginEnd="16dp"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/ic_home"
+                    android:layout_marginEnd="12dp"
                     android:background="@drawable/rounded_corner_8dp"
-                    android:contentDescription="Property Image" />
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_building" />
 
-                <!-- Property Details -->
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -45,36 +43,33 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/propertyTitleTextView"
+                        android:id="@+id/tvPropertyTitle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Property Title"
+                        android:textColor="@android:color/black"
                         android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/text_primary"
-                        android:maxLines="2"
-                        android:ellipsize="end" />
+                        android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/propertyLocationTextView"
+                        android:id="@+id/tvPropertyType"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Property Location"
-                        android:textSize="14sp"
-                        android:textColor="@color/text_secondary"
                         android:layout_marginTop="4dp"
-                        android:maxLines="1"
-                        android:ellipsize="end" />
+                        android:text="Property Type"
+                        android:textColor="@color/blue_700"
+                        android:textSize="14sp" />
 
                     <TextView
-                        android:id="@+id/propertyPriceTextView"
-                        android:layout_width="wrap_content"
+                        android:id="@+id/tvPropertyLocation"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="$500,000"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/primary_color"
-                        android:layout_marginTop="8dp" />
+                        android:layout_marginTop="4dp"
+                        android:drawableStart="@drawable/ic_building"
+                        android:drawablePadding="4dp"
+                        android:text="Location"
+                        android:textColor="@android:color/darker_gray"
+                        android:textSize="12sp" />
 
                 </LinearLayout>
 
@@ -87,186 +82,217 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            app:cardCornerRadius="12dp"
+            app:cardCornerRadius="8dp"
             app:cardElevation="4dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="20dp">
+                android:padding="16dp">
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Reservation Details"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/text_primary"
-                    android:layout_marginBottom="16dp" />
-
-                <!-- Customer Name -->
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    app:boxStrokeColor="@color/primary_color">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/customerNameEditText"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Full Name"
-                        android:inputType="textPersonName" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <!-- Customer Email -->
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    app:boxStrokeColor="@color/primary_color">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/customerEmailEditText"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Email Address"
-                        android:inputType="textEmailAddress" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <!-- Customer Phone -->
-                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
-                    app:boxStrokeColor="@color/primary_color">
+                    android:text="Select Reservation Period"
+                    android:textColor="@android:color/black"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/customerPhoneEditText"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Phone Number"
-                        android:inputType="phone" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <!-- Date and Time Selection -->
+                <!-- Start Date/Time Section -->
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Select Viewing Date &amp; Time"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/text_primary"
-                    android:layout_marginBottom="12dp" />
+                    android:layout_marginBottom="8dp"
+                    android:text="Start Date &amp; Time"
+                    android:textColor="@android:color/black"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="8dp">
+                    android:layout_marginBottom="16dp"
+                    android:orientation="horizontal">
 
-                    <!-- Date Selection -->
-                    <LinearLayout
+                    <Button
+                        android:id="@+id/btnSelectStartDate"
+                        style="@style/Widget.AppCompat.Button.Borderless"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/edit_text_background"
+                        android:drawableStart="@drawable/ic_calendar"
+                        android:drawablePadding="8dp"
+                        android:padding="12dp"
+                        android:text="Select Date"
+                        android:textAlignment="textStart"
+                        android:textAllCaps="false"
+                        android:textColor="@color/background" />
+
+                    <Button
+                        android:id="@+id/btnSelectStartTime"
+                        style="@style/Widget.AppCompat.Button.Borderless"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:orientation="vertical"
-                        android:layout_marginEnd="8dp">
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/selectDateButton"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Select Date"
-                            android:textSize="14sp"
-                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                            app:strokeColor="@color/primary_color"
-                            app:icon="@drawable/ic_calendar"
-                            app:iconGravity="start"
-                            android:textColor="@color/primary_color" />
-
-                        <TextView
-                            android:id="@+id/selectedDateTextView"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="No date selected"
-                            android:textSize="12sp"
-                            android:textColor="@color/text_secondary"
-                            android:gravity="center"
-                            android:layout_marginTop="4dp" />
-
-                    </LinearLayout>
-
-                    <!-- Time Selection -->
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical"
-                        android:layout_marginStart="8dp">
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/selectTimeButton"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Select Time"
-                            android:textSize="14sp"
-                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                            app:strokeColor="@color/primary_color"
-                            app:icon="@drawable/ic_time"
-                            app:iconGravity="start"
-                            android:textColor="@color/primary_color" />
-
-                        <TextView
-                            android:id="@+id/selectedTimeTextView"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="No time selected"
-                            android:textSize="12sp"
-                            android:textColor="@color/text_secondary"
-                            android:gravity="center"
-                            android:layout_marginTop="4dp" />
-
-                    </LinearLayout>
+                        android:background="@drawable/edit_text_background"
+                        android:drawableStart="@drawable/ic_time"
+                        android:drawablePadding="8dp"
+                        android:padding="12dp"
+                        android:text="Select Time"
+                        android:textAlignment="textStart"
+                        android:textAllCaps="false"
+                        android:textColor="@color/background" />
 
                 </LinearLayout>
 
-                <!-- Notes -->
+                <!-- End Date/Time Section -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:text="End Date &amp; Time"
+                    android:textColor="@android:color/black"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/btnSelectEndDate"
+                        style="@style/Widget.AppCompat.Button.Borderless"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/edit_text_background"
+                        android:drawableStart="@drawable/ic_calendar"
+                        android:drawablePadding="8dp"
+                        android:padding="12dp"
+                        android:text="Select Date"
+                        android:textAlignment="textStart"
+                        android:textAllCaps="false"
+                        android:textColor="@color/background" />
+
+                    <Button
+                        android:id="@+id/btnSelectEndTime"
+                        style="@style/Widget.AppCompat.Button.Borderless"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/edit_text_background"
+                        android:drawableStart="@drawable/ic_time"
+                        android:drawablePadding="8dp"
+                        android:padding="12dp"
+                        android:text="Select Time"
+                        android:textAlignment="textStart"
+                        android:textAllCaps="false"
+                        android:textColor="@color/background" />
+
+                </LinearLayout>
+
+                <!-- Selected Date Range Display -->
+                <TextView
+                    android:id="@+id/tvSelectedDateRange"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:background="@drawable/rounded_background_light_blue"
+                    android:padding="12dp"
+                    android:text="Please select start and end date/time"
+                    android:textColor="@color/primary_blue"
+                    android:textSize="14sp"
+                    android:visibility="visible" />
 
             </LinearLayout>
 
         </androidx.cardview.widget.CardView>
 
-        <!-- Submit Button -->
-        <FrameLayout
+        <!-- Conflict Warning -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardConflictWarning"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:visibility="gone"
+            app:cardBackgroundColor="@color/red_light"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="4dp">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/submitReservationButton"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:text="Submit Reservation"
-                android:textSize="16sp"
-                android:textStyle="bold"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="16dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="12dp"
+                    android:src="@drawable/ic_warning"
+                    app:tint="@android:color/holo_red_dark" />
+
+                <TextView
+                    android:id="@+id/tvConflictMessage"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="This time slot conflicts with an existing reservation"
+                    android:textColor="@android:color/holo_red_dark"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <!-- Progress Bar -->
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="16dp"
+            android:visibility="gone" />
+
+        <!-- Action Buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnCancel"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1"
+                android:background="@drawable/button_outline"
+                android:padding="12dp"
+                android:text="Cancel"
+                android:textAllCaps="false"
+                android:textColor="@color/blue_800" />
+
+            <Button
+                android:id="@+id/btnConfirmReservation"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:background="@drawable/button_primary"
-                android:textColor="@color/white"
-                app:cornerRadius="8dp"
-                app:elevation="4dp" />
+                android:padding="12dp"
+                android:text="Confirm Reservation"
+                android:textAllCaps="false"
+                android:textColor="@android:color/white" />
 
-            <ProgressBar
-                android:id="@+id/progressBar"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_gravity="center"
-                android:visibility="gone"
-                android:indeterminateTint="@color/white" />
-
-        </FrameLayout>
+        </LinearLayout>
 
     </LinearLayout>
 

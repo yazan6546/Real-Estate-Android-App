@@ -6,22 +6,25 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.DatePicker;
-import android.widget.TimePicker;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 
+import com.bumptech.glide.Glide;
 import com.example.realestate.R;
-import com.example.realestate.databinding.FragmentReservationBinding;
+import com.example.realestate.RealEstate;
 import com.example.realestate.domain.model.Property;
-import com.example.realestate.domain.model.Reservation;
 import com.example.realestate.domain.service.SharedPrefManager;
 import com.example.realestate.domain.service.UserSession;
-import com.bumptech.glide.Glide;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -30,211 +33,330 @@ import java.util.Locale;
 
 public class ReservationFragment extends Fragment {
 
-    private static final String ARG_PROPERTY = "property";
-
-    private FragmentReservationBinding binding;
     private ReservationViewModel viewModel;
     private Property property;
-    private Calendar selectedDateTime;
-    private SimpleDateFormat dateFormat;
-    private SimpleDateFormat timeFormat;
 
-    public static ReservationFragment newInstance(Property property) {
-        ReservationFragment fragment = new ReservationFragment();
-        Bundle args = new Bundle();
-        args.putSerializable(ARG_PROPERTY, property);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    // UI Components
+    private ImageView ivPropertyImage;
+    private TextView tvPropertyTitle;
+    private TextView tvPropertyType;
+    private TextView tvPropertyLocation;
+
+    private Button btnSelectStartDate;
+    private Button btnSelectStartTime;
+    private Button btnSelectEndDate;
+    private Button btnSelectEndTime;
+    private TextView tvSelectedDateRange;
+
+    private CardView cardConflictWarning;
+    private TextView tvConflictMessage;
+
+    private ProgressBar progressBar;
+    private Button btnCancel;
+    private Button btnConfirmReservation;
+
+    // Date/Time tracking
+    private Calendar startDateCalendar = Calendar.getInstance();
+    private Calendar endDateCalendar = Calendar.getInstance();
+    private Calendar startTimeCalendar = Calendar.getInstance();
+    private Calendar endTimeCalendar = Calendar.getInstance();
+
+    private boolean startDateSelected = false;
+    private boolean startTimeSelected = false;
+    private boolean endDateSelected = false;
+    private boolean endTimeSelected = false;
+
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
+    private final SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm a", Locale.getDefault());
+    private final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("MMM dd, yyyy hh:mm a", Locale.getDefault());
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            property = (Property) getArguments().getSerializable(ARG_PROPERTY);
-        }
-
-        selectedDateTime = Calendar.getInstance();
-        // Set minimum time to current time + 1 hour
-        selectedDateTime.add(Calendar.HOUR_OF_DAY, 1);
-
-        dateFormat = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
-        timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
-    }
-
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        binding = FragmentReservationBinding.inflate(inflater, container, false);
-        return binding.getRoot();
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_reservation, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        viewModel = new ViewModelProvider(this).get(ReservationViewModel.class);
+        // Initialize views
+        initializeViews(view);
 
-        setupPropertyInfo();
+        // Initialize ViewModel
+        viewModel = new ViewModelProvider(this,
+                new ReservationViewModel.Factory(RealEstate.appContainer.getReservationRepository()))
+                .get(ReservationViewModel.class);
+        // Get property from arguments
+        if (getArguments() != null) {
+            property = (Property) getArguments().getSerializable("property");
+        }
+
+        if (property == null) {
+            Toast.makeText(getContext(), "Property information not available", Toast.LENGTH_SHORT).show();
+            Navigation.findNavController(view).navigateUp();
+            return;
+        }
+
+        // Setup UI
+        setupPropertyInformation();
         setupDateTimePickers();
         setupObservers();
         setupClickListeners();
-        updateDateTimeDisplay();
     }
 
-    private void setupPropertyInfo() {
+    private void initializeViews(View view) {
+        // Property info views
+        ivPropertyImage = view.findViewById(R.id.ivPropertyImage);
+        tvPropertyTitle = view.findViewById(R.id.tvPropertyTitle);
+        tvPropertyType = view.findViewById(R.id.tvPropertyType);
+        tvPropertyLocation = view.findViewById(R.id.tvPropertyLocation);
+
+        // Date/time picker buttons
+        btnSelectStartDate = view.findViewById(R.id.btnSelectStartDate);
+        btnSelectStartTime = view.findViewById(R.id.btnSelectStartTime);
+        btnSelectEndDate = view.findViewById(R.id.btnSelectEndDate);
+        btnSelectEndTime = view.findViewById(R.id.btnSelectEndTime);
+        tvSelectedDateRange = view.findViewById(R.id.tvSelectedDateRange);
+
+        // Conflict warning
+        cardConflictWarning = view.findViewById(R.id.cardConflictWarning);
+        tvConflictMessage = view.findViewById(R.id.tvConflictMessage);
+
+        // Action components
+        progressBar = view.findViewById(R.id.progressBar);
+        btnCancel = view.findViewById(R.id.btnCancel);
+        btnConfirmReservation = view.findViewById(R.id.btnConfirmReservation);
+    }
+
+    private void setupPropertyInformation() {
         if (property != null) {
-            binding.propertyTitleTextView.setText(property.getTitle());
-            binding.propertyLocationTextView.setText(property.getLocation());
-            binding.propertyPriceTextView.setText(String.format("$%,.0f", property.getPrice()));
+            tvPropertyTitle.setText(property.getTitle());
+            tvPropertyType.setText(property.getType());
+            tvPropertyLocation.setText(property.getLocation());
 
             // Load property image
             if (property.getImageUrl() != null && !property.getImageUrl().isEmpty()) {
                 Glide.with(this)
                         .load(property.getImageUrl())
-                        .placeholder(R.drawable.ic_home)
-                        .error(R.drawable.ic_home)
-                        .centerCrop()
-                        .into(binding.propertyImageView);
+                        .placeholder(R.drawable.ic_building)
+                        .error(R.drawable.ic_building)
+                        .into(ivPropertyImage);
             } else {
-                binding.propertyImageView.setImageResource(R.drawable.ic_home);
+                ivPropertyImage.setImageResource(R.drawable.ic_building);
             }
         }
     }
 
     private void setupDateTimePickers() {
-        binding.selectDateButton.setOnClickListener(v -> showDatePicker());
-        binding.selectTimeButton.setOnClickListener(v -> showTimePicker());
+        // Initialize calendar with current time + 1 hour as minimum
+        Calendar now = Calendar.getInstance();
+        now.add(Calendar.HOUR_OF_DAY, 1);
+
+        startDateCalendar.setTime(now.getTime());
+        startTimeCalendar.setTime(now.getTime());
+
+        // Set end time to start + 2 hours by default
+        endDateCalendar.setTime(now.getTime());
+        endTimeCalendar.setTime(now.getTime());
+        endTimeCalendar.add(Calendar.HOUR_OF_DAY, 2);
     }
 
     private void setupObservers() {
-        viewModel.getReservationResult().observe(getViewLifecycleOwner(), result -> {
-            binding.progressBar.setVisibility(View.GONE);
-            binding.submitReservationButton.setEnabled(true);
-
-            if (result != null && result) {
-                Toast.makeText(getContext(), "Reservation submitted successfully!", Toast.LENGTH_LONG).show();
-                if (getActivity() != null) {
-                    getActivity().onBackPressed();
-                }
-            } else {
-                Toast.makeText(getContext(), "Failed to submit reservation. Please try again.", Toast.LENGTH_SHORT)
-                        .show();
+        // Observe conflict state
+        viewModel.getHasConflict().observe(getViewLifecycleOwner(), hasConflict -> {
+            if (hasConflict != null) {
+                cardConflictWarning.setVisibility(hasConflict ? View.VISIBLE : View.GONE);
+                btnConfirmReservation.setEnabled(!hasConflict && viewModel.canSubmitReservation());
             }
         });
 
-        viewModel.getErrorMessage().observe(getViewLifecycleOwner(), error -> {
-            if (error != null && !error.isEmpty()) {
-                binding.progressBar.setVisibility(View.GONE);
-                binding.submitReservationButton.setEnabled(true);
-                Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+        // Observe conflict message
+        viewModel.getConflictMessage().observe(getViewLifecycleOwner(), message -> {
+            if (message != null && !message.isEmpty()) {
+                tvConflictMessage.setText(message);
+            }
+        });
+
+        // Observe loading state
+        viewModel.getIsLoading().observe(getViewLifecycleOwner(), isLoading -> {
+            if (isLoading != null) {
+                progressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
+                btnConfirmReservation.setEnabled(!isLoading && viewModel.canSubmitReservation());
+            }
+        });
+
+        // Observe success message
+        viewModel.getSuccessMessage().observe(getViewLifecycleOwner(), message -> {
+            if (message != null && !message.isEmpty()) {
+                Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
+                viewModel.clearMessages();
+                // Navigate back to properties
+                Navigation.findNavController(requireView()).navigateUp();
+            }
+        });
+
+        // Observe error message
+        viewModel.getErrorMessage().observe(getViewLifecycleOwner(), message -> {
+            if (message != null && !message.isEmpty()) {
+                Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
+                viewModel.clearMessages();
             }
         });
     }
 
     private void setupClickListeners() {
-        binding.submitReservationButton.setOnClickListener(v -> submitReservation());
+        btnSelectStartDate.setOnClickListener(v -> showStartDatePicker());
+        btnSelectStartTime.setOnClickListener(v -> showStartTimePicker());
+        btnSelectEndDate.setOnClickListener(v -> showEndDatePicker());
+        btnSelectEndTime.setOnClickListener(v -> showEndTimePicker());
+
+        btnCancel.setOnClickListener(v -> Navigation.findNavController(v).navigateUp());
+
+        btnConfirmReservation.setOnClickListener(v -> {
+            String userEmail = getCurrentUserEmail();
+            if (userEmail != null) {
+                viewModel.createReservation(property, userEmail);
+            } else {
+                Toast.makeText(getContext(), "User not logged in", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
-    private void showDatePicker() {
-        Calendar minDate = Calendar.getInstance();
-        minDate.add(Calendar.DAY_OF_MONTH, 1); // Minimum date is tomorrow
-
-        DatePickerDialog dialog = new DatePickerDialog(
+    private void showStartDatePicker() {
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
                 requireContext(),
                 (view, year, month, dayOfMonth) -> {
-                    selectedDateTime.set(Calendar.YEAR, year);
-                    selectedDateTime.set(Calendar.MONTH, month);
-                    selectedDateTime.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                    updateDateTimeDisplay();
+                    startDateCalendar.set(Calendar.YEAR, year);
+                    startDateCalendar.set(Calendar.MONTH, month);
+                    startDateCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                    startDateSelected = true;
+                    updateStartDateButton();
+                    updateDateTimeSelection();
                 },
-                selectedDateTime.get(Calendar.YEAR),
-                selectedDateTime.get(Calendar.MONTH),
-                selectedDateTime.get(Calendar.DAY_OF_MONTH));
+                startDateCalendar.get(Calendar.YEAR),
+                startDateCalendar.get(Calendar.MONTH),
+                startDateCalendar.get(Calendar.DAY_OF_MONTH));
 
-        dialog.getDatePicker().setMinDate(minDate.getTimeInMillis());
-        dialog.show();
+        // Set minimum date to today
+        datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
+        datePickerDialog.show();
     }
 
-    private void showTimePicker() {
-        TimePickerDialog dialog = new TimePickerDialog(
+    private void showStartTimePicker() {
+        TimePickerDialog timePickerDialog = new TimePickerDialog(
                 requireContext(),
                 (view, hourOfDay, minute) -> {
-                    selectedDateTime.set(Calendar.HOUR_OF_DAY, hourOfDay);
-                    selectedDateTime.set(Calendar.MINUTE, minute);
-                    updateDateTimeDisplay();
+                    startTimeCalendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                    startTimeCalendar.set(Calendar.MINUTE, minute);
+                    startTimeSelected = true;
+                    updateStartTimeButton();
+                    updateDateTimeSelection();
                 },
-                selectedDateTime.get(Calendar.HOUR_OF_DAY),
-                selectedDateTime.get(Calendar.MINUTE),
-                true);
-
-        dialog.show();
+                startTimeCalendar.get(Calendar.HOUR_OF_DAY),
+                startTimeCalendar.get(Calendar.MINUTE),
+                false);
+        timePickerDialog.show();
     }
 
-    private void updateDateTimeDisplay() {
-        String dateText = dateFormat.format(selectedDateTime.getTime());
-        String timeText = timeFormat.format(selectedDateTime.getTime());
+    private void showEndDatePicker() {
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
+                requireContext(),
+                (view, year, month, dayOfMonth) -> {
+                    endDateCalendar.set(Calendar.YEAR, year);
+                    endDateCalendar.set(Calendar.MONTH, month);
+                    endDateCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                    endDateSelected = true;
+                    updateEndDateButton();
+                    updateDateTimeSelection();
+                },
+                endDateCalendar.get(Calendar.YEAR),
+                endDateCalendar.get(Calendar.MONTH),
+                endDateCalendar.get(Calendar.DAY_OF_MONTH));
 
-        binding.selectedDateTextView.setText(dateText);
-        binding.selectedTimeTextView.setText(timeText);
+        // Set minimum date to start date or today
+        long minDate = startDateSelected ? startDateCalendar.getTimeInMillis() : System.currentTimeMillis();
+        datePickerDialog.getDatePicker().setMinDate(minDate);
+        datePickerDialog.show();
     }
 
-    private void submitReservation() {
-        String customerName = binding.customerNameEditText.getText().toString().trim();
-        String customerEmail = binding.customerEmailEditText.getText().toString().trim();
-        String customerPhone = binding.customerPhoneEditText.getText().toString().trim();
-
-        // Validate input
-        if (customerName.isEmpty()) {
-            binding.customerNameEditText.setError("Name is required");
-            binding.customerNameEditText.requestFocus();
-            return;
-        }
-
-        if (customerEmail.isEmpty()) {
-            binding.customerEmailEditText.setError("Email is required");
-            binding.customerEmailEditText.requestFocus();
-            return;
-        }
-
-        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(customerEmail).matches()) {
-            binding.customerEmailEditText.setError("Please enter a valid email");
-            binding.customerEmailEditText.requestFocus();
-            return;
-        }
-
-        if (customerPhone.isEmpty()) {
-            binding.customerPhoneEditText.setError("Phone number is required");
-            binding.customerPhoneEditText.requestFocus();
-            return;
-        }
-
-        // Check if selected time is in the future
-        Calendar now = Calendar.getInstance();
-        if (selectedDateTime.before(now)) {
-            Toast.makeText(getContext(), "Please select a future date and time", Toast.LENGTH_SHORT).show();
-            return;
-        } // Create reservation object
-        Reservation reservation = new Reservation();
-        reservation.getProperty().setPropertyId(Integer.parseInt(property.getId()));
-        reservation.getProperty().setTitle(property.getTitle());
-        reservation.setCustomerName(customerName);
-        reservation.setCustomerEmail(customerEmail);
-        reservation.setCustomerPhone(customerPhone);
-        reservation.setReservationDateTime(selectedDateTime.getTime());
-        reservation.setStatus("PENDING");
-        reservation.setCreatedAt(new Date());
-
-        // Show loading
-        binding.progressBar.setVisibility(View.VISIBLE);
-        binding.submitReservationButton.setEnabled(false);
-
-        // Submit reservation
-        viewModel.submitReservation(reservation);
+    private void showEndTimePicker() {
+        TimePickerDialog timePickerDialog = new TimePickerDialog(
+                requireContext(),
+                (view, hourOfDay, minute) -> {
+                    endTimeCalendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                    endTimeCalendar.set(Calendar.MINUTE, minute);
+                    endTimeSelected = true;
+                    updateEndTimeButton();
+                    updateDateTimeSelection();
+                },
+                endTimeCalendar.get(Calendar.HOUR_OF_DAY),
+                endTimeCalendar.get(Calendar.MINUTE),
+                false);
+        timePickerDialog.show();
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        binding = null;
+    private void updateStartDateButton() {
+        btnSelectStartDate.setText(dateFormat.format(startDateCalendar.getTime()));
+    }
+
+    private void updateStartTimeButton() {
+        btnSelectStartTime.setText(timeFormat.format(startTimeCalendar.getTime()));
+    }
+
+    private void updateEndDateButton() {
+        btnSelectEndDate.setText(dateFormat.format(endDateCalendar.getTime()));
+    }
+
+    private void updateEndTimeButton() {
+        btnSelectEndTime.setText(timeFormat.format(endTimeCalendar.getTime()));
+    }
+
+    private void updateDateTimeSelection() {
+        if (startDateSelected && startTimeSelected && endDateSelected && endTimeSelected) {
+            // Combine date and time
+            Calendar startDateTime = Calendar.getInstance();
+            startDateTime.set(
+                    startDateCalendar.get(Calendar.YEAR),
+                    startDateCalendar.get(Calendar.MONTH),
+                    startDateCalendar.get(Calendar.DAY_OF_MONTH),
+                    startTimeCalendar.get(Calendar.HOUR_OF_DAY),
+                    startTimeCalendar.get(Calendar.MINUTE));
+
+            Calendar endDateTime = Calendar.getInstance();
+            endDateTime.set(
+                    endDateCalendar.get(Calendar.YEAR),
+                    endDateCalendar.get(Calendar.MONTH),
+                    endDateCalendar.get(Calendar.DAY_OF_MONTH),
+                    endTimeCalendar.get(Calendar.HOUR_OF_DAY),
+                    endTimeCalendar.get(Calendar.MINUTE));
+
+            // Update ViewModel
+            viewModel.setStartDateTime(startDateTime.getTime());
+            viewModel.setEndDateTime(endDateTime.getTime());
+
+            // Update display
+            String dateRangeText = "From: " + dateTimeFormat.format(startDateTime.getTime()) +
+                    "\nTo: " + dateTimeFormat.format(endDateTime.getTime());
+            tvSelectedDateRange.setText(dateRangeText);
+
+            // Enable/disable confirm button
+            btnConfirmReservation.setEnabled(viewModel.canSubmitReservation());
+
+            // Check for conflicts if property is available
+            if (property != null) {
+                viewModel.checkPropertyReservationConflicts(property.getPropertyId());
+            }
+
+        } else {
+            tvSelectedDateRange.setText("Please select start and end date/time");
+            btnConfirmReservation.setEnabled(false);
+        }
+    }
+
+    private String getCurrentUserEmail() {
+        SharedPrefManager sharedPrefManager = SharedPrefManager.getInstance(requireContext());
+        UserSession userSession = sharedPrefManager.readObject("user_session", UserSession.class, null);
+        return userSession != null ? userSession.getEmail() : null;
     }
 }
