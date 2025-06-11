@@ -55,6 +55,13 @@ public class SpecialOffersAdapter extends BasePropertyAdapter<SpecialOffersAdapt
                             // Trigger button animation first
                             offerHolder.animateButtonChange(true);
 
+                            // Calculate new price with discount
+                            Property property = properties.get(i);
+                            double basePrice = property.getPrice();
+                            double discountedPrice = basePrice * (1-discountPercentage/100);
+
+                            // Animate the price change with a counting animation
+                            offerHolder.animatePriceCountdown(basePrice, discountedPrice);
                         }
                     }
                 }
@@ -78,6 +85,15 @@ public class SpecialOffersAdapter extends BasePropertyAdapter<SpecialOffersAdapt
                             offerHolder.animateButtonChange(false);
                             // Then trigger strikethrough removal animation
                             offerHolder.animateStrikethrough(false);
+
+                            // Get original and discounted price
+                            Property property = properties.get(i);
+                            double basePrice = property.getPrice();
+                            double currentDiscount = property.getDiscount();
+                            double discountedPrice = basePrice * (1-currentDiscount/100);
+
+                            // Animate from discounted price back to original price
+                            offerHolder.animatePriceCountdown(discountedPrice, basePrice);
                         }
                     }
                 }
@@ -273,40 +289,33 @@ public class SpecialOffersAdapter extends BasePropertyAdapter<SpecialOffersAdapt
             }
         }
 
-        public void animatePriceChange(String newPrice, boolean isDiscounted) {
-            // Animate price text change
-            ObjectAnimator scaleDown = ObjectAnimator.ofFloat(tvPropertyPrice, "scaleY", 1f, 0.8f);
-            ObjectAnimator fadeOut = ObjectAnimator.ofFloat(tvPropertyPrice, "alpha", 1f, 0.6f);
-            
-            AnimatorSet changeOut = new AnimatorSet();
-            changeOut.playTogether(scaleDown, fadeOut);
-            changeOut.setDuration(150);
-            
-            changeOut.addListener(new android.animation.AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(android.animation.Animator animation) {
-                    tvPropertyPrice.setText(newPrice);
-                    
-                    // Change color if it's a discounted price
-                    if (isDiscounted) {
-                        tvPropertyPrice.setTextColor(context.getColor(R.color.green_700));
-                    } else {
-                        tvPropertyPrice.setTextColor(context.getColor(android.R.color.black));
-                    }
-                    
-                    ObjectAnimator scaleUp = ObjectAnimator.ofFloat(tvPropertyPrice, "scaleY", 0.8f, 1f);
-                    ObjectAnimator fadeIn = ObjectAnimator.ofFloat(tvPropertyPrice, "alpha", 0.6f, 1f);
-                    
-                    AnimatorSet changeIn = new AnimatorSet();
-                    changeIn.playTogether(scaleUp, fadeIn);
-                    changeIn.setDuration(200);
-                    changeIn.setInterpolator(new AccelerateDecelerateInterpolator());
-                    changeIn.start();
+        public void animatePriceCountdown(double startPrice, double endPrice) {
+            NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(Locale.US);
+
+            // Create a value animator to animate from start price to end price
+            ValueAnimator priceAnimator = ValueAnimator.ofFloat((float) startPrice, (float) endPrice);
+            // Increase the duration to 1500ms (1.5 seconds) for a more noticeable counting effect
+            priceAnimator.setDuration(200);
+            priceAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
+
+            priceAnimator.addUpdateListener(animation -> {
+                float animatedValue = (float) animation.getAnimatedValue();
+                // Format the price with currency symbol and display it
+                String formattedPrice = currencyFormat.format(animatedValue) + "/month";
+                tvPropertyPrice.setText(formattedPrice);
+
+                // Change color based on whether we're increasing or decreasing the price
+                if (startPrice > endPrice) {
+                    // Going to a discounted price (green)
+                    tvPropertyPrice.setTextColor(context.getColor(R.color.green_700));
+                } else {
+                    // Going back to original price (black)
+                    tvPropertyPrice.setTextColor(context.getColor(android.R.color.black));
                 }
             });
-            
-            changeOut.start();
+
+            priceAnimator.start();
         }
+
     }
 }
-
