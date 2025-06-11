@@ -164,19 +164,17 @@ public class ReservationRepository {
         }
     }
 
-
-
     public LiveData<Map<User, List<Reservation>>> getAllUserReservationsWithProperty() {
         return Transformations.map(
                 reservationDao.getUsersWithReservationsAndPropertiesInternal(), userWithReservationsList -> {
-            Map<User, List<Reservation>> map = new HashMap<>();
-            for (UserWithReservationsAndProperties item : userWithReservationsList) {
-                User user = UserMapper.toDomain(item.user);
-                List<Reservation> reservations = ReservationMapper.toDomainWithPropertyList(item.reservations);
-                map.put(user, reservations);
-            }
-            return map;
-        });
+                    Map<User, List<Reservation>> map = new HashMap<>();
+                    for (UserWithReservationsAndProperties item : userWithReservationsList) {
+                        User user = UserMapper.toDomain(item.user);
+                        List<Reservation> reservations = ReservationMapper.toDomainWithPropertyList(item.reservations);
+                        map.put(user, reservations);
+                    }
+                    return map;
+                });
     }
 
     /**
@@ -198,10 +196,40 @@ public class ReservationRepository {
                 });
     }
 
-
     public void deleteDuplicateReservations() {
         Executors.newSingleThreadExecutor().execute(reservationDao::deleteDuplicateReservations);
     }
 
+    /**
+     * Check for conflicting reservations for a specific property and date range
+     */
+    public void checkReservationConflicts(int propertyId, Date startDate, Date endDate,
+            ConflictCheckCallback callback) {
+        Executors.newSingleThreadExecutor().execute(() -> {
+            try {
+                int conflictCount = reservationDao.getConflictingReservationsCount(propertyId, startDate, endDate);
+                List<ReservationEntity> conflicts = reservationDao.getConflictingReservations(propertyId, startDate,
+                        endDate);
 
+                boolean hasConflict = conflictCount > 0;
+                String message = hasConflict
+                        ? "This time slot conflicts with " + conflictCount + " existing reservation"
+                                + (conflictCount > 1 ? "s" : "")
+                        : "";
+
+                callback.onResult(hasConflict, message, ReservationMapper.toDomainList(conflicts));
+            } catch (Exception e) {
+                callback.onError(e);
+            }
+        });
+    }
+
+    /**
+     * Callback interface for conflict checking
+     */
+    public interface ConflictCheckCallback {
+        void onResult(boolean hasConflict, String message, List<Reservation> conflictingReservations);
+
+        void onError(Exception error);
+    }
 }

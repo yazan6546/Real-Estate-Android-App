@@ -23,135 +23,151 @@ import java.util.Map;
 @Dao
 public interface ReservationDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertReservation(ReservationEntity reservation);
+        @Insert(onConflict = OnConflictStrategy.REPLACE)
+        void insertReservation(ReservationEntity reservation);
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    List<Long> insertAll(List<ReservationEntity> reservations);
+        @Insert(onConflict = OnConflictStrategy.REPLACE)
+        List<Long> insertAll(List<ReservationEntity> reservations);
 
-    @Update
-    void updateReservation(ReservationEntity reservation);
+        @Update
+        void updateReservation(ReservationEntity reservation);
 
-    @Delete
-    void deleteReservation(ReservationEntity reservation);
+        @Delete
+        void deleteReservation(ReservationEntity reservation);
 
-    @Query("SELECT * FROM reservations WHERE reservation_id = :id")
-    LiveData<ReservationEntity> getReservationById(int id);
+        @Query("SELECT * FROM reservations WHERE reservation_id = :id")
+        LiveData<ReservationEntity> getReservationById(int id);
 
-    @Query("SELECT * FROM reservations")
-    LiveData<List<ReservationEntity>> getAllReservations();
+        @Query("SELECT * FROM reservations")
+        LiveData<List<ReservationEntity>> getAllReservations();
 
-    @Query("SELECT * FROM reservations WHERE status = :status")
-    LiveData<List<ReservationEntity>> getReservationsByStatus(String status);
+        @Query("SELECT * FROM reservations WHERE status = :status")
+        LiveData<List<ReservationEntity>> getReservationsByStatus(String status);
 
-    @Query("SELECT * FROM reservations WHERE email = :userEmail")
-    LiveData<List<ReservationEntity>> getReservationsByUserId(String userEmail);
+        @Query("SELECT * FROM reservations WHERE email = :userEmail")
+        LiveData<List<ReservationEntity>> getReservationsByUserId(String userEmail);
 
-    /**
-     * Deletes duplicate reservations keeping only the record with the lowest reservation_id
-     * when all other fields are identical.
-     *
-     * @return The number of deleted duplicate records
-     */
-    @Query("DELETE FROM reservations WHERE reservation_id IN " +
-           "(SELECT r1.reservation_id FROM reservations r1 " +
-           "JOIN reservations r2 ON " +
-           "r1.email = r2.email AND " +
-           "r1.property_id = r2.property_id AND " +
-           "r1.start_date = r2.start_date AND " +
-           "r1.end_date = r2.end_date AND " +
-           "r1.status = r2.status " +
-           "WHERE r1.reservation_id > r2.reservation_id)")
-    int deleteDuplicateReservations();
+        /**
+         * Deletes duplicate reservations keeping only the record with the lowest
+         * reservation_id
+         * when all other fields are identical.
+         *
+         * @return The number of deleted duplicate records
+         */
+        @Query("DELETE FROM reservations WHERE reservation_id IN " +
+                        "(SELECT r1.reservation_id FROM reservations r1 " +
+                        "JOIN reservations r2 ON " +
+                        "r1.email = r2.email AND " +
+                        "r1.property_id = r2.property_id AND " +
+                        "r1.start_date = r2.start_date AND " +
+                        "r1.end_date = r2.end_date AND " +
+                        "r1.status = r2.status " +
+                        "WHERE r1.reservation_id > r2.reservation_id)")
+        int deleteDuplicateReservations();
 
-    /**
-     * Query to get reservations by date range
-     */
-    @Query("SELECT * FROM reservations WHERE start_date >= :startDate AND end_date <= :endDate")
-    LiveData<List<ReservationEntity>> getReservationsByDateRange(Date startDate, Date endDate);
+        /**
+         * Query to get reservations by date range
+         */
+        @Query("SELECT * FROM reservations WHERE start_date >= :startDate AND end_date <= :endDate")
+        LiveData<List<ReservationEntity>> getReservationsByDateRange(Date startDate, Date endDate);
 
-    /**
-     * Transaction query to get reservation with property details by reservation ID
-     */
+        /**
+         * Transaction query to get reservation with property details by reservation ID
+         */
 
-    @Transaction
-    @Query("SELECT * FROM reservations WHERE reservation_id = :reservationId")
-    LiveData<ReservationWithPropertyEntity> getReservationWithPropertyById(int reservationId);
+        @Transaction
+        @Query("SELECT * FROM reservations WHERE reservation_id = :reservationId")
+        LiveData<ReservationWithPropertyEntity> getReservationWithPropertyById(int reservationId);
 
-    /**
-     * Query to get reservation by property ID
-     */
+        /**
+         * Query to get reservation by property ID
+         */
 
-    @Query("SELECT * FROM reservations WHERE property_id = :propertyId")
-    LiveData<List<ReservationEntity>> getReservationsByPropertyId(int propertyId);
+        @Query("SELECT * FROM reservations WHERE property_id = :propertyId")
+        LiveData<List<ReservationEntity>> getReservationsByPropertyId(int propertyId);
 
-    /**
-     * Transaction query to get reservations with property details for a specific
-     * user
-     */
-    @Transaction
-    @Query("SELECT * FROM reservations WHERE email = :userEmail")
-    LiveData<List<ReservationWithPropertyEntity>> getReservationsWithPropertyByUserId(String userEmail);
+        /**
+         * Transaction query to get reservations with property details for a specific
+         * user
+         */
+        @Transaction
+        @Query("SELECT * FROM reservations WHERE email = :userEmail")
+        LiveData<List<ReservationWithPropertyEntity>> getReservationsWithPropertyByUserId(String userEmail);
 
-    /**
-     * Transaction query to get reservations with property details for a specific
-     * user filtered by status
-     */
-    @Transaction
-    @Query("SELECT * FROM reservations WHERE email = :userEmail AND status = :status")
-    LiveData<List<ReservationWithPropertyEntity>> getReservationsWithPropertyByUserIdAndStatus(String userEmail,
-            String status);
+        /**
+         * Transaction query to get reservations with property details for a specific
+         * user filtered by status
+         */
+        @Transaction
+        @Query("SELECT * FROM reservations WHERE email = :userEmail AND status = :status")
+        LiveData<List<ReservationWithPropertyEntity>> getReservationsWithPropertyByUserIdAndStatus(String userEmail,
+                        String status);
 
-    /**
-     * Transaction query to get all reservations with property details
-     */
-    @Transaction
-    @Query("SELECT * FROM reservations")
-    LiveData<List<ReservationWithPropertyEntity>> getAllReservationsWithProperty();
+        /**
+         * Transaction query to get all reservations with property details
+         */
+        @Transaction
+        @Query("SELECT * FROM reservations")
+        LiveData<List<ReservationWithPropertyEntity>> getAllReservationsWithProperty();
 
-    /**
-     * Transaction query to get all reservations with property details filtered by
-     * status
-     */
-    @Transaction
-    @Query("SELECT * FROM reservations WHERE status = :status")
-    LiveData<List<ReservationWithPropertyEntity>> getAllReservationsWithPropertyByStatus(String status);
+        /**
+         * Transaction query to get all reservations with property details filtered by
+         * status
+         */
+        @Transaction
+        @Query("SELECT * FROM reservations WHERE status = :status")
+        LiveData<List<ReservationWithPropertyEntity>> getAllReservationsWithPropertyByStatus(String status);
 
-    @Query("SELECT COUNT(*) FROM reservations")
-    LiveData<Integer> getReservationCount();
+        @Query("SELECT COUNT(*) FROM reservations")
+        LiveData<Integer> getReservationCount();
 
-    // Count the reservations in all customer countries
-    @Query("SELECT country, COUNT(country) as count" +
-            " FROM reservations r " +
-            " JOIN users u ON r.email = u.email " +
-            "GROUP BY u.country" +
-            " ORDER BY COUNT(*) DESC")
-    LiveData<List<CountryCount>> getReservationCountByCountry();
+        // Count the reservations in all customer countries
+        @Query("SELECT country, COUNT(country) as count" +
+                        " FROM reservations r " +
+                        " JOIN users u ON r.email = u.email " +
+                        "GROUP BY u.country" +
+                        " ORDER BY COUNT(*) DESC")
+        LiveData<List<CountryCount>> getReservationCountByCountry();
 
-    /**
-     * Get reservations by user email (synchronous method for repository)
-     */
-    @Query("SELECT * FROM reservations WHERE email = :userEmail")
-    List<ReservationEntity> getReservationsByUserEmail(String userEmail);
+        /**
+         * Get reservations by user email (synchronous method for repository)
+         */
+        @Query("SELECT * FROM reservations WHERE email = :userEmail")
+        List<ReservationEntity> getReservationsByUserEmail(String userEmail);
 
-    /**
-     * Delete reservation by ID
-     */
-    @Query("DELETE FROM reservations WHERE reservation_id = :reservationId")
-    void deleteReservationById(int reservationId);
+        /**
+         * Delete reservation by ID
+         */
+        @Query("DELETE FROM reservations WHERE reservation_id = :reservationId")
+        void deleteReservationById(int reservationId);
 
+        /**
+         * Check for overlapping reservations for a specific property
+         * Returns count of conflicting reservations
+         */
+        @Query("SELECT COUNT(*) FROM reservations " +
+                        "WHERE property_id = :propertyId " +
+                        "AND status IN ('Confirmed', 'Pending') " +
+                        "AND NOT (end_date <= :startDate OR start_date >= :endDate)")
+        int getConflictingReservationsCount(int propertyId, Date startDate, Date endDate);
 
+        /**
+         * Get conflicting reservations for a specific property and date range
+         */
+        @Query("SELECT * FROM reservations " +
+                        "WHERE property_id = :propertyId " +
+                        "AND status IN ('Confirmed', 'Pending') " +
+                        "AND NOT (end_date <= :startDate OR start_date >= :endDate)")
+        List<ReservationEntity> getConflictingReservations(int propertyId, Date startDate, Date endDate);
 
-    @Transaction
-    @Query("SELECT * FROM users WHERE is_admin = 0 ORDER BY first_name, last_name")
-    LiveData<List<UserWithReservationsAndProperties>> getUsersWithReservationsAndPropertiesInternal();
+        @Transaction
+        @Query("SELECT * FROM users WHERE is_admin = 0 ORDER BY first_name, last_name")
+        LiveData<List<UserWithReservationsAndProperties>> getUsersWithReservationsAndPropertiesInternal();
 
-
-
-    @Transaction
-    @Query("SELECT DISTINCT u.* FROM users u " +
-            "INNER JOIN reservations r ON u.email = r.email " +
-            "WHERE u.is_admin = 0 AND r.status = :status " +
-            "ORDER BY u.first_name, u.last_name")
-    LiveData<List<UserWithReservationsAndProperties>> getUsersWithReservationsByStatus(String status);
+        @Transaction
+        @Query("SELECT DISTINCT u.* FROM users u " +
+                        "INNER JOIN reservations r ON u.email = r.email " +
+                        "WHERE u.is_admin = 0 AND r.status = :status " +
+                        "ORDER BY u.first_name, u.last_name")
+        LiveData<List<UserWithReservationsAndProperties>> getUsersWithReservationsByStatus(String status);
 }

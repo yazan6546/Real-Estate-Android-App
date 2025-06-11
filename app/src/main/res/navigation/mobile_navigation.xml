@@ -15,26 +15,10 @@
         android:label="@string/menu_properties"
         tools:layout="@layout/fragment_properties" >
         <action
-            android:id="@+id/action_nav_properties_to_propertyDetailFragment"
-            app:destination="@id/propertyDetailFragment" />
-        <action
             android:id="@+id/action_nav_properties_to_reservationFragment"
             app:destination="@id/reservationFragment" />
     </fragment>
-    
-    <fragment
-        android:id="@+id/propertyDetailFragment"
-        android:name="com.example.realestate.ui.user.properties.PropertyDetailFragment"
-        android:label="Property Details"
-        tools:layout="@layout/fragment_property_detail" >
-        <action
-            android:id="@+id/action_propertyDetailFragment_to_reservationFragment"
-            app:destination="@id/reservationFragment" />
-        <argument
-            android:name="property"
-            app:argType="com.example.realestate.domain.model.Property" />
-    </fragment>
-    
+
     <fragment
         android:id="@+id/reservationFragment"
         android:name="com.example.realestate.ui.user.reservation.ReservationFragment"
@@ -50,9 +34,6 @@
         android:name="com.example.realestate.ui.user.favorites.FavoritesFragment"
         android:label="@string/menu_favorites"
         tools:layout="@layout/fragment_favorites" >
-        <action
-            android:id="@+id/action_nav_favorites_to_propertyDetailFragment"
-            app:destination="@id/propertyDetailFragment" />
         <action
             android:id="@+id/action_nav_favorites_to_reservationFragment"
             app:destination="@id/reservationFragment" />
@@ -74,9 +55,6 @@
         android:name="com.example.realestate.ui.user.featured.FeaturedPropertiesFragment"
         android:label="@string/menu_featured_properties"
         tools:layout="@layout/fragment_featured_properties" >
-        <action
-            android:id="@+id/action_nav_featured_properties_to_propertyDetailFragment"
-            app:destination="@id/propertyDetailFragment" />
         <action
             android:id="@+id/action_nav_featured_properties_to_reservationFragment"
             app:destination="@id/reservationFragment" />
