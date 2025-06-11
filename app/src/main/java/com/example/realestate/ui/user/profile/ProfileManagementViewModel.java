@@ -87,8 +87,14 @@ public class ProfileManagementViewModel extends AndroidViewModel {
     }
     public Uri getProfileImageUri() {
         return profileImageUri;
-    } // Load user profile
+    }
 
+    // Reset update state to IDLE
+    public void resetUpdateState() {
+        updateState.postValue(UpdateState.IDLE);
+    }
+
+    // Load user profile
     public void updateProfile(String firstName, String lastName, String phone,
             User.Gender gender, String country, String city) {
 

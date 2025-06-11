@@ -316,6 +316,16 @@ public class ProfileManagementFragment extends Fragment {
         });
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        // Reset update state to IDLE when leaving the fragment
+        // This prevents the success toast from showing again when returning to the fragment
+        if (viewModel != null) {
+            viewModel.resetUpdateState();
+        }
+    }
+
     private void populateUserData(User user) {
         firstNameInput.setText(user.getFirstName());
         lastNameInput.setText(user.getLastName());
