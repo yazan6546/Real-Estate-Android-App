@@ -110,7 +110,9 @@ public class PropertiesViewModel extends ViewModel {
             min = 0.0;
         if (max == null)
             max = Double.MAX_VALUE;
-        return property.getPrice() >= min && property.getPrice() <= max;
+
+        double discountedPrice = property.getPrice() * (1 - property.getDiscount() / 100);
+        return discountedPrice >= min && discountedPrice <= max;
     }
 
     private void extractFilterOptions() {
