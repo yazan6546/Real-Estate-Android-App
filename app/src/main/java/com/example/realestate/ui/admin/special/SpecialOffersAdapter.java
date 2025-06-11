@@ -8,7 +8,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -54,6 +57,8 @@ public class SpecialOffersAdapter extends BasePropertyAdapter<SpecialOffersAdapt
                             offerHolder.animateStrikethrough(true);
                             // Trigger button animation first
                             offerHolder.animateButtonChange(true);
+                            // Trigger star effect animation
+                            offerHolder.animateStarEffect(true);
 
                             // Calculate new price with discount
                             Property property = properties.get(i);
@@ -85,6 +90,8 @@ public class SpecialOffersAdapter extends BasePropertyAdapter<SpecialOffersAdapt
                             offerHolder.animateButtonChange(false);
                             // Then trigger strikethrough removal animation
                             offerHolder.animateStrikethrough(false);
+                            // Stop star effect animation
+                            offerHolder.animateStarEffect(false);
 
                             // Get original and discounted price
                             Property property = properties.get(i);
@@ -114,6 +121,7 @@ public class SpecialOffersAdapter extends BasePropertyAdapter<SpecialOffersAdapt
         private SeekBar seekBarDiscount;
         private TextView tvDiscountAmount;
         private Button btnCreateOffer;
+        private ImageView ivFeaturedStar;
         private double currentDiscount = 0;
 
         public SpecialOfferViewHolder(@NonNull View itemView, Context context) {
@@ -126,6 +134,7 @@ public class SpecialOffersAdapter extends BasePropertyAdapter<SpecialOffersAdapt
             seekBarDiscount = itemView.findViewById(R.id.seekBarDiscount);
             tvDiscountAmount = itemView.findViewById(R.id.tvDiscountAmount);
             btnCreateOffer = itemView.findViewById(R.id.btnCreateOffer);
+            ivFeaturedStar = itemView.findViewById(R.id.ivFeaturedStar);
         }
 
         private void setupSeekBarListener() {
@@ -160,8 +169,12 @@ public class SpecialOffersAdapter extends BasePropertyAdapter<SpecialOffersAdapt
             // Override default behavior for discount text
             if (property.getDiscount() > 0) {
                 tvDiscountText.setText("Special Offer Active!");
+                // Show star with sparkle effect when offer is active
+                animateStarEffect(true);
             } else {
                 tvDiscountText.setText("Create Special Offer!");
+                // Hide star when no offer
+                animateStarEffect(false);
             }
 
         }
@@ -315,6 +328,64 @@ public class SpecialOffersAdapter extends BasePropertyAdapter<SpecialOffersAdapt
             });
 
             priceAnimator.start();
+        }
+
+        public void animateStarEffect(boolean show) {
+            if (show) {
+                // Show the star with appear animation
+                ivFeaturedStar.setVisibility(View.VISIBLE);
+                ivFeaturedStar.clearAnimation(); // Clear any existing animations
+                
+                // Load and start the appear animation
+                Animation appearAnimation = AnimationUtils.loadAnimation(context, R.anim.star_appear_animation);
+                appearAnimation.setFillAfter(true);
+                
+                // After appear animation, start the sparkle effect
+                appearAnimation.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {}
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        // Start the continuous sparkle animation
+                        Animation sparkleAnimation = AnimationUtils.loadAnimation(context, R.anim.star_sparkle_animation);
+                        sparkleAnimation.setFillAfter(true);
+                        ivFeaturedStar.startAnimation(sparkleAnimation);
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {}
+                });
+                
+                ivFeaturedStar.startAnimation(appearAnimation);
+                
+            } else {
+                // Clear any ongoing animations first
+                ivFeaturedStar.clearAnimation();
+                
+                // Hide the star with fade out animation
+                ObjectAnimator fadeOut = ObjectAnimator.ofFloat(ivFeaturedStar, "alpha", 1f, 0f);
+                ObjectAnimator scaleOut = ObjectAnimator.ofFloat(ivFeaturedStar, "scaleX", 1f, 0f);
+                ObjectAnimator scaleOutY = ObjectAnimator.ofFloat(ivFeaturedStar, "scaleY", 1f, 0f);
+                
+                AnimatorSet hideSet = new AnimatorSet();
+                hideSet.playTogether(fadeOut, scaleOut, scaleOutY);
+                hideSet.setDuration(300);
+                
+                hideSet.addListener(new android.animation.AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(android.animation.Animator animation) {
+                        ivFeaturedStar.setVisibility(View.GONE);
+                        ivFeaturedStar.clearAnimation();
+                        // Reset scale and alpha for next time
+                        ivFeaturedStar.setScaleX(1f);
+                        ivFeaturedStar.setScaleY(1f);
+                        ivFeaturedStar.setAlpha(1f);
+                    }
+                });
+                
+                hideSet.start();
+            }
         }
 
     }

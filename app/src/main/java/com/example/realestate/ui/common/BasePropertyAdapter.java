@@ -166,3 +166,4 @@ public abstract class BasePropertyAdapter<VH extends BasePropertyAdapter.BasePro
         }
     }
 }
+
