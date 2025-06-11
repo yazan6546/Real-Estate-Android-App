@@ -39,6 +39,7 @@ public class ConnectApiActivity extends AppCompatActivity {
         connectButton.setOnClickListener(v -> {
             viewModel.connect();
 //            viewModel.load_database();
+
         });
 
         viewModel.connectionState.observe(this, state -> {

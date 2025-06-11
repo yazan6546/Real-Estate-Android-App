@@ -37,6 +37,7 @@ public interface PropertyDao {
      @Update
      void updateExistingProperties(List<PropertyEntity> properties);
 
+
      @Insert(onConflict = OnConflictStrategy.REPLACE)
      @Transaction
      void insert(PropertyEntity property);
@@ -46,4 +47,17 @@ public interface PropertyDao {
 
      @Query("SELECT COUNT(*) FROM properties")
      LiveData<Integer> getPropertyCount();
+
+     /**
+      * Updates properties excluding discount and isFeatured fields using target entity
+      */
+     @Update(entity = PropertyEntity.class)
+     void updatePropertiesPartially(List<PropertyUpdate> properties);
+
+     /**
+      * Updates a single property excluding discount and isFeatured fields using target entity
+      */
+     @Update(entity = PropertyEntity.class)
+     void updatePropertyPartially(PropertyUpdate property);
 }
+

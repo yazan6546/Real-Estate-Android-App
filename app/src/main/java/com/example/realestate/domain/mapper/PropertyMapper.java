@@ -2,6 +2,7 @@ package com.example.realestate.domain.mapper;
 
 import com.example.realestate.data.api.dto.PropertyDTO;
 import com.example.realestate.data.db.entity.PropertyEntity;
+import com.example.realestate.data.db.entity.PropertyUpdate;
 import com.example.realestate.domain.model.Property;
 
 import java.util.List;
@@ -87,5 +88,37 @@ public class PropertyMapper {
         entity.isFeatured = property.isFeatured();
         entity.discount = property.getDiscount();
         return entity;
+    }
+
+    /**
+     * Converts a domain property to a property update entity
+     * Excludes isFeatured and discount fields for partial updates
+     */
+    public static PropertyUpdate toPropertyUpdate(PropertyEntity property) {
+        if (property == null) return null;
+
+        PropertyUpdate update = new PropertyUpdate();
+        update.propertyId = property.getPropertyId();
+        update.title = property.getTitle();
+        update.description = property.getDescription();
+        update.price = property.getPrice();
+        update.location = property.getLocation();
+        update.image = property.getImageUrl();
+        update.type = property.getType();
+        update.bedrooms = property.getBedrooms();
+        update.bathrooms = property.getBathrooms();
+        update.area = property.getArea();
+        return update;
+    }
+
+    /**
+     * Converts a list of domain properties to property update entities
+     */
+    public static List<PropertyUpdate> toPropertyUpdateList(List<PropertyEntity> properties) {
+        if (properties == null) return null;
+
+        return properties.stream()
+                .map(PropertyMapper::toPropertyUpdate)
+                .collect(Collectors.toList());
     }
 }
