@@ -30,6 +30,7 @@ import com.example.realestate.domain.service.UserSession;
 import androidx.navigation.Navigation;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class PropertiesFragment extends Fragment implements PropertyAdapter.OnPropertyActionListener {
 
@@ -47,6 +48,8 @@ public class PropertiesFragment extends Fragment implements PropertyAdapter.OnPr
     private TextView tvPropertiesCount;
     private RecyclerView recyclerViewProperties;
     private LinearLayout layoutEmptyState;
+
+    static AtomicInteger successToastCounter = new AtomicInteger(0);
 //    private ProgressBar progressBar;
 
     @Override
@@ -58,6 +61,8 @@ public class PropertiesFragment extends Fragment implements PropertyAdapter.OnPr
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
             @Nullable Bundle savedInstanceState) {
+
+        successToastCounter.set(0);
         return inflater.inflate(R.layout.fragment_properties, container, false);
     }
 
@@ -119,7 +124,9 @@ public class PropertiesFragment extends Fragment implements PropertyAdapter.OnPr
         });
 
         // Setup filter button
-        btnFilter.setOnClickListener(v -> applyFilters());
+        btnFilter.setOnClickListener(v ->  {
+            applyFilters();
+        });
     }
 
     private void applyFilters() {
@@ -188,13 +195,13 @@ public class PropertiesFragment extends Fragment implements PropertyAdapter.OnPr
 
         // Observe error messages
         viewModel.getErrorMessage().observe(getViewLifecycleOwner(), errorMessage -> {
-            if (errorMessage != null && !errorMessage.isEmpty()) {
+            if (errorMessage != null && !errorMessage.isEmpty() && successToastCounter.get() > 0) {
                 if (errorMessage.contains("already in favorites")) {
                     Toast.makeText(requireContext(), "Property is already in your favorites", Toast.LENGTH_SHORT)
                             .show();
-                } else if (errorMessage.contains("Failed to add to favorites")) {
+                } else if (errorMessage.contains("Failed to add to favorites") && successToastCounter.get() > 0) {
                     Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_LONG).show();
-                } else {
+                } else if (successToastCounter.get() > 0) {
                     Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show();
                 }
             }
@@ -202,7 +209,7 @@ public class PropertiesFragment extends Fragment implements PropertyAdapter.OnPr
 
         // Observe success messages
         viewModel.getSuccessMessage().observe(getViewLifecycleOwner(), successMessage -> {
-            if (successMessage != null && !successMessage.isEmpty()) {
+            if (successMessage != null && !successMessage.isEmpty() && successToastCounter.get() > 0) {
                 Toast.makeText(requireContext(), successMessage, Toast.LENGTH_SHORT).show();
                 adapter.notifyDataSetChanged();
             }
