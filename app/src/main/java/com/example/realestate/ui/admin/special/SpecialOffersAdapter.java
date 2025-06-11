@@ -4,11 +4,12 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
-import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SeekBar;
@@ -17,20 +18,16 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.example.realestate.R;
 import com.example.realestate.domain.model.Property;
+import com.example.realestate.ui.common.BasePropertyAdapter;
 
 import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
-public class SpecialOffersAdapter extends RecyclerView.Adapter<SpecialOffersAdapter.SpecialOfferViewHolder> {
+public class SpecialOffersAdapter extends BasePropertyAdapter<SpecialOffersAdapter.SpecialOfferViewHolder> {
 
-    private List<Property> properties = new ArrayList<>();
     private OnOfferActionListener listener;
-    private Context context;
 
     public interface OnOfferActionListener {
         void onToggleOffer(Property property, double discountPercentage);
@@ -38,16 +35,11 @@ public class SpecialOffersAdapter extends RecyclerView.Adapter<SpecialOffersAdap
     }
 
     public SpecialOffersAdapter(Context context) {
-        this.context = context;
+        super(context);
     }
 
     public void setOnOfferActionListener(OnOfferActionListener listener) {
         this.listener = listener;
-    }
-
-    public void setProperties(List<Property> properties) {
-        this.properties = properties != null ? properties : new ArrayList<>();
-        notifyDataSetChanged();
     }
 
     public void animateOfferCreation(int propertyId, double discountPercentage) {
@@ -61,10 +53,20 @@ public class SpecialOffersAdapter extends RecyclerView.Adapter<SpecialOffersAdap
                         RecyclerView.ViewHolder holder = recyclerView.findViewHolderForAdapterPosition(i);
                         if (holder instanceof SpecialOfferViewHolder) {
                             SpecialOfferViewHolder offerHolder = (SpecialOfferViewHolder) holder;
-                            // Trigger button animation first
-                            offerHolder.animateButtonChange(true);
                             // Then trigger strikethrough and price animations
                             offerHolder.animateStrikethrough(true);
+                            // Trigger button animation first
+                            offerHolder.animateButtonChange(true);
+                            // Trigger star effect animation
+                            offerHolder.animateStarEffect(true);
+
+                            // Calculate new price with discount
+                            Property property = properties.get(i);
+                            double basePrice = property.getPrice();
+                            double discountedPrice = basePrice * (1-discountPercentage/100);
+
+                            // Animate the price change with a counting animation
+                            offerHolder.animatePriceCountdown(basePrice, discountedPrice);
                         }
                     }
                 }
@@ -88,6 +90,17 @@ public class SpecialOffersAdapter extends RecyclerView.Adapter<SpecialOffersAdap
                             offerHolder.animateButtonChange(false);
                             // Then trigger strikethrough removal animation
                             offerHolder.animateStrikethrough(false);
+                            // Stop star effect animation
+                            offerHolder.animateStarEffect(false);
+
+                            // Get original and discounted price
+                            Property property = properties.get(i);
+                            double basePrice = property.getPrice();
+                            double currentDiscount = property.getDiscount();
+                            double discountedPrice = basePrice * (1-currentDiscount/100);
+
+                            // Animate from discounted price back to original price
+                            offerHolder.animatePriceCountdown(discountedPrice, basePrice);
                         }
                     }
                 }
@@ -101,64 +114,27 @@ public class SpecialOffersAdapter extends RecyclerView.Adapter<SpecialOffersAdap
     public SpecialOfferViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_special_offer, parent, false);
-        return new SpecialOfferViewHolder(view);
+        return new SpecialOfferViewHolder(view, context);
     }
 
-    @Override
-    public void onBindViewHolder(@NonNull SpecialOfferViewHolder holder, int position) {
-        Property property = properties.get(position);
-        holder.bind(property);
-    }
-
-    @Override
-    public int getItemCount() {
-        return properties.size();
-    }
-
-    class SpecialOfferViewHolder extends RecyclerView.ViewHolder {
-
-        private ImageView ivPropertyImage;
-        private TextView tvDiscountBadge;
-        private ImageView ivFeaturedStar;
-        private TextView tvPropertyType;
-        private TextView tvDiscountText;
-        private TextView tvOriginalPrice;
-        private TextView tvPropertyPrice;
-        private TextView tvPropertyTitle;
-        private TextView tvPropertyDescription;
-        private TextView tvPropertyLocation;
-        private TextView tvBedrooms;
-        private TextView tvBathrooms;
-        private TextView tvArea;
+    class SpecialOfferViewHolder extends BasePropertyAdapter.BasePropertyViewHolder {
         private SeekBar seekBarDiscount;
         private TextView tvDiscountAmount;
         private Button btnCreateOffer;
-
+        private ImageView ivFeaturedStar;
         private double currentDiscount = 0;
 
-        public SpecialOfferViewHolder(@NonNull View itemView) {
-            super(itemView);
-            initViews(itemView);
+        public SpecialOfferViewHolder(@NonNull View itemView, Context context) {
+            super(itemView, context);
+            initAdditionalViews(itemView);
             setupSeekBarListener();
         }
 
-        private void initViews(View itemView) {
-            ivPropertyImage = itemView.findViewById(R.id.ivPropertyImage);
-            tvDiscountBadge = itemView.findViewById(R.id.tvDiscountBadge);
-            ivFeaturedStar = itemView.findViewById(R.id.ivFeaturedStar);
-            tvPropertyType = itemView.findViewById(R.id.tvPropertyType);
-            tvDiscountText = itemView.findViewById(R.id.tvDiscountText);
-            tvOriginalPrice = itemView.findViewById(R.id.tvOriginalPrice);
-            tvPropertyPrice = itemView.findViewById(R.id.tvPropertyPrice);
-            tvPropertyTitle = itemView.findViewById(R.id.tvPropertyTitle);
-            tvPropertyDescription = itemView.findViewById(R.id.tvPropertyDescription);
-            tvPropertyLocation = itemView.findViewById(R.id.tvPropertyLocation);
-            tvBedrooms = itemView.findViewById(R.id.tvBedrooms);
-            tvBathrooms = itemView.findViewById(R.id.tvBathrooms);
-            tvArea = itemView.findViewById(R.id.tvArea);
+        private void initAdditionalViews(View itemView) {
             seekBarDiscount = itemView.findViewById(R.id.seekBarDiscount);
             tvDiscountAmount = itemView.findViewById(R.id.tvDiscountAmount);
             btnCreateOffer = itemView.findViewById(R.id.btnCreateOffer);
+            ivFeaturedStar = itemView.findViewById(R.id.ivFeaturedStar);
         }
 
         private void setupSeekBarListener() {
@@ -179,46 +155,31 @@ public class SpecialOffersAdapter extends RecyclerView.Adapter<SpecialOffersAdap
             });
         }
 
-        public void bind(Property property) {
-            // Basic property information
-            tvPropertyTitle.setText(property.getTitle());
-            tvPropertyDescription.setText(property.getDescription());
-            tvPropertyLocation.setText(property.getLocation());
-            tvPropertyType.setText(property.getType());
-
-            // Property details
-            tvBedrooms.setText(property.getBedrooms() + " Beds");
-            tvBathrooms.setText(property.getBathrooms() + " Baths");
-            tvArea.setText(property.getArea());
-
+        @Override
+        protected void bindSpecificData(Property property) {
             // Set current discount from property
             currentDiscount = property.getDiscount();
             seekBarDiscount.setProgress((int) currentDiscount);
 
-            // Setup pricing and discount display
-            setupPricing(property);
+            // Special offer-specific handling
             updateDiscountDisplay();
-
-            // Featured property indicator
-            if (property.isFeatured()) {
-                ivFeaturedStar.setVisibility(View.VISIBLE);
-            } else {
-                ivFeaturedStar.setVisibility(View.GONE);
-            }
-
-            // Load property image if available
-            if (property.getImageUrl() != null && !property.getImageUrl().isEmpty()) {
-                Glide.with(itemView.getContext())
-                        .load(property.getImageUrl())
-                        .placeholder(R.drawable.ic_building)
-                        .error(R.drawable.ic_building)
-                        .into(ivPropertyImage);
-            } else {
-                ivPropertyImage.setImageResource(R.drawable.ic_building);
-            }
-
-            // Setup button behavior
             updateButtonState(property);
+            setupButtonClickListener(property);
+
+            // Override default behavior for discount text
+            if (property.getDiscount() > 0) {
+                tvDiscountText.setText("Special Offer Active!");
+                // Show star with sparkle effect when offer is active
+                animateStarEffect(true);
+            } else {
+                tvDiscountText.setText("Create Special Offer!");
+                // Hide star when no offer
+                animateStarEffect(false);
+            }
+
+        }
+
+        private void setupButtonClickListener(Property property) {
             btnCreateOffer.setOnClickListener(v -> {
                 if (listener != null) {
                     if (property.getDiscount() > 0) {
@@ -246,49 +207,11 @@ public class SpecialOffersAdapter extends RecyclerView.Adapter<SpecialOffersAdap
             });
         }
 
-        private void setupPricing(Property property) {
-            NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(Locale.US);
-            double currentPrice = property.getPrice();
-            double discount = property.getDiscount();
-
-            if (discount > 0) {
-
-                // Show discount badge
-                tvDiscountBadge.setText(String.format("%.0f%% OFF", discount));
-                tvDiscountBadge.setVisibility(View.VISIBLE);
-
-                // Show discount text
-                tvDiscountText.setText("Special Offer Active!");
-                tvDiscountText.setVisibility(View.VISIBLE);
-
-                // Show original price with strikethrough
-                tvOriginalPrice.setText(currencyFormat.format(currentPrice) + "/month");
-                tvOriginalPrice.setPaintFlags(tvOriginalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-                tvOriginalPrice.setVisibility(View.VISIBLE);
-
-                // Show discounted price (current price)
-                tvPropertyPrice.setText(currencyFormat.format(currentPrice * (1-discount/100)) + "/month");
-            } else {
-                // No discount - show regular price
-                tvDiscountBadge.setText("0% OFF");
-                tvDiscountBadge.setVisibility(View.VISIBLE);
-                tvDiscountText.setText("Create Special Offer!");
-                tvDiscountText.setVisibility(View.VISIBLE);
-                tvOriginalPrice.setVisibility(View.GONE);
-
-                // Clear any previous paint flags
-                tvOriginalPrice.setPaintFlags(tvOriginalPrice.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
-
-                tvPropertyPrice.setText(currencyFormat.format(currentPrice) + "/month");
-            }
-        }
-
         private void updateDiscountDisplay() {
             NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(Locale.US);
             Property property = properties.get(getAdapterPosition());
             double basePrice = property.getPrice();
             
-
             if (currentDiscount > 0) {
                 double discountedPrice = basePrice * (1-currentDiscount/(100));
                 double savingsAmount = basePrice - discountedPrice;
@@ -303,7 +226,7 @@ public class SpecialOffersAdapter extends RecyclerView.Adapter<SpecialOffersAdap
             animateButtonChange(property.getDiscount() > 0);
         }
 
-        private void animateButtonChange(boolean isRemoveState) {
+        public void animateButtonChange(boolean isRemoveState) {
             // Fade out button
             ObjectAnimator fadeOut = ObjectAnimator.ofFloat(btnCreateOffer, "alpha", 1f, 0.3f);
             fadeOut.setDuration(150);
@@ -330,7 +253,7 @@ public class SpecialOffersAdapter extends RecyclerView.Adapter<SpecialOffersAdap
             fadeOut.start();
         }
 
-        private void animateStrikethrough(boolean show) {
+        public void animateStrikethrough(boolean show) {
             if (show) {
                 // Animate strikethrough appearance
                 tvOriginalPrice.setVisibility(View.VISIBLE);
@@ -348,12 +271,12 @@ public class SpecialOffersAdapter extends RecyclerView.Adapter<SpecialOffersAdap
                 
                 // Animate the strikethrough line drawing
                 ValueAnimator strikeAnimator = ValueAnimator.ofFloat(0f, 1f);
-                strikeAnimator.setDuration(400);
-                strikeAnimator.setStartDelay(200);
+                strikeAnimator.setDuration(1000);
+                strikeAnimator.setStartDelay(500);
                 strikeAnimator.addUpdateListener(animation -> {
                     float progress = (float) animation.getAnimatedValue();
                     if (progress > 0.7f) {
-                        tvOriginalPrice.setPaintFlags(tvOriginalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                        tvOriginalPrice.setPaintFlags(tvOriginalPrice.getPaintFlags() | android.graphics.Paint.STRIKE_THRU_TEXT_FLAG);
                     }
                 });
                 
@@ -372,46 +295,98 @@ public class SpecialOffersAdapter extends RecyclerView.Adapter<SpecialOffersAdap
                     @Override
                     public void onAnimationEnd(android.animation.Animator animation) {
                         tvOriginalPrice.setVisibility(View.GONE);
-                        tvOriginalPrice.setPaintFlags(tvOriginalPrice.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+                        tvOriginalPrice.setPaintFlags(tvOriginalPrice.getPaintFlags() & (~android.graphics.Paint.STRIKE_THRU_TEXT_FLAG));
                     }
                 });
                 hideSet.start();
             }
         }
 
-        private void animatePriceChange(String newPrice, boolean isDiscounted) {
-            // Animate price text change
-            ObjectAnimator scaleDown = ObjectAnimator.ofFloat(tvPropertyPrice, "scaleY", 1f, 0.8f);
-            ObjectAnimator fadeOut = ObjectAnimator.ofFloat(tvPropertyPrice, "alpha", 1f, 0.6f);
-            
-            AnimatorSet changeOut = new AnimatorSet();
-            changeOut.playTogether(scaleDown, fadeOut);
-            changeOut.setDuration(150);
-            
-            changeOut.addListener(new android.animation.AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(android.animation.Animator animation) {
-                    tvPropertyPrice.setText(newPrice);
-                    
-                    // Change color if it's a discounted price
-                    if (isDiscounted) {
-                        tvPropertyPrice.setTextColor(context.getColor(R.color.green_700));
-                    } else {
-                        tvPropertyPrice.setTextColor(context.getColor(android.R.color.black));
-                    }
-                    
-                    ObjectAnimator scaleUp = ObjectAnimator.ofFloat(tvPropertyPrice, "scaleY", 0.8f, 1f);
-                    ObjectAnimator fadeIn = ObjectAnimator.ofFloat(tvPropertyPrice, "alpha", 0.6f, 1f);
-                    
-                    AnimatorSet changeIn = new AnimatorSet();
-                    changeIn.playTogether(scaleUp, fadeIn);
-                    changeIn.setDuration(200);
-                    changeIn.setInterpolator(new AccelerateDecelerateInterpolator());
-                    changeIn.start();
+        public void animatePriceCountdown(double startPrice, double endPrice) {
+            NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(Locale.US);
+
+            // Create a value animator to animate from start price to end price
+            ValueAnimator priceAnimator = ValueAnimator.ofFloat((float) startPrice, (float) endPrice);
+            // Increase the duration to 1500ms (1.5 seconds) for a more noticeable counting effect
+            priceAnimator.setDuration(200);
+            priceAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
+
+            priceAnimator.addUpdateListener(animation -> {
+                float animatedValue = (float) animation.getAnimatedValue();
+                // Format the price with currency symbol and display it
+                String formattedPrice = currencyFormat.format(animatedValue) + "/month";
+                tvPropertyPrice.setText(formattedPrice);
+
+                // Change color based on whether we're increasing or decreasing the price
+                if (startPrice > endPrice) {
+                    // Going to a discounted price (green)
+                    tvPropertyPrice.setTextColor(context.getColor(R.color.green_700));
+                } else {
+                    // Going back to original price (black)
+                    tvPropertyPrice.setTextColor(context.getColor(android.R.color.black));
                 }
             });
-            
-            changeOut.start();
+
+            priceAnimator.start();
         }
+
+        public void animateStarEffect(boolean show) {
+            if (show) {
+                // Show the star with appear animation
+                ivFeaturedStar.setVisibility(View.VISIBLE);
+                ivFeaturedStar.clearAnimation(); // Clear any existing animations
+                
+                // Load and start the appear animation
+                Animation appearAnimation = AnimationUtils.loadAnimation(context, R.anim.star_appear_animation);
+                appearAnimation.setFillAfter(true);
+                
+                // After appear animation, start the sparkle effect
+                appearAnimation.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {}
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        // Start the continuous sparkle animation
+                        Animation sparkleAnimation = AnimationUtils.loadAnimation(context, R.anim.star_sparkle_animation);
+                        sparkleAnimation.setFillAfter(true);
+                        ivFeaturedStar.startAnimation(sparkleAnimation);
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {}
+                });
+                
+                ivFeaturedStar.startAnimation(appearAnimation);
+                
+            } else {
+                // Clear any ongoing animations first
+                ivFeaturedStar.clearAnimation();
+                
+                // Hide the star with fade out animation
+                ObjectAnimator fadeOut = ObjectAnimator.ofFloat(ivFeaturedStar, "alpha", 1f, 0f);
+                ObjectAnimator scaleOut = ObjectAnimator.ofFloat(ivFeaturedStar, "scaleX", 1f, 0f);
+                ObjectAnimator scaleOutY = ObjectAnimator.ofFloat(ivFeaturedStar, "scaleY", 1f, 0f);
+                
+                AnimatorSet hideSet = new AnimatorSet();
+                hideSet.playTogether(fadeOut, scaleOut, scaleOutY);
+                hideSet.setDuration(300);
+                
+                hideSet.addListener(new android.animation.AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(android.animation.Animator animation) {
+                        ivFeaturedStar.setVisibility(View.GONE);
+                        ivFeaturedStar.clearAnimation();
+                        // Reset scale and alpha for next time
+                        ivFeaturedStar.setScaleX(1f);
+                        ivFeaturedStar.setScaleY(1f);
+                        ivFeaturedStar.setAlpha(1f);
+                    }
+                });
+                
+                hideSet.start();
+            }
+        }
+
     }
 }

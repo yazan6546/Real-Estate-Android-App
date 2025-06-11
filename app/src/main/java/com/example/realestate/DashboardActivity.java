@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
+import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
@@ -33,6 +34,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     private AppBarConfiguration mAppBarConfiguration;
     private NavController navController;
     private DrawerLayout drawer;
+    private NavigationView navigationView;
     private boolean isAdmin;
 
     @Override
@@ -50,7 +52,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         // Find views with proper IDs based on role
         Toolbar toolbar = findViewById(isAdmin ? R.id.toolbar_admin : R.id.toolbar_user);
         drawer = findViewById(isAdmin ? R.id.drawer_layout_admin : R.id.drawer_layout);
-        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView = findViewById(R.id.nav_view);
 
         // Find FAB if it exists (might be null for some layouts)
         FloatingActionButton fab = findViewById(isAdmin ? R.id.fab_admin : R.id.fab_user);
@@ -85,7 +87,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             // as a destination
             mAppBarConfiguration = new AppBarConfiguration.Builder(
                     R.id.nav_home, R.id.nav_properties, R.id.nav_your_reservations,
-                    R.id.nav_featured_properties, R.id.nav_profile_management, R.id.nav_contact_us)
+                    R.id.nav_featured_properties, R.id.nav_favorites, R.id.nav_profile_management, R.id.nav_contact_us)
                     .setOpenableLayout(drawer)
                     .build();
 
@@ -100,11 +102,27 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         // Setup action bar with nav controller
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
 
-        // Use custom navigation item listener instead of automatic setup
+        // Use custom navigation item listener
         navigationView.setNavigationItemSelectedListener(this);
+
+        // Add destination change listener to keep drawer selection in sync with navigation
+        navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
+            updateNavigationSelection(destination.getId());
+        });
 
         // Update header with user info
         updateNavigationHeader(navigationView, userSession);
+    }
+
+    // Method to update the navigation selection based on destination ID
+    private void updateNavigationSelection(int destinationId) {
+        Menu menu = navigationView.getMenu();
+        for (int i = 0; i < menu.size(); i++) {
+            MenuItem item = menu.getItem(i);
+            if (item.getItemId() == destinationId) {
+                item.setChecked(true);
+            }
+        }
     }
 
     @Override

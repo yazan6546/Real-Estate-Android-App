@@ -10,7 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
+//import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -47,7 +47,7 @@ public class PropertiesFragment extends Fragment implements PropertyAdapter.OnPr
     private TextView tvPropertiesCount;
     private RecyclerView recyclerViewProperties;
     private LinearLayout layoutEmptyState;
-    private ProgressBar progressBar;
+//    private ProgressBar progressBar;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -82,7 +82,7 @@ public class PropertiesFragment extends Fragment implements PropertyAdapter.OnPr
         tvPropertiesCount = view.findViewById(R.id.tvPropertiesCount);
         recyclerViewProperties = view.findViewById(R.id.recyclerViewProperties);
         layoutEmptyState = view.findViewById(R.id.layoutEmptyState);
-        progressBar = view.findViewById(R.id.progressBar);
+//        progressBar = view.findViewById(R.id.progressBar);
     }
 
     private void initViewModel() {
@@ -172,17 +172,19 @@ public class PropertiesFragment extends Fragment implements PropertyAdapter.OnPr
         viewModel.getPropertiesCount().observe(getViewLifecycleOwner(), count -> {
             String countText = count == 1 ? count + " property found" : count + " properties found";
             tvPropertiesCount.setText(countText);
-        }); // Observe loading state
-        viewModel.getIsLoading().observe(getViewLifecycleOwner(), isLoading -> {
-            if (isLoading) {
-                progressBar.setVisibility(View.VISIBLE);
-                recyclerViewProperties.setVisibility(View.GONE);
-                layoutEmptyState.setVisibility(View.GONE);
-            } else {
-                progressBar.setVisibility(View.GONE);
-                recyclerViewProperties.setVisibility(View.VISIBLE);
-            }
         });
+
+//        // Observe loading state
+//        viewModel.getIsLoading().observe(getViewLifecycleOwner(), isLoading -> {
+//            if (isLoading) {
+//                progressBar.setVisibility(View.VISIBLE);
+//                recyclerViewProperties.setVisibility(View.GONE);
+//                layoutEmptyState.setVisibility(View.GONE);
+//            } else {
+//                progressBar.setVisibility(View.GONE);
+//                recyclerViewProperties.setVisibility(View.VISIBLE);
+//            }
+//        });
 
         // Observe error messages
         viewModel.getErrorMessage().observe(getViewLifecycleOwner(), errorMessage -> {
@@ -202,7 +204,6 @@ public class PropertiesFragment extends Fragment implements PropertyAdapter.OnPr
         viewModel.getSuccessMessage().observe(getViewLifecycleOwner(), successMessage -> {
             if (successMessage != null && !successMessage.isEmpty()) {
                 Toast.makeText(requireContext(), successMessage, Toast.LENGTH_SHORT).show();
-                // Refresh the entire adapter to update favorite statuses
                 adapter.notifyDataSetChanged();
             }
         });
@@ -276,14 +277,5 @@ public class PropertiesFragment extends Fragment implements PropertyAdapter.OnPr
         args.putSerializable("property", property);
         Navigation.findNavController(requireView())
                 .navigate(R.id.action_nav_properties_to_reservationFragment, args);
-    }
-
-    @Override
-    public void onPropertyClick(Property property) {
-        // Navigate to property details screen
-        Bundle args = new Bundle();
-        args.putSerializable("property", property);
-        Navigation.findNavController(requireView())
-                .navigate(R.id.action_nav_properties_to_propertyDetailFragment, args);
     }
 }

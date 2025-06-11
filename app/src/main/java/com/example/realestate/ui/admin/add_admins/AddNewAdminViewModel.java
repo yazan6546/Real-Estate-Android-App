@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.realestate.data.repository.UserRepository;
 import com.example.realestate.domain.model.User;
-import com.example.realestate.ui.base.BaseRegistrationViewModel;
+import com.example.realestate.ui.common.BaseRegistrationViewModel;
 
 public class AddNewAdminViewModel extends BaseRegistrationViewModel {
 

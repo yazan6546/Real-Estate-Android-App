@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -55,9 +56,9 @@ public class FavoritesFragment extends Fragment implements PropertyAdapter.OnPro
     }
 
     private void loadFavorites() {
-        UserSession userSession = sharedPrefManager.readObject("user_session", UserSession.class, null);
-        if (userSession != null && userSession.getEmail() != null) {
-            viewModel.loadFavoriteProperties(userSession.getEmail());
+        String email = sharedPrefManager.getCurrentUserEmail();
+        if (email != null && !email.isEmpty()) {
+            viewModel.loadFavoriteProperties(email);
         } else {
             Toast.makeText(requireContext(), "Please log in to view favorites", Toast.LENGTH_SHORT).show();
         }
@@ -65,8 +66,10 @@ public class FavoritesFragment extends Fragment implements PropertyAdapter.OnPro
 
     private void setupClickListeners() {
         binding.browsePropertiesButton.setOnClickListener(v -> {
-            // Navigate to Properties fragment
-            Navigation.findNavController(v).navigate(R.id.nav_properties);
+            // Use the navigation action we defined in the navigation graph
+            // The popUpTo and popUpToInclusive flags ensure proper back stack behavior
+            NavController navController = Navigation.findNavController(requireView());
+            navController.navigate(R.id.action_nav_favorites_to_nav_properties);
         });
     }
 
@@ -115,14 +118,6 @@ public class FavoritesFragment extends Fragment implements PropertyAdapter.OnPro
                 loadFavorites();
             }
         });
-    }
-
-    @Override
-    public void onPropertyClick(Property property) {
-        // Navigate to property detail
-        Bundle args = new Bundle();
-        args.putSerializable("property", property);
-        Navigation.findNavController(requireView()).navigate(R.id.action_nav_favorites_to_propertyDetailFragment, args);
     }
 
     @Override

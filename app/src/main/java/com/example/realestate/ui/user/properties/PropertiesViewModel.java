@@ -33,7 +33,6 @@ public class PropertiesViewModel extends ViewModel {
     private final MutableLiveData<String> selectedLocation = new MutableLiveData<>("All");
     private final MutableLiveData<Double> minPrice = new MutableLiveData<>(0.0);
     private final MutableLiveData<Double> maxPrice = new MutableLiveData<>(Double.MAX_VALUE); // UI state
-    private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
     private final MutableLiveData<String> successMessage = new MutableLiveData<>();
 
@@ -111,7 +110,9 @@ public class PropertiesViewModel extends ViewModel {
             min = 0.0;
         if (max == null)
             max = Double.MAX_VALUE;
-        return property.getPrice() >= min && property.getPrice() <= max;
+
+        double discountedPrice = property.getPrice() * (1 - property.getDiscount() / 100);
+        return discountedPrice >= min && discountedPrice <= max;
     }
 
     private void extractFilterOptions() {
@@ -127,8 +128,7 @@ public class PropertiesViewModel extends ViewModel {
                         .collect(Collectors.toList()));
                 propertyTypes.setValue(types);
 
-                // Extract unique locations (simplified - you might want more sophisticated
-                // location handling)
+                // Extract unique locations
                 List<String> locs = new ArrayList<>();
                 locs.add("All");
                 locs.addAll(properties.stream()
@@ -149,10 +149,6 @@ public class PropertiesViewModel extends ViewModel {
 
     public LiveData<Integer> getPropertiesCount() {
         return Transformations.map(filteredProperties, list -> list != null ? list.size() : 0);
-    }
-
-    public LiveData<Boolean> getIsLoading() {
-        return isLoading;
     }
 
     public LiveData<String> getErrorMessage() {
@@ -190,23 +186,12 @@ public class PropertiesViewModel extends ViewModel {
         maxPrice.setValue(max);
     }
 
-    public void clearFilters() {
-        searchQuery.setValue("");
-        selectedPropertyType.setValue("All");
-        selectedLocation.setValue("All");
-        minPrice.setValue(0.0);
-        maxPrice.setValue(Double.MAX_VALUE);
-    } // Property actions
-
     public void addToFavorites(Property property, String userEmail) {
-        isLoading.setValue(true);
-
         // First check if the property is already in favorites
         favoriteRepository.isFavorite(userEmail, property.getPropertyId(), new RepositoryCallback<Boolean>() {
             @Override
             public void onSuccess(Boolean isAlreadyFavorite) {
                 if (isAlreadyFavorite) {
-                    isLoading.postValue(false);
                     errorMessage.postValue("Property is already in favorites");
                     return;
                 }
@@ -216,13 +201,11 @@ public class PropertiesViewModel extends ViewModel {
                 favoriteRepository.addFavorite(favorite, new RepositoryCallback<Favorite>() {
                     @Override
                     public void onSuccess(Favorite result) {
-                        isLoading.postValue(false);
                         successMessage.postValue("Added to favorites successfully");
                     }
 
                     @Override
                     public void onError(Throwable t) {
-                        isLoading.postValue(false);
                         errorMessage.postValue("Failed to add to favorites: " + t.getMessage());
                     }
                 });
@@ -230,26 +213,21 @@ public class PropertiesViewModel extends ViewModel {
 
             @Override
             public void onError(Throwable t) {
-                isLoading.postValue(false);
                 errorMessage.postValue("Failed to check favorite status: " + t.getMessage());
             }
         });
     }
 
     public void removeFromFavorites(Property property, String userEmail) {
-        isLoading.setValue(true);
-
         Favorite favorite = new Favorite(userEmail, property.getPropertyId());
         favoriteRepository.deleteFavorite(favorite, new RepositoryCallback<Favorite>() {
             @Override
             public void onSuccess(Favorite result) {
-                isLoading.postValue(false);
                 successMessage.postValue("Removed from favorites successfully");
             }
 
             @Override
             public void onError(Throwable t) {
-                isLoading.postValue(false);
                 errorMessage.postValue("Failed to remove from favorites: " + t.getMessage());
             }
         });
