@@ -79,7 +79,6 @@ public class DeleteCustomersFragment extends Fragment implements CustomerAdapter
                 case SUCCESS:
                     Toast.makeText(requireContext(), "Customer deleted successfully", Toast.LENGTH_SHORT).show();
                     progressBar.setVisibility(View.GONE);
-                    viewModel.resetAuthState();
                     break;
                 case ERROR:
                     progressBar.setVisibility(View.GONE);
@@ -104,5 +103,15 @@ public class DeleteCustomersFragment extends Fragment implements CustomerAdapter
                 })
                 .setNegativeButton("Cancel", null)
                 .show();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        // Reset update state to IDLE when leaving the fragment
+        // This prevents the success toast from showing again when returning to the fragment
+        if (viewModel != null) {
+            viewModel.resetAuthState();
+        }
     }
 }
