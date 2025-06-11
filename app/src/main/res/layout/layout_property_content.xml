@@ -92,8 +92,8 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:gravity="end">
+                android:gravity="end"
+                android:orientation="vertical">
 
                 <!-- Original Price (crossed out when discount available) -->
                 <TextView
@@ -125,37 +125,37 @@
             android:id="@+id/tvPropertyTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             android:text="Modern Apartment in Downtown"
-            android:textSize="18sp"
-            android:textStyle="bold"
             android:textColor="@android:color/black"
-            android:layout_marginBottom="8dp" />
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
         <!-- Property Description -->
         <TextView
             android:id="@+id/tvPropertyDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Beautiful 2-bedroom apartment with modern amenities, fully furnished, and great city views."
-            android:textSize="14sp"
-            android:textColor="@android:color/darker_gray"
             android:layout_marginBottom="12dp"
+            android:ellipsize="end"
             android:maxLines="3"
-            android:ellipsize="end" />
+            android:text="Beautiful 2-bedroom apartment with modern amenities, fully furnished, and great city views."
+            android:textColor="@android:color/darker_gray"
+            android:textSize="14sp" />
 
         <!-- Location -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:layout_marginBottom="8dp"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
             <ImageView
                 android:layout_width="16dp"
                 android:layout_height="16dp"
-                android:src="@drawable/ic_building"
                 android:layout_marginEnd="8dp"
+                android:src="@drawable/ic_building"
                 app:tint="@android:color/darker_gray" />
 
             <TextView
@@ -163,8 +163,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Downtown, City Center"
-                android:textSize="14sp"
-                android:textColor="@android:color/darker_gray" />
+                android:textColor="@android:color/darker_gray"
+                android:textSize="14sp" />
 
         </LinearLayout>
 
@@ -172,44 +172,44 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="16dp">
+            android:layout_marginBottom="16dp"
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/tvBedrooms"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="2 Beds"
-                android:textSize="12sp"
-                android:textColor="@android:color/darker_gray"
                 android:drawableStart="@drawable/ic_bed"
                 android:drawablePadding="4dp"
-                android:gravity="center_vertical" />
+                android:gravity="center_vertical"
+                android:text="2 Beds"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/tvBathrooms"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="2 Baths"
-                android:textSize="12sp"
-                android:textColor="@android:color/darker_gray"
                 android:drawableStart="@drawable/ic_bath"
                 android:drawablePadding="4dp"
-                android:gravity="center_vertical" />
+                android:gravity="center_vertical"
+                android:text="2 Baths"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/tvArea"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="120 sqm"
-                android:textSize="12sp"
-                android:textColor="@android:color/darker_gray"
                 android:drawableStart="@drawable/ic_area"
                 android:drawablePadding="4dp"
-                android:gravity="center_vertical" />
+                android:gravity="center_vertical"
+                android:text="120 sqm"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="12sp" />
 
         </LinearLayout>
 
