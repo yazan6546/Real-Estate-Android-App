@@ -2,6 +2,7 @@ package com.example.realestate.di;
 
 import android.content.Context;
 
+import com.example.realestate.RealEstate;
 import com.example.realestate.data.api.ApiClient;
 import com.example.realestate.data.api.ApiService;
 import com.example.realestate.data.db.AppDatabase;
@@ -56,6 +57,8 @@ public class AppContainer {
         User user = new User("yazan", "abualoun", "yazanaboeloun@gmail.com", "Admin123!", "594049488", "Jordan",
                 "Amman", User.Gender.MALE, false);
         userRepository.insertUser(user);
+
+//        reservationRepository.deleteDuplicateReservations();
 
     }
 

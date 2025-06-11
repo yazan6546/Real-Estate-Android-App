@@ -60,3 +60,4 @@ public interface PropertyDao {
      @Update(entity = PropertyEntity.class)
      void updatePropertyPartially(PropertyUpdate property);
 }
+

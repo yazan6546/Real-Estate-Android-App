@@ -48,6 +48,23 @@ public interface ReservationDao {
     LiveData<List<ReservationEntity>> getReservationsByUserId(String userEmail);
 
     /**
+     * Deletes duplicate reservations keeping only the record with the lowest reservation_id
+     * when all other fields are identical.
+     *
+     * @return The number of deleted duplicate records
+     */
+    @Query("DELETE FROM reservations WHERE reservation_id IN " +
+           "(SELECT r1.reservation_id FROM reservations r1 " +
+           "JOIN reservations r2 ON " +
+           "r1.email = r2.email AND " +
+           "r1.property_id = r2.property_id AND " +
+           "r1.start_date = r2.start_date AND " +
+           "r1.end_date = r2.end_date AND " +
+           "r1.status = r2.status " +
+           "WHERE r1.reservation_id > r2.reservation_id)")
+    int deleteDuplicateReservations();
+
+    /**
      * Query to get reservations by date range
      */
     @Query("SELECT * FROM reservations WHERE start_date >= :startDate AND end_date <= :endDate")
