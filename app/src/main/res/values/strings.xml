@@ -23,7 +23,7 @@
     <string name="connect_button">Connect &amp; Explore</string>
     <string name="connecting_message">Connecting…</string>
     <string name="connection_failed">Connection failed. Please try again.</string>
-    <string name="powered_by">Powered by Real Estate Hub</string>
+    <string name="powered_by">Developed by Amr Zedan and Yazan AboEloun</string>
 
     <!-- Login Strings -->
     <string name="login_title">Welcome Back</string>

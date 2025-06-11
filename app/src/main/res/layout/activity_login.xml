@@ -101,19 +101,12 @@
                 android:layout_marginTop="8dp"
                 android:text="@string/remember_me"
                 android:textColor="@color/text_secondary"
+                android:textColorHighlight="@color/blue_700"
+                android:textColorHint="@color/blue_700"
+                android:textColorLink="@color/blue_700"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/passwordInputLayout" />
-
-            <TextView
-                android:id="@+id/forgotPasswordText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/forgot_password"
-                android:textColor="@color/primary"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/passwordInputLayout" />
+                app:layout_constraintTop_toBottomOf="@+id/passwordInputLayout"
+                app:useMaterialThemeColors="false" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/loginButton"
@@ -159,6 +152,7 @@
         android:textSize="16sp"
         app:cornerRadius="8dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/noAccountTextView"
         app:strokeColor="@color/primary" />
