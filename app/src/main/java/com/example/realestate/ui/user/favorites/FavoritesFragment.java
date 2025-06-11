@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -65,8 +66,10 @@ public class FavoritesFragment extends Fragment implements PropertyAdapter.OnPro
 
     private void setupClickListeners() {
         binding.browsePropertiesButton.setOnClickListener(v -> {
-            // Navigate to Properties fragment
-            Navigation.findNavController(v).navigate(R.id.nav_properties);
+            // Use the proper navigation action we defined in the navigation graph
+            // This will ensure the navigation drawer updates correctly
+            Navigation.findNavController(requireView())
+                    .navigate(R.id.action_nav_favorites_to_nav_properties);
         });
     }
 

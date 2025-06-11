@@ -56,6 +56,11 @@
         <action
             android:id="@+id/action_nav_favorites_to_reservationFragment"
             app:destination="@id/reservationFragment" />
+        <action
+            android:id="@+id/action_nav_favorites_to_nav_properties"
+            app:destination="@id/nav_properties"
+            app:popUpTo="@id/nav_favorites"
+            app:popUpToInclusive="true" />
     </fragment>
 
     <fragment
