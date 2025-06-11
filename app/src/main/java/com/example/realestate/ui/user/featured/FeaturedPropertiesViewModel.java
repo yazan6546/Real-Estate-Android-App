@@ -123,7 +123,7 @@ public class FeaturedPropertiesViewModel extends ViewModel {
     }
 
     public void checkFavoriteStatus(Property property, String userEmail,
-                                    com.example.realestate.ui.user.properties.PropertyAdapter.FavoriteStatusCallback callback) {
+            com.example.realestate.ui.user.properties.PropertyAdapter.FavoriteStatusCallback callback) {
         favoriteRepository.isFavorite(userEmail, property.getPropertyId(), new RepositoryCallback<Boolean>() {
             @Override
             public void onSuccess(Boolean isFavorite) {

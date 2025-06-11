@@ -20,10 +20,11 @@ import java.util.Locale;
 
 /**
  * A base adapter class for displaying property data in different contexts.
- * This reduces code duplication between PropertyAdapter and SpecialOffersAdapter.
+ * This reduces code duplication between PropertyAdapter and
+ * SpecialOffersAdapter.
  */
 public abstract class BasePropertyAdapter<VH extends BasePropertyAdapter.BasePropertyViewHolder>
-    extends RecyclerView.Adapter<VH> {
+        extends RecyclerView.Adapter<VH> {
 
     protected List<Property> properties = new ArrayList<>();
     protected Context context;
@@ -39,9 +40,13 @@ public abstract class BasePropertyAdapter<VH extends BasePropertyAdapter.BasePro
 
     @Override
     public void onBindViewHolder(@NonNull VH holder, int position) {
-        Property property = properties.get(position);
-        holder.bindCommonData(property);
-        holder.bindSpecificData(property);
+        if (position >= 0 && position < properties.size()) {
+            Property property = properties.get(position);
+            if (property != null) {
+                holder.bindCommonData(property);
+                holder.bindSpecificData(property);
+            }
+        }
     }
 
     @Override
@@ -96,16 +101,18 @@ public abstract class BasePropertyAdapter<VH extends BasePropertyAdapter.BasePro
          * Binds common property data to views shared across all property item layouts
          */
         public void bindCommonData(Property property) {
-            // Basic property information
-            tvPropertyTitle.setText(property.getTitle());
-            tvPropertyDescription.setText(property.getDescription());
-            tvPropertyLocation.setText(property.getLocation());
-            tvPropertyType.setText(property.getType());
+            // Basic property information with null checks
+            tvPropertyTitle.setText(property.getTitle() != null ? property.getTitle() : "Untitled Property");
+            tvPropertyDescription.setText(
+                    property.getDescription() != null ? property.getDescription() : "No description available");
+            tvPropertyLocation
+                    .setText(property.getLocation() != null ? property.getLocation() : "Location not specified");
+            tvPropertyType.setText(property.getType() != null ? property.getType() : "Unknown Type");
 
-            // Property details
+            // Property details with null checks
             tvBedrooms.setText(property.getBedrooms() + " Beds");
             tvBathrooms.setText(property.getBathrooms() + " Baths");
-            tvArea.setText(property.getArea());
+            tvArea.setText(property.getArea() != null ? property.getArea() : "Area not specified");
 
             // Featured property indicator
             ivFeaturedStar.setVisibility(property.isFeatured() ? View.VISIBLE : View.GONE);
@@ -134,36 +141,43 @@ public abstract class BasePropertyAdapter<VH extends BasePropertyAdapter.BasePro
          * Common pricing logic that can be customized by overriding
          */
         protected void setupPricing(Property property) {
-            NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(Locale.US);
-            double originalPrice = property.getPrice();
-            double discount = property.getDiscount();
+            try {
+                NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(Locale.US);
+                double originalPrice = property.getPrice();
+                double discount = property.getDiscount();
 
-            if (discount > 0) {
-                // Calculate discounted price
-                double discountedPrice = originalPrice * (1 - discount / 100);
+                if (discount > 0) {
+                    // Calculate discounted price
+                    double discountedPrice = originalPrice * (1 - discount / 100);
 
-                // Show discount badge
-                tvDiscountBadge.setText(String.format("%.0f%% OFF", discount));
-                tvDiscountBadge.setVisibility(View.VISIBLE);
+                    // Show discount badge
+                    tvDiscountBadge.setText(String.format("%.0f%% OFF", discount));
+                    tvDiscountBadge.setVisibility(View.VISIBLE);
 
-                // Show discount text (if available)
-                tvDiscountText.setVisibility(View.VISIBLE);
+                    // Show discount text (if available)
+                    tvDiscountText.setVisibility(View.VISIBLE);
 
-                // Show original price with strikethrough
-                tvOriginalPrice.setText(currencyFormat.format(originalPrice) + "/month");
-                tvOriginalPrice.setPaintFlags(tvOriginalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-                tvOriginalPrice.setVisibility(View.VISIBLE);
+                    // Show original price with strikethrough
+                    tvOriginalPrice.setText(currencyFormat.format(originalPrice) + "/month");
+                    tvOriginalPrice.setPaintFlags(tvOriginalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                    tvOriginalPrice.setVisibility(View.VISIBLE);
 
-                // Show discounted price
-                tvPropertyPrice.setText(currencyFormat.format(discountedPrice) + "/month");
-            } else {
-                // No discount - default display
+                    // Show discounted price
+                    tvPropertyPrice.setText(currencyFormat.format(discountedPrice) + "/month");
+                } else {
+                    // No discount - default display
+                    tvDiscountBadge.setVisibility(View.GONE);
+                    tvDiscountText.setVisibility(View.GONE);
+                    tvOriginalPrice.setVisibility(View.GONE);
+                    tvPropertyPrice.setText(currencyFormat.format(originalPrice) + "/month");
+                }
+            } catch (Exception e) {
+                // Fallback in case of formatting errors
+                tvPropertyPrice.setText("Price not available");
+                tvOriginalPrice.setVisibility(View.GONE);
                 tvDiscountBadge.setVisibility(View.GONE);
                 tvDiscountText.setVisibility(View.GONE);
-                tvOriginalPrice.setVisibility(View.GONE);
-                tvPropertyPrice.setText(currencyFormat.format(originalPrice) + "/month");
             }
         }
     }
 }
-

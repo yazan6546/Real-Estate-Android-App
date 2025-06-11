@@ -32,14 +32,6 @@
                 android:layout_marginBottom="8dp" />
 
             <!-- Subtitle -->
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Special offers and premium properties just for you!"
-                android:textSize="14sp"
-                android:textColor="@color/text_secondary"
-                android:gravity="center"
-                android:layout_marginBottom="8dp" />
 
             <!-- Featured indicator with star -->
             <LinearLayout
@@ -58,9 +50,9 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Properties with discounts and featured listings"
-                    android:textSize="12sp"
+                    android:text="Special offers and premium properties just for you!"
                     android:textColor="@color/green_700"
+                    android:textSize="12sp"
                     android:textStyle="italic" />
 
                 <ImageView
@@ -112,24 +104,6 @@
             android:textStyle="bold"
             android:layout_marginBottom="8dp"
             android:gravity="center" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Check back later for special offers and featured listings"
-            android:textSize="14sp"
-            android:textColor="@color/text_secondary"
-            android:gravity="center"
-            android:layout_marginBottom="16dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="✨ Properties with discounts > 0% or marked as featured will appear here"
-            android:textSize="12sp"
-            android:textColor="@color/green_700"
-            android:gravity="center"
-            android:textStyle="italic" />
 
     </LinearLayout>
 

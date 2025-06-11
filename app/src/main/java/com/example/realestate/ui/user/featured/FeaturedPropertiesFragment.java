@@ -26,7 +26,7 @@ public class FeaturedPropertiesFragment extends Fragment implements PropertyAdap
     private FeaturedPropertiesViewModel viewModel;
     private PropertyAdapter adapter;
     private SharedPrefManager sharedPrefManager;
-    
+
     // UI Components
     private RecyclerView recyclerViewFeatured;
     private View layoutEmptyState;
@@ -39,7 +39,7 @@ public class FeaturedPropertiesFragment extends Fragment implements PropertyAdap
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
+            @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_featured_properties, container, false);
     }
 
@@ -103,9 +103,19 @@ public class FeaturedPropertiesFragment extends Fragment implements PropertyAdap
 
     private void updatePropertiesList(java.util.List<Property> properties) {
         if (properties != null && !properties.isEmpty()) {
-            adapter.setProperties(properties);
-            recyclerViewFeatured.setVisibility(View.VISIBLE);
-            layoutEmptyState.setVisibility(View.GONE);
+            // Filter out any null properties for extra safety
+            java.util.List<Property> safeProperties = properties.stream()
+                    .filter(property -> property != null)
+                    .collect(java.util.stream.Collectors.toList());
+
+            if (!safeProperties.isEmpty()) {
+                adapter.setProperties(safeProperties);
+                recyclerViewFeatured.setVisibility(View.VISIBLE);
+                layoutEmptyState.setVisibility(View.GONE);
+            } else {
+                recyclerViewFeatured.setVisibility(View.GONE);
+                layoutEmptyState.setVisibility(View.VISIBLE);
+            }
         } else {
             recyclerViewFeatured.setVisibility(View.GONE);
             layoutEmptyState.setVisibility(View.VISIBLE);
