@@ -40,10 +40,14 @@ import com.google.android.material.textfield.TextInputEditText;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ProfileManagementFragment extends Fragment {
 
     private ProfileManagementViewModel viewModel;
+
+    // Counter for success toast to prevent showing when fragment is recreated
+    private static final AtomicInteger successToastCounter = new AtomicInteger(0);
 
     // UI Components - Profile Information
     private ImageView profileImageView;
@@ -123,6 +127,8 @@ public class ProfileManagementFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+
+        successToastCounter.set(0); // Reset counter when fragment is created
         return inflater.inflate(R.layout.fragment_profile_management, container, false);
     }
 
@@ -294,8 +300,11 @@ public class ProfileManagementFragment extends Fragment {
             progressBar
                     .setVisibility(state == ProfileManagementViewModel.UpdateState.LOADING ? View.VISIBLE : View.GONE);
 
-            if (state == ProfileManagementViewModel.UpdateState.SUCCESS) {
+            if (state == ProfileManagementViewModel.UpdateState.SUCCESS
+                    && successToastCounter.get() > 0) {
+
                 Toast.makeText(requireContext(), "Profile updated successfully!", Toast.LENGTH_SHORT).show();
+
                 // When user clicks save, immediately update the navigation header with the new image
                 // This ensures the header image is consistent with the profile changes
                 if (requireActivity() instanceof DashboardActivity) {
@@ -303,17 +312,29 @@ public class ProfileManagementFragment extends Fragment {
                     dashboardActivity.refreshNavigationHeader();
                 }
 
+                successToastCounter.incrementAndGet();
 
                 clearPasswordFields();
-            }
-        });
 
-        // Observe error messages
-        viewModel.getErrorMessage().observe(getViewLifecycleOwner(), message -> {
-            if (message != null && !message.isEmpty()) {
-                Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show();
+            } else if (state == ProfileManagementViewModel.UpdateState.ERROR
+                    && successToastCounter.get() > 0) {
+
+                Toast.makeText(requireContext(), viewModel.getErrorMessage(), Toast.LENGTH_LONG).show();
+                successToastCounter.incrementAndGet();
+
+            } else if (state == ProfileManagementViewModel.UpdateState.LOADING) {
+                // Increment counter when starting a new update operation
+                successToastCounter.incrementAndGet();
             }
         });
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        // Reset success toast counter to 0 when leaving the fragment
+        // This prevents the toast from showing when the user returns after navigating away
+        successToastCounter.set(0);
     }
 
     private void populateUserData(User user) {

@@ -200,7 +200,7 @@ public class PropertiesViewModel extends ViewModel {
                 Favorite favorite = new Favorite(userEmail, property.getPropertyId());
                 favoriteRepository.addFavorite(favorite, new RepositoryCallback<Favorite>() {
                     @Override
-                    public void onSuccess(Favorite result) {
+                    public void onSuccess() {
                         successMessage.postValue("Added to favorites successfully");
                     }
 
@@ -222,7 +222,7 @@ public class PropertiesViewModel extends ViewModel {
         Favorite favorite = new Favorite(userEmail, property.getPropertyId());
         favoriteRepository.deleteFavorite(favorite, new RepositoryCallback<Favorite>() {
             @Override
-            public void onSuccess(Favorite result) {
+            public void onSuccess() {
                 successMessage.postValue("Removed from favorites successfully");
             }
 
@@ -234,7 +234,7 @@ public class PropertiesViewModel extends ViewModel {
     }
 
     public void checkFavoriteStatus(Property property, String userEmail,
-            com.example.realestate.ui.user.properties.PropertyAdapter.FavoriteStatusCallback callback) {
+            PropertyAdapter.FavoriteStatusCallback callback) {
         favoriteRepository.isFavorite(userEmail, property.getPropertyId(), new RepositoryCallback<Boolean>() {
             @Override
             public void onSuccess(Boolean isFavorite) {

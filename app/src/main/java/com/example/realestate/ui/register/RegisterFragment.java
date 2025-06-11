@@ -24,6 +24,8 @@ import com.example.realestate.domain.model.User;
 import com.example.realestate.ui.common.BaseRegistrationViewModel;
 import com.example.realestate.ui.admin.add_admins.AddNewAdminViewModel;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class RegisterFragment extends Fragment {
 
     private static final String ARG_IS_ADMIN = "is_admin";
@@ -52,6 +54,8 @@ public class RegisterFragment extends Fragment {
     private User.Gender selectedGender = User.Gender.MALE;
     private String selectedCountry;
     private String selectedCity;
+
+    private static final AtomicInteger successToastCounter = new AtomicInteger(0);
 
     public static RegisterFragment newInstance(boolean isAdmin, String title, String buttonText) {
         RegisterFragment fragment = new RegisterFragment();
@@ -87,6 +91,7 @@ public class RegisterFragment extends Fragment {
         
         findViews(root);
         setupTitle();
+        successToastCounter.set(0);
         
         return root;
     }
@@ -191,6 +196,7 @@ public class RegisterFragment extends Fragment {
 
     private void setupButton() {
         registrationButton.setOnClickListener(v -> {
+            successToastCounter.incrementAndGet();
             String email = emailInput.getText().toString().trim();
             String firstName = firstNameInput.getText().toString().trim();
             String lastName = lastNameInput.getText().toString().trim();
@@ -247,7 +253,8 @@ public class RegisterFragment extends Fragment {
             progressBar.setVisibility(state == BaseRegistrationViewModel.RegisterState.LOADING ?
                     View.VISIBLE : View.GONE);
 
-            if (state == BaseRegistrationViewModel.RegisterState.SUCCESS) {
+            if (state == BaseRegistrationViewModel.RegisterState.SUCCESS
+            && successToastCounter.get() > 0) {
                 String successMessage = isAdminRegistration ? 
                     "New admin added successfully!" : "Registration successful!";
                 Toast.makeText(requireContext(), successMessage, Toast.LENGTH_LONG).show();
@@ -264,7 +271,7 @@ public class RegisterFragment extends Fragment {
 
         // Observe error messages
         viewModel.errorMessage.observe(getViewLifecycleOwner(), message -> {
-            if (message != null && !message.isEmpty()) {
+            if (message != null && !message.isEmpty() && successToastCounter.get() > 0) {
                 Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show();
             }
         });
