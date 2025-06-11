@@ -109,6 +109,8 @@ public class SpecialOffersViewModel extends ViewModel {
                 errorMessage.postValue("Failed to update offer: " + t.getMessage());
             }
         });
+
+        isLoading.postValue(false);
     }
 
     // Factory for creating ViewModel

@@ -65,12 +65,14 @@ public class PropertyAdapter extends BasePropertyAdapter<PropertyAdapter.Propert
 
         private void setClickListeners() {
             btnAddToFavorites.setOnClickListener(v -> {
+                PropertiesFragment.successToastCounter.incrementAndGet();
                 if (listener != null && getAdapterPosition() != RecyclerView.NO_POSITION) {
                     listener.onFavoriteClick(properties.get(getAdapterPosition()), isCurrentlyFavorite);
                 }
             });
 
             btnReserveProperty.setOnClickListener(v -> {
+                PropertiesFragment.successToastCounter.incrementAndGet();
                 if (listener != null && getAdapterPosition() != RecyclerView.NO_POSITION) {
                     listener.onReserveClick(properties.get(getAdapterPosition()));
                 }

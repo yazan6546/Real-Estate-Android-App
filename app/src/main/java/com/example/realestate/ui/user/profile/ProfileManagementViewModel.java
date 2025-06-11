@@ -39,7 +39,7 @@ public class ProfileManagementViewModel extends AndroidViewModel {
     // LiveData for UI state
     private LiveData<User> currentUser;
     private final MutableLiveData<UpdateState> updateState = new MutableLiveData<>(UpdateState.IDLE);
-    private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
+    private String errorMessage;
     private final MutableLiveData<String[]> cities = new MutableLiveData<>();
     private final MutableLiveData<String> countryCode = new MutableLiveData<>();
 
@@ -57,7 +57,7 @@ public class ProfileManagementViewModel extends AndroidViewModel {
     public LiveData<User> getCurrentUser() {
 
         if (currentUser == null && sharedPrefManager.getCurrentUserEmail() == null) {
-            errorMessage.postValue("No user is currently logged in");
+            errorMessage = ("No user is currently logged in");
             updateState.postValue(UpdateState.ERROR);
             return null;
         }
@@ -71,7 +71,7 @@ public class ProfileManagementViewModel extends AndroidViewModel {
     public LiveData<UpdateState> getUpdateState() {
         return updateState;
     }
-    public LiveData<String> getErrorMessage() {
+    public String getErrorMessage() {
         return errorMessage;
     }
     public LiveData<String[]> getCities() {
@@ -87,19 +87,28 @@ public class ProfileManagementViewModel extends AndroidViewModel {
     }
     public Uri getProfileImageUri() {
         return profileImageUri;
-    } // Load user profile
+    }
 
+    // Reset update state to IDLE
+    public void resetUpdateState() {
+        updateState.postValue(UpdateState.IDLE);
+    }
+
+    // Load user profile
     public void updateProfile(String firstName, String lastName, String phone,
             User.Gender gender, String country, String city) {
 
+        // Reset state
+        updateState.postValue(UpdateState.LOADING);
+
         User user = currentUser.getValue();
         if (user == null) {
-            errorMessage.postValue("No user data available");
+            errorMessage = ("No user data available");
+            updateState.postValue(UpdateState.ERROR);
             return;
         }
 
-        // Reset state
-        updateState.postValue(UpdateState.LOADING);
+
 
         try {
             // Create updated user object
@@ -117,7 +126,7 @@ public class ProfileManagementViewModel extends AndroidViewModel {
                 if (imageFileName != null) {
                     updatedUser.setProfileImage(imageFileName);
                 } else {
-                    errorMessage.postValue("Failed to save profile image");
+                    errorMessage = ("Failed to save profile image");
                     updateState.postValue(UpdateState.ERROR);
                     return;
                 }
@@ -133,36 +142,39 @@ public class ProfileManagementViewModel extends AndroidViewModel {
 
                 @Override
                 public void onError(Throwable t) {
-                    errorMessage.postValue("Failed to update profile: " + t.getMessage());
+                    errorMessage = ("Failed to update profile: " + t.getMessage());
                     updateState.postValue(UpdateState.ERROR);
                 }
             });
 
         } catch (ValidationException e) {
-            errorMessage.postValue(e.getMessage());
+            errorMessage = (e.getMessage());
             updateState.postValue(UpdateState.ERROR);
         }
     }
 
     // Change password
     public void changePassword(String currentPassword, String newPassword, String confirmPassword) {
+
+        updateState.postValue(UpdateState.LOADING);
+
         User user = currentUser.getValue();
         if (user == null) {
-            errorMessage.postValue("No user data available");
+            errorMessage = ("No user data available");
+            updateState.postValue(UpdateState.ERROR);
             return;
         } // Reset state
-        updateState.postValue(UpdateState.LOADING);
 
         // Validate current password
         if (!Hashing.verifyPassword(currentPassword, user.getPassword())) {
-            errorMessage.postValue("Current password is incorrect");
+            errorMessage = ("Current password is incorrect");
             updateState.postValue(UpdateState.ERROR);
             return;
         }
 
         // Check password confirmation
         if (!newPassword.equals(confirmPassword)) {
-            errorMessage.postValue("New passwords do not match");
+            errorMessage = ("New passwords do not match");
             updateState.postValue(UpdateState.ERROR);
             return;
         }
@@ -184,13 +196,13 @@ public class ProfileManagementViewModel extends AndroidViewModel {
 
                 @Override
                 public void onError(Throwable t) {
-                    errorMessage.postValue("Failed to change password: " + t.getMessage());
+                    errorMessage = ("Failed to change password: " + t.getMessage());
                     updateState.postValue(UpdateState.ERROR);
                 }
             });
 
         } catch (ValidationException e) {
-            errorMessage.postValue(e.getMessage());
+            errorMessage = (e.getMessage());
             updateState.postValue(UpdateState.ERROR);
         }
     }
