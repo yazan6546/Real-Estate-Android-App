@@ -50,10 +50,11 @@ public class SpecialOffersAdapter extends BasePropertyAdapter<SpecialOffersAdapt
                         RecyclerView.ViewHolder holder = recyclerView.findViewHolderForAdapterPosition(i);
                         if (holder instanceof SpecialOfferViewHolder) {
                             SpecialOfferViewHolder offerHolder = (SpecialOfferViewHolder) holder;
-                            // Trigger button animation first
-                            offerHolder.animateButtonChange(true);
                             // Then trigger strikethrough and price animations
                             offerHolder.animateStrikethrough(true);
+                            // Trigger button animation first
+                            offerHolder.animateButtonChange(true);
+
                         }
                     }
                 }
@@ -241,8 +242,8 @@ public class SpecialOffersAdapter extends BasePropertyAdapter<SpecialOffersAdapt
                 
                 // Animate the strikethrough line drawing
                 ValueAnimator strikeAnimator = ValueAnimator.ofFloat(0f, 1f);
-                strikeAnimator.setDuration(400);
-                strikeAnimator.setStartDelay(200);
+                strikeAnimator.setDuration(1000);
+                strikeAnimator.setStartDelay(500);
                 strikeAnimator.addUpdateListener(animation -> {
                     float progress = (float) animation.getAnimatedValue();
                     if (progress > 0.7f) {
